@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev)",
+      "Bash(python -c \"from app.main import app; print\\(''backend ok''\\)\")",
+      "Bash(venv/Scripts/python -c \"from app.main import app; print\\(''backend ok''\\)\")",
+      "Bash(curl -s http://localhost:8000/)",
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(venv/Scripts/alembic current)",
+      "Bash(curl -s http://localhost:8000/api/v1/dashboard/stats -H \"Authorization: Bearer invalid\")",
+      "Bash(venv/Scripts/alembic history)",
+      "Bash(npx vite build --mode development)",
+      "Bash(powershell -Command \":*)",
+      "Bash(pip install -r requirements.txt)",
+      "Bash(pip install scikit-learn numpy pandas)",
+      "Bash(conda install -c conda-forge streamlit plotly -y)",
+      "Bash(where python)",
+      "Bash(where python3)",
+      "Bash(where pip)",
+      "Bash(python -c \"import ssl; print\\(ssl.OPENSSL_VERSION\\)\")",
+      "Bash(\"C:/Users/ifeol/AppData/Local/Programs/Python/Python312/python.exe\" -m pip install streamlit requests pandas plotly)",
+      "Bash(python -c \":*)",
+      "Bash(venv/Scripts/python.exe -c \":*)",
+      "Bash(venv/Scripts/alembic.exe upgrade head)"
+    ]
+  }
+}

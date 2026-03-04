@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+@keyframes page-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.page-transition {
+  animation: page-slide-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  min-height: 100vh;
+}
+
+/* Nav link hover — growing emerald underline */
+nav .space-x-1 button {
+  position: relative;
+  transition: color 0.18s ease;
+}
+
+nav .space-x-1 button::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #10b981;
+  border-radius: 2px;
+  transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-50%);
+}
+
+/* Don't show underline on the active pill button */
+nav .space-x-1 button.rounded-full::after {
+  display: none;
+}
+
+nav .space-x-1 button:not(.rounded-full):hover::after {
+  width: 60%;
+}
+
+/* Toast slide-up animation */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Mobile nav drawer */
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-nav-open {
+  animation: slide-down 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}

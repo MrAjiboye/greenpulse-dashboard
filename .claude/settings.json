@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(venv/Scripts/python -c \":*)",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/auth/register -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"testorg2@example.com\"\",\"\"password\"\":\"\"testpass1\"\",\"\"full_name\"\":\"\"Test User2\"\",\"\"organization_name\"\":\"\"Test Corp 2\"\"}')",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''role:'', d.get\\(''role''\\), ''org_id:'', d.get\\(''organization_id''\\)\\)\")",
+      "Bash(taskkill /F /FI \"WINDOWTITLE eq *uvicorn*\")",
+      "Bash(taskkill /F /FI \"IMAGENAME eq python.exe\")",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /F /PID 52012 /PID 52140 /PID 39904)",
+      "Bash(taskkill //F //PID 52012)",
+      "Bash(taskkill //F //PID 52140)",
+      "Bash(taskkill //F //PID 39904)",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/auth/register -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"orgtest3@example.com\"\",\"\"password\"\":\"\"testpass1\"\",\"\"full_name\"\":\"\"Test Owner\"\",\"\"organization_name\"\":\"\"Acme Ltd\"\"}')",
+      "Bash(curl -sv -X POST http://localhost:8000/api/v1/auth/register -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"orgtest4@example.com\"\",\"\"password\"\":\"\"testpass1\"\",\"\"full_name\"\":\"\"Test4\"\",\"\"organization_name\"\":\"\"Corp 4\"\"}')",
+      "Bash(wmic process where \"name=''python.exe''\" get ProcessId,CommandLine)",
+      "Bash(taskkill //F //PID 52584)",
+      "Bash(taskkill //F //PID 39904 //PID 52140 //PID 46156 //PID 49100)",
+      "Bash(pip install resend==2.10.0)",
+      "Bash(venv/Scripts/pip install resend==2.10.0)"
+    ]
+  }
+}
