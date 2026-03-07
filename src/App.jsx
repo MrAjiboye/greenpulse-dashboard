@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider, useToast } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -37,6 +37,21 @@ import ContactPage from './pages/ContactPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
+import AdminPanel from './pages/AdminPanel';
+
+function TopProgressBar() {
+  const location = useLocation();
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(true);
+    const t = setTimeout(() => setVisible(false), 600);
+    return () => clearTimeout(t);
+  }, [location.pathname]);
+
+  if (!visible) return null;
+  return <div className="top-progress-bar" />;
+}
 
 function AnimatedRoutes() {
   const navigate = useNavigate();
@@ -55,6 +70,7 @@ function AnimatedRoutes() {
 
   return (
     <div className="page-transition">
+      <TopProgressBar />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
@@ -131,6 +147,12 @@ function AnimatedRoutes() {
         <Route path="/apply-recommendation/:id" element={
           <ProtectedRoute>
             <ApplyRecommendation />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <AdminPanel />
           </ProtectedRoute>
         } />
 

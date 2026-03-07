@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 
 // Demo credentials per role — not shown in UI until user clicks
 const DEMO_ACCOUNTS = [
-  { role: 'Admin',   email: 'admin@greenpulseanalytics.com',  password: 'password123' },
   { role: 'Manager', email: 'alex@greenpulseanalytics.com',   password: 'password123' },
   { role: 'Viewer',  email: 'viewer@greenpulseanalytics.com', password: 'password123' },
 ];
