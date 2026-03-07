@@ -395,8 +395,8 @@ export default function AdminPanel() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
               {[
                 { label: 'Total Users', value: total },
-                { label: 'Admins',    value: users.filter(u => u.role === 'admin').length },
-                { label: 'Managers',  value: users.filter(u => u.role === 'manager').length },
+                { label: 'Admins',    value: users.filter(u => u.role?.toUpperCase() === 'ADMIN').length },
+                { label: 'Managers',  value: users.filter(u => u.role?.toUpperCase() === 'MANAGER').length },
                 { label: 'Active',    value: users.filter(u => u.is_active).length },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-white rounded-xl border border-gray-200 px-5 py-4">

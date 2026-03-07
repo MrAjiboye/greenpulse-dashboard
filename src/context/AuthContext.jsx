@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     navigate('/signin');
   };
 
-  const hasRole = (...roles) => roles.includes(user?.role);
+  const hasRole = (...roles) => roles.map(r => r.toUpperCase()).includes(user?.role?.toUpperCase());
 
   return (
     <AuthContext.Provider value={{ user, setUser, logout, loading, hasRole }}>
