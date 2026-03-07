@@ -104,7 +104,10 @@ export default function Register() {
       await authAPI.register({ email: form.email, password: form.password, full_name: form.fullName, organization_name: form.orgName });
       navigate(`/verify-email-sent?email=${encodeURIComponent(form.email)}`);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Registration failed. Please try again.');
+      const data = err.response?.data;
+      // FastAPI validation error (422) → data.error.details[0].msg
+      const validationMsg = data?.error?.details?.[0]?.msg?.replace(/^Value error, /, '');
+      setError(validationMsg || data?.detail || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
