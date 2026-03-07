@@ -14,16 +14,6 @@ function GoogleIcon() {
   );
 }
 
-function MicrosoftIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0"   y="0"   width="8.5" height="8.5" fill="#F25022"/>
-      <rect x="9.5" y="0"   width="8.5" height="8.5" fill="#7FBA00"/>
-      <rect x="0"   y="9.5" width="8.5" height="8.5" fill="#00A4EF"/>
-      <rect x="9.5" y="9.5" width="8.5" height="8.5" fill="#FFB900"/>
-    </svg>
-  );
-}
 
 // ---------- password strength helpers ----------
 const CHECKS = [
@@ -153,7 +143,7 @@ export default function Register() {
           )}
 
           {/* SSO Buttons */}
-          <div className="space-y-3 mb-6">
+          <div className="mb-6">
             <button
               type="button"
               onClick={() => handleOAuth('google')}
@@ -164,18 +154,6 @@ export default function Register() {
                 ? <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
                 : <GoogleIcon />}
               Sign up with Google
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleOAuth('microsoft')}
-              disabled={busy}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {oauthLoading === 'microsoft'
-                ? <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
-                : <MicrosoftIcon />}
-              Sign up with Microsoft
             </button>
           </div>
 
