@@ -207,6 +207,12 @@ const Settings = () => {
                     </button>
                   )}
                   <button
+                    onClick={() => navigate('/iot-feed')}
+                    className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group text-left"
+                  >
+                    <i className="fa-solid fa-tower-broadcast w-4 text-center group-hover:text-emerald-500 transition-colors"></i> IoT Live Feed
+                  </button>
+                  <button
                     onClick={() => showToast('Billing settings coming soon', 'info')}
                     className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group text-left"
                   >

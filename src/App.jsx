@@ -45,6 +45,7 @@ import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
 import AdminPanel from './pages/AdminPanel';
 import IoTDocs from './pages/IoTDocs';
+import IoTFeed from './pages/IoTFeed';
 
 function TopProgressBar() {
   const location = useLocation();
@@ -192,6 +193,12 @@ function AnimatedRoutes() {
 
         {/* IoT Docs — public */}
         <Route path="/docs/iot" element={<IoTDocs />} />
+
+        <Route path="/iot-feed" element={
+          <ProtectedRoute>
+            <IoTFeed />
+          </ProtectedRoute>
+        } />
 
         {/* 404 — unknown routes */}
         <Route path="*" element={<NotFound />} />
