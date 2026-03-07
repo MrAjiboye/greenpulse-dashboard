@@ -153,7 +153,7 @@ const RecommendationDetails = () => {
                 </button>
               </div>
 
-              {insight?.status === 'pending' && (
+              {insight?.status?.toLowerCase() === 'pending' && (
                 <button
                   onClick={() => navigate(`/apply-recommendation/${id}`)}
                   className="w-full bg-emerald-600 text-white px-6 py-3 rounded-lg text-sm font-bold hover:bg-emerald-700 shadow-lg">

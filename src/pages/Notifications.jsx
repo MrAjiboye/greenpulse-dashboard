@@ -51,9 +51,9 @@ export default function Notifications() {
   const filtered = notifications.filter(n => {
     if (activeFilter === 'All')     return true;
     if (activeFilter === 'Unread')  return !n.is_read;
-    if (activeFilter === 'Alerts')  return n.type === 'alert' || n.type === 'warning';
-    if (activeFilter === 'Insights')return n.type === 'insight' || n.type === 'success';
-    if (activeFilter === 'System')  return n.type === 'system';
+    if (activeFilter === 'Alerts')  return ['alert','warning'].includes(n.type?.toLowerCase());
+    if (activeFilter === 'Insights')return ['insight','success'].includes(n.type?.toLowerCase());
+    if (activeFilter === 'System')  return n.type?.toLowerCase() === 'system';
     return true;
   });
 
@@ -62,8 +62,8 @@ export default function Notifications() {
   const tabCount = (filter) => {
     if (filter === 'All')     return notifications.length;
     if (filter === 'Unread')  return unreadCount;
-    if (filter === 'Alerts')  return notifications.filter(n => n.type === 'alert' || n.type === 'warning').length;
-    if (filter === 'Insights')return notifications.filter(n => n.type === 'insight' || n.type === 'success').length;
+    if (filter === 'Alerts')  return notifications.filter(n => ['alert','warning'].includes(n.type?.toLowerCase())).length;
+    if (filter === 'Insights')return notifications.filter(n => ['insight','success'].includes(n.type?.toLowerCase())).length;
     if (filter === 'System')  return notifications.filter(n => n.type === 'system').length;
     return 0;
   };

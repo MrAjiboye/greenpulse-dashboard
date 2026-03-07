@@ -127,7 +127,7 @@ const Dashboard = () => {
 
     try {
       const notifData = await notificationsAPI.getList();
-      setRecentAlerts((notifData?.items ?? []).filter(n => n.type === 'alert' || n.type === 'warning').slice(0, 3));
+      setRecentAlerts((notifData?.items ?? []).filter(n => ['alert','warning'].includes(n.type?.toLowerCase())).slice(0, 3));
     } catch { /* non-critical */ }
   };
 
@@ -460,7 +460,7 @@ const Dashboard = () => {
           ) : (
             <div className="space-y-3">
               {recentAlerts.map(alert => {
-                const isAlert = alert.type === 'alert';
+                const isAlert = alert.type?.toLowerCase() === 'alert';
                 return (
                   <div key={alert.id} className={`flex items-start gap-4 p-4 rounded-lg border ${isAlert ? 'bg-red-50 border-red-100' : 'bg-yellow-50 border-yellow-100'}`}>
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${isAlert ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'}`}>
