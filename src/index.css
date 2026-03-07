@@ -216,6 +216,84 @@ html.dark .shadow-xl  { box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
 /* Code blocks */
 html.dark code { background-color: #0f172a; color: #7dd3fc; }
 
+/* ── Coloured light-shade backgrounds → dark tinted equivalents ───────────────
+   Covers badge bg, icon bg, alert bg, card decoration corners etc.
+   Specificity (0,2,1) beats Tailwind utility (0,1,0) — no !important needed.  */
+html.dark .bg-emerald-50  { background-color: rgba(6,  78,  59, 0.28); }
+html.dark .bg-emerald-100 { background-color: rgba(6,  78,  59, 0.45); }
+html.dark .bg-blue-50     { background-color: rgba(23, 37,  84, 0.35); }
+html.dark .bg-blue-100    { background-color: rgba(23, 37,  84, 0.50); }
+html.dark .bg-indigo-50   { background-color: rgba(30, 27,  75, 0.35); }
+html.dark .bg-indigo-100  { background-color: rgba(30, 27,  75, 0.50); }
+html.dark .bg-red-50      { background-color: rgba(69, 10,  10, 0.35); }
+html.dark .bg-red-100     { background-color: rgba(69, 10,  10, 0.50); }
+html.dark .bg-amber-50    { background-color: rgba(69, 26,   3, 0.35); }
+html.dark .bg-amber-100   { background-color: rgba(69, 26,   3, 0.50); }
+html.dark .bg-orange-50   { background-color: rgba(67, 20,   7, 0.35); }
+html.dark .bg-orange-100  { background-color: rgba(67, 20,   7, 0.50); }
+html.dark .bg-yellow-50   { background-color: rgba(66, 32,   6, 0.35); }
+html.dark .bg-yellow-100  { background-color: rgba(66, 32,   6, 0.50); }
+html.dark .bg-green-50    { background-color: rgba(5,  46,  22, 0.35); }
+html.dark .bg-green-100   { background-color: rgba(5,  46,  22, 0.50); }
+html.dark .bg-purple-50   { background-color: rgba(46, 16, 101, 0.35); }
+html.dark .bg-purple-100  { background-color: rgba(46, 16, 101, 0.50); }
+html.dark .bg-teal-50     { background-color: rgba(4,  47,  46, 0.35); }
+html.dark .bg-teal-100    { background-color: rgba(4,  47,  46, 0.50); }
+
+/* ── Coloured text on those tinted backgrounds ────────────────────────────────
+   -600 stays as-is (bright enough); lighten -700 and -800 variants.           */
+html.dark .text-emerald-700, html.dark .text-emerald-800 { color: #6ee7b7; }
+html.dark .text-blue-700,    html.dark .text-blue-800    { color: #93c5fd; }
+html.dark .text-indigo-700,  html.dark .text-indigo-800  { color: #a5b4fc; }
+html.dark .text-red-700,     html.dark .text-red-800     { color: #fca5a5; }
+html.dark .text-red-600                                  { color: #f87171; }
+html.dark .text-amber-700,   html.dark .text-amber-800   { color: #fcd34d; }
+html.dark .text-orange-700,  html.dark .text-orange-800  { color: #fdba74; }
+html.dark .text-green-700,   html.dark .text-green-800   { color: #86efac; }
+html.dark .text-purple-700,  html.dark .text-purple-800  { color: #d8b4fe; }
+html.dark .text-yellow-700,  html.dark .text-yellow-800  { color: #fef08a; }
+
+/* ── Coloured borders → muted dark variants ───────────────────────────────── */
+html.dark .border-emerald-100 { border-color: rgba(6,  78,  59, 0.45); }
+html.dark .border-emerald-200 { border-color: rgba(6,  78,  59, 0.65); }
+html.dark .border-blue-100    { border-color: rgba(23, 37,  84, 0.45); }
+html.dark .border-blue-200    { border-color: rgba(23, 37,  84, 0.65); }
+html.dark .border-indigo-100  { border-color: rgba(30, 27,  75, 0.45); }
+html.dark .border-red-100     { border-color: rgba(69, 10,  10, 0.45); }
+html.dark .border-red-200     { border-color: rgba(69, 10,  10, 0.65); }
+html.dark .border-amber-100   { border-color: rgba(69, 26,   3, 0.45); }
+html.dark .border-amber-200   { border-color: rgba(69, 26,   3, 0.65); }
+html.dark .border-orange-100  { border-color: rgba(67, 20,   7, 0.45); }
+html.dark .border-yellow-100  { border-color: rgba(66, 32,   6, 0.45); }
+html.dark .border-green-100   { border-color: rgba(5,  46,  22, 0.45); }
+html.dark .border-purple-100  { border-color: rgba(46, 16, 101, 0.45); }
+
+/* ── Recharts charts ─────────────────────────────────────────────────────────
+   SVG presentation attrs lose to CSS properties — no !important for stroke/fill.
+   Tooltip inline styles need !important to override.                          */
+html.dark .recharts-cartesian-grid line { stroke: #334155; }
+html.dark .recharts-text tspan          { fill: #64748b; }
+html.dark .recharts-default-tooltip {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #f1f5f9 !important;
+  border-radius: 8px;
+}
+html.dark .recharts-tooltip-label       { color: #f1f5f9 !important; }
+html.dark .recharts-tooltip-item        { color: #cbd5e1 !important; }
+html.dark .recharts-legend-item-text    { color: #94a3b8 !important; }
+
+/* ── Auth page gradients (from-emerald-50 via-white to-blue-50) ───────────── */
+html.dark .from-emerald-50 {
+  --tw-gradient-from: #0f172a;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(15,23,42,0));
+}
+html.dark .via-white {
+  --tw-gradient-via: #1e293b;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to, rgba(30,41,59,0));
+}
+html.dark .to-blue-50 { --tw-gradient-to: #0f172a; }
+
 .top-progress-bar::after {
   content: '';
   position: absolute;
