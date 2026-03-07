@@ -50,6 +50,9 @@ const WasteManagement = () => {
   const [breakdown, setBreakdown] = useState(null);
   const [logs, setLogs] = useState([]);
   const [alerts, setAlerts] = useState([]);
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareData, setCompareData] = useState(null);
+  const [compareLoading, setCompareLoading] = useState(false);
 
   const [showLogModal, setShowLogModal] = useState(false);
   const [logForm, setLogForm] = useState(EMPTY_FORM);
@@ -70,6 +73,15 @@ const WasteManagement = () => {
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  useEffect(() => {
+    if (!compareMode) { setCompareData(null); return; }
+    setCompareLoading(true);
+    wasteAPI.compare('this_month', 'last_month')
+      .then(setCompareData)
+      .catch(() => setCompareData(null))
+      .finally(() => setCompareLoading(false));
+  }, [compareMode]);
 
   useEffect(() => {
     const purge = (id) => { const el = document.getElementById(id); if (el && window.Plotly) { window.Plotly.purge(el); el.innerHTML = ''; } };
@@ -187,6 +199,17 @@ const WasteManagement = () => {
             <p className="text-gray-500 mt-1">Track diversion rates, contamination alerts, and collection logs.</p>
           </div>
           <div className="flex gap-3">
+            <button
+              onClick={() => setCompareMode(m => !m)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                compareMode
+                  ? 'bg-amber-500 text-white shadow-sm'
+                  : 'bg-white border border-gray-200 text-gray-600 hover:border-gray-300'
+              }`}
+            >
+              <i className="fa-solid fa-code-compare"></i>
+              {compareLoading ? 'Loading…' : compareMode ? 'Comparing' : 'Compare period'}
+            </button>
             {canLog && (
               <button onClick={() => setShowLogModal(true)} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors shadow-sm flex items-center gap-2">
                 <i className="fa-solid fa-plus"></i> Log Manual Entry
@@ -255,6 +278,30 @@ const WasteManagement = () => {
             </div>
           </div>
         </div>
+
+        {/* Comparison strip */}
+        {compareMode && compareData && (
+          <div className={`flex items-center gap-3 px-4 py-2.5 rounded-xl mb-6 text-sm ${
+            compareData.change_pct == null ? 'bg-gray-50 text-gray-500' :
+            compareData.change_pct <= 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700'
+          }`}>
+            {compareData.change_pct != null && (
+              <i className={`fa-solid ${compareData.change_pct <= 0 ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}`}></i>
+            )}
+            {compareData.change_pct != null ? (
+              <>
+                <span className="font-semibold">
+                  {compareData.change_pct > 0 ? '+' : ''}{compareData.change_pct}%
+                </span>
+                <span className="text-xs opacity-75">
+                  vs {compareData.previous.label} · {Math.abs(compareData.current.total_kg - compareData.previous.total_kg).toFixed(0)} kg {compareData.change_pct > 0 ? 'more' : 'less'} waste this month
+                </span>
+              </>
+            ) : (
+              <span>No previous period data to compare</span>
+            )}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 space-y-6">

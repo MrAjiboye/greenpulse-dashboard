@@ -135,6 +135,11 @@ export const energyAPI = {
     const response = await api.get('/energy/zones');
     return response.data;
   },
+
+  compare: async (period = 'this_month', compareTo = 'last_month') => {
+    const response = await api.get(`/energy/compare?period=${period}&compare_to=${compareTo}`);
+    return response.data;
+  },
 };
 
 // Waste APIs
@@ -161,6 +166,11 @@ export const wasteAPI = {
 
   resolveAlert: async (id) => {
     const response = await api.patch(`/waste/contamination-alerts/${id}/resolve`);
+    return response.data;
+  },
+
+  compare: async (period = 'this_month', compareTo = 'last_month') => {
+    const response = await api.get(`/waste/compare?period=${period}&compare_to=${compareTo}`);
     return response.data;
   },
 };
@@ -259,6 +269,46 @@ export const mlAPI = {
   train:        async () => (await api.post('/admin/ml/train')).data,
   getAnomalies: async () => (await api.get('/admin/ml/anomalies')).data,
   getForecast:  async () => (await api.get('/admin/ml/forecast')).data,
+};
+
+export const carbonAPI = {
+  getSummary:   async () => (await api.get('/carbon/summary')).data,
+  getTrends:    async (months = 12) => (await api.get(`/carbon/trends?months=${months}`)).data,
+  getBreakdown: async () => (await api.get('/carbon/breakdown')).data,
+};
+
+export const goalsAPI = {
+  getList: async () => (await api.get('/goals')).data,
+  create:  async (data) => (await api.post('/goals', data)).data,
+  update:  async (id, data) => (await api.patch(`/goals/${id}`, data)).data,
+  delete:  async (id) => api.delete(`/goals/${id}`),
+};
+
+export const teamAPI = {
+  getMembers:    async () => (await api.get('/team/members')).data,
+  getInvites:    async () => (await api.get('/team/invites')).data,
+  invite:        async (data) => (await api.post('/team/invite', data)).data,
+  updateRole:    async (uid, role) => (await api.patch(`/team/members/${uid}/role`, { role })).data,
+  removeMember:  async (uid) => api.delete(`/team/members/${uid}`),
+  getInviteInfo: async (token) => (await api.get(`/team/accept-invite?token=${encodeURIComponent(token)}`)).data,
+  acceptInvite:  async (data) => (await api.post('/team/accept-invite', data)).data,
+};
+
+export const ingestAPI = {
+  sendReading: async (data) => (await api.post('/ingest/reading', data)).data,
+};
+
+export const importAPI = {
+  energyCsv: async (file) => {
+    const form = new FormData();
+    form.append('file', file);
+    return (await api.post('/ingest/energy/csv', form, { headers: { 'Content-Type': 'multipart/form-data' } })).data;
+  },
+  wasteCsv: async (file) => {
+    const form = new FormData();
+    form.append('file', file);
+    return (await api.post('/ingest/waste/csv', form, { headers: { 'Content-Type': 'multipart/form-data' } })).data;
+  },
 };
 
 export default api;

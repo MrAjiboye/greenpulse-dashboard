@@ -87,6 +87,7 @@ export default function Register() {
   const { setUser } = useAuth();
 
   const [form, setForm]             = useState({ fullName: '', orgName: '', email: '', password: '', confirm: '' });
+  const [showPw, setShowPw]         = useState(false);
   const [loading, setLoading]       = useState(false);
   const [oauthLoading, setOauthLoading] = useState(null);
   const [error, setError]           = useState('');
@@ -236,15 +237,25 @@ export default function Register() {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                value={form.password}
-                onChange={update('password')}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                placeholder="Min. 8 characters"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPw ? "text" : "password"}
+                  id="password"
+                  value={form.password}
+                  onChange={update('password')}
+                  className="w-full px-4 py-3 pr-10 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  placeholder="Min. 8 characters"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPw(v => !v)}
+                  tabIndex={-1}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <i className={`fa-regular ${showPw ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                </button>
+              </div>
               <PasswordStrengthBar password={form.password} />
               <PasswordChecklist password={form.password} />
             </div>
@@ -253,15 +264,25 @@ export default function Register() {
               <label htmlFor="confirm" className="block text-sm font-medium text-gray-700 mb-2">
                 Confirm Password
               </label>
-              <input
-                type="password"
-                id="confirm"
-                value={form.confirm}
-                onChange={update('confirm')}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                placeholder="••••••••"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPw ? "text" : "password"}
+                  id="confirm"
+                  value={form.confirm}
+                  onChange={update('confirm')}
+                  className="w-full px-4 py-3 pr-10 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  placeholder="••••••••"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPw(v => !v)}
+                  tabIndex={-1}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <i className={`fa-regular ${showPw ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                </button>
+              </div>
             </div>
 
             <button

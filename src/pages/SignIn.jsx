@@ -3,11 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
-// Demo credentials per role — not shown in UI until user clicks
-const DEMO_ACCOUNTS = [
-  { role: 'Manager', email: 'alex@greenpulseanalytics.com',   password: 'password123' },
-  { role: 'Viewer',  email: 'viewer@greenpulseanalytics.com', password: 'password123' },
-];
 
 function GoogleIcon() {
   return (
@@ -20,16 +15,6 @@ function GoogleIcon() {
   );
 }
 
-function MicrosoftIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0"  y="0"  width="8.5" height="8.5" fill="#F25022"/>
-      <rect x="9.5" y="0"  width="8.5" height="8.5" fill="#7FBA00"/>
-      <rect x="0"  y="9.5" width="8.5" height="8.5" fill="#00A4EF"/>
-      <rect x="9.5" y="9.5" width="8.5" height="8.5" fill="#FFB900"/>
-    </svg>
-  );
-}
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -38,10 +23,10 @@ const SignIn = () => {
 
   const [email, setEmail]         = useState('');
   const [password, setPassword]   = useState('');
+  const [showPw, setShowPw]       = useState(false);
   const [loading, setLoading]     = useState(false);
-  const [oauthLoading, setOauthLoading] = useState(null); // 'google' | 'microsoft'
+  const [oauthLoading, setOauthLoading] = useState(false);
   const [error, setError]         = useState('');
-  const [showDemoPicker, setShowDemoPicker] = useState(false);
 
   // --- Email/password sign-in ---
   const handleSubmit = async (e) => {
@@ -68,27 +53,19 @@ const SignIn = () => {
   };
 
   // --- OAuth sign-in ---
-  const handleOAuth = async (provider) => {
-    setOauthLoading(provider);
+  const handleOAuth = async () => {
+    setOauthLoading(true);
     setError('');
     try {
-      const { authorization_url } = await authAPI.getOAuthUrl(provider);
+      const { authorization_url } = await authAPI.getOAuthUrl('google');
       window.location.href = authorization_url;
     } catch {
-      setError(`${provider === 'google' ? 'Google' : 'Microsoft'} sign-in is not configured yet. Use email & password below.`);
-      setOauthLoading(null);
+      setError('Google sign-in is not configured yet. Use email & password below.');
+      setOauthLoading(false);
     }
   };
 
-  // --- Fill demo credentials for a chosen role ---
-  const fillDemo = (account) => {
-    setEmail(account.email);
-    setPassword(account.password);
-    setError('');
-    setShowDemoPicker(false);
-  };
-
-  const busy = loading || oauthLoading != null;
+  const busy = loading || oauthLoading;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 flex items-center justify-center p-6">
@@ -114,29 +91,17 @@ const SignIn = () => {
           )}
 
           {/* SSO Buttons */}
-          <div className="space-y-3 mb-6">
+          <div className="mb-6">
             <button
               type="button"
-              onClick={() => handleOAuth('google')}
+              onClick={handleOAuth}
               disabled={busy}
               className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {oauthLoading === 'google'
+              {oauthLoading
                 ? <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
                 : <GoogleIcon />}
               Continue with Google
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleOAuth('microsoft')}
-              disabled={busy}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {oauthLoading === 'microsoft'
-                ? <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
-                : <MicrosoftIcon />}
-              Continue with Microsoft
             </button>
           </div>
 
@@ -177,15 +142,25 @@ const SignIn = () => {
                   Forgot password?
                 </button>
               </div>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                placeholder="••••••••"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPw ? "text" : "password"}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-10 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  placeholder="••••••••"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPw(v => !v)}
+                  tabIndex={-1}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <i className={`fa-regular ${showPw ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                </button>
+              </div>
             </div>
 
             <button
@@ -209,36 +184,6 @@ const SignIn = () => {
                 Sign up
               </button>
             </p>
-            {/* Demo role picker */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowDemoPicker(p => !p)}
-                className="text-xs text-gray-400 hover:text-gray-600 transition-colors underline underline-offset-2"
-              >
-                Use demo account
-              </button>
-              {showDemoPicker && (
-                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white border border-gray-200 rounded-xl shadow-lg py-1 w-52 z-10">
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 pt-2 pb-1">Select role</p>
-                  {DEMO_ACCOUNTS.map((acc) => (
-                    <button
-                      key={acc.role}
-                      type="button"
-                      onClick={() => fillDemo(acc)}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 flex items-center gap-2"
-                    >
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                        acc.role === 'Admin'   ? 'bg-purple-100 text-purple-700' :
-                        acc.role === 'Manager' ? 'bg-blue-100 text-blue-700' :
-                                                 'bg-gray-100 text-gray-600'
-                      }`}>{acc.role}</span>
-                      <span className="text-gray-600">{acc.email}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
         </div>
 

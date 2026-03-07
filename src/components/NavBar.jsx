@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { notificationsAPI } from '../services/api';
 
 const navLinks = [
@@ -8,6 +9,7 @@ const navLinks = [
   { label: 'Energy Monitor',   path: '/energy'    },
   { label: 'Waste Management', path: '/waste'     },
   { label: 'AI Insights',      path: '/insights'  },
+  { label: 'Carbon',           path: '/carbon'    },
   { label: 'Reports',          path: '/reports'   },
   { label: 'Settings',         path: '/settings'  },
 ];
@@ -16,6 +18,7 @@ export default function NavBar() {
   const navigate   = useNavigate();
   const location   = useLocation();
   const { user, logout } = useAuth();
+  const { dark, toggle: toggleDark } = useTheme();
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -71,6 +74,15 @@ export default function NavBar() {
 
           {/* ── Right: bell + avatar + hamburger ── */}
           <div className="flex items-center gap-3">
+            <button
+              onClick={toggleDark}
+              className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+              aria-label="Toggle dark mode"
+              title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              <i className={`fa-solid ${dark ? 'fa-sun' : 'fa-moon'} text-lg`}></i>
+            </button>
+
             <button
               onClick={() => navigate('/notifications')}
               className={`relative p-2 transition-colors ${isActive('/notifications') ? 'text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}

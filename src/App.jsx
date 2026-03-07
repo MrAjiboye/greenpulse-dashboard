@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider, useToast } from './context/ToastContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -23,6 +24,11 @@ import Register from './pages/Register';
 import Notifications from './pages/Notifications';
 import OAuthCallback from './pages/OAuthCallback';
 import CompleteProfile from './pages/CompleteProfile';
+import CarbonFootprint from './pages/CarbonFootprint';
+import Goals from './pages/Goals';
+import DataImport from './pages/DataImport';
+import TeamMembers from './pages/TeamMembers';
+import AcceptInvite from './pages/AcceptInvite';
 import VerifyEmailSent from './pages/VerifyEmailSent';
 import VerifyEmail from './pages/VerifyEmail';
 import AboutPage from './pages/AboutPage';
@@ -38,6 +44,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
 import AdminPanel from './pages/AdminPanel';
+import IoTDocs from './pages/IoTDocs';
 
 function TopProgressBar() {
   const location = useLocation();
@@ -120,6 +127,33 @@ function AnimatedRoutes() {
           </ProtectedRoute>
         } />
 
+        <Route path="/carbon" element={
+          <ProtectedRoute>
+            <CarbonFootprint />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/goals" element={
+          <ProtectedRoute>
+            <Goals />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/import" element={
+          <ProtectedRoute>
+            <DataImport />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/team" element={
+          <ProtectedRoute>
+            <TeamMembers />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/accept-invite" element={<AcceptInvite />} />
+
+
         <Route path="/reports" element={
           <ProtectedRoute>
             <Reports />
@@ -156,6 +190,9 @@ function AnimatedRoutes() {
           </ProtectedRoute>
         } />
 
+        {/* IoT Docs — public */}
+        <Route path="/docs/iot" element={<IoTDocs />} />
+
         {/* 404 — unknown routes */}
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -165,17 +202,19 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <Router>
-        <AuthProvider>
-          <ToastProvider>
-            <ErrorBoundary>
-              <AnimatedRoutes />
-            </ErrorBoundary>
-          </ToastProvider>
-        </AuthProvider>
-      </Router>
-    </ErrorBoundary>
+    <ThemeProvider>
+      <ErrorBoundary>
+        <Router>
+          <AuthProvider>
+            <ToastProvider>
+              <ErrorBoundary>
+                <AnimatedRoutes />
+              </ErrorBoundary>
+            </ToastProvider>
+          </AuthProvider>
+        </Router>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
 

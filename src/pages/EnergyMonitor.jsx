@@ -28,6 +28,9 @@ const EnergyMonitor = () => {
   const [trends, setTrends] = useState([]);
   const [anomalies, setAnomalies] = useState([]);
   const [zones, setZones] = useState([]);
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareData, setCompareData] = useState(null);
+  const [compareLoading, setCompareLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -51,13 +54,22 @@ const EnergyMonitor = () => {
   }, [fetchData]);
 
   useEffect(() => {
+    if (!compareMode) { setCompareData(null); return; }
+    setCompareLoading(true);
+    energyAPI.compare('this_month', 'last_month')
+      .then(setCompareData)
+      .catch(() => setCompareData(null))
+      .finally(() => setCompareLoading(false));
+  }, [compareMode]);
+
+  useEffect(() => {
     const purge = (id) => { const el = document.getElementById(id); if (el && window.Plotly) { window.Plotly.purge(el); el.innerHTML = ''; } };
     if (!loading && trends.length > 0 && window.Plotly) {
       purge('energyTrendChart');
       renderChart();
     }
     return () => { if (window.Plotly) purge('energyTrendChart'); };
-  }, [loading, trends]);
+  }, [loading, trends, compareData, compareMode]);
 
   const renderChart = () => {
     try {
@@ -95,6 +107,17 @@ const EnergyMonitor = () => {
         });
       }
 
+      if (compareMode && compareData?.previous) {
+        const prevAvgHourly = (compareData.previous.avg_daily_kwh ?? 0) / 24;
+        traces.push({
+          x: labels, y: Array(labels.length).fill(parseFloat(prevAvgHourly.toFixed(1))),
+          type: 'scatter', mode: 'lines',
+          name: compareData.previous.label ?? 'Previous',
+          line: { color: '#f59e0b', width: 2, dash: 'dash' },
+          hovertemplate: `<b>%{x}</b><br>${compareData.previous.label ?? 'Prev'} avg: %{y} kWh<extra></extra>`
+        });
+      }
+
       const annotations = peakIndex >= 0 ? [{
         x: labels[peakIndex], y: maxUsage, xref: 'x', yref: 'y',
         text: `Peak: ${maxUsage} kWh`, showarrow: true, arrowhead: 2,
@@ -105,8 +128,9 @@ const EnergyMonitor = () => {
 
       window.Plotly.newPlot('energyTrendChart', traces, {
         font: { family: 'Inter, sans-serif' },
-        margin: { t: 20, r: 20, b: 40, l: 50 },
-        showlegend: false,
+        margin: { t: compareMode ? 40 : 20, r: 20, b: 40, l: 50 },
+        showlegend: compareMode,
+        legend: { orientation: 'h', y: 1.1, x: 0 },
         plot_bgcolor: 'rgba(0,0,0,0)', paper_bgcolor: 'rgba(0,0,0,0)',
         hovermode: 'x unified',
         xaxis: { showgrid: false, color: '#6b7280', tickfont: { size: 12 } },
@@ -281,7 +305,7 @@ const EnergyMonitor = () => {
           <div className="lg:col-span-8 space-y-6">
             {/* Trend Chart */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                     Your Usage — Last 24 Hours
@@ -294,9 +318,49 @@ const EnergyMonitor = () => {
                     <div className="flex items-center gap-2 text-xs text-gray-500">
                       <span className="w-3 h-3 rounded-full bg-red-400 opacity-50"></span> Your Limit
                     </div>
+                    {compareMode && (
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <span className="w-3 h-3 rounded-full bg-amber-400"></span> Previous period avg
+                      </div>
+                    )}
                   </div>
                 </div>
+                <button
+                  onClick={() => setCompareMode(m => !m)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex-shrink-0 ${
+                    compareMode
+                      ? 'bg-amber-500 text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  <i className="fa-solid fa-code-compare"></i>
+                  {compareLoading ? 'Loading…' : compareMode ? 'Comparing' : 'Compare period'}
+                </button>
               </div>
+
+              {/* Comparison summary strip */}
+              {compareMode && compareData && (
+                <div className={`flex items-center gap-3 px-4 py-2.5 rounded-xl mb-4 text-sm ${
+                  compareData.change_pct == null ? 'bg-gray-50 text-gray-500' :
+                  compareData.change_pct <= 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700'
+                }`}>
+                  {compareData.change_pct != null && (
+                    <i className={`fa-solid ${compareData.change_pct <= 0 ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}`}></i>
+                  )}
+                  {compareData.change_pct != null ? (
+                    <>
+                      <span className="font-semibold">
+                        {compareData.change_pct > 0 ? '+' : ''}{compareData.change_pct}%
+                      </span>
+                      <span className="text-xs opacity-75">
+                        vs {compareData.previous.label} · {Math.abs(compareData.current.total_kwh - compareData.previous.total_kwh).toFixed(0)} kWh {compareData.change_pct > 0 ? 'more' : 'less'} this month
+                      </span>
+                    </>
+                  ) : (
+                    <span>No previous period data to compare</span>
+                  )}
+                </div>
+              )}
               {trends.length > 0 ? (
                 <div id="energyTrendChart" className="h-[400px] w-full"></div>
               ) : (

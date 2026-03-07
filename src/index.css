@@ -157,6 +157,65 @@ nav .space-x-1 button:not(.rounded-full):hover::after {
   overflow: hidden;
 }
 
+/* ── Dark Mode overrides ─────────────────────────────────────────────────────
+   Uses class-based darkMode from Tailwind. Specificity of html.dark .utility
+   (0,2,1) beats plain utility (0,1,0) so no !important needed.
+   Emerald/blue/red accent colors are intentionally left unchanged.
+────────────────────────────────────────────────────────────────────────────── */
+html.dark { color-scheme: dark; }
+
+/* Backgrounds */
+html.dark body,
+html.dark .min-h-screen { background-color: #0f172a; }
+html.dark .bg-gray-50   { background-color: #0f172a; }
+html.dark .bg-white     { background-color: #1e293b; }
+html.dark .bg-gray-100  { background-color: #1e293b; }
+html.dark .bg-gray-200  { background-color: #334155; }
+
+/* Text */
+html.dark .text-gray-900 { color: #f1f5f9; }
+html.dark .text-gray-800 { color: #e2e8f0; }
+html.dark .text-gray-700 { color: #cbd5e1; }
+html.dark .text-gray-600 { color: #94a3b8; }
+html.dark .text-gray-500 { color: #64748b; }
+html.dark .text-gray-400 { color: #4e6680; }
+
+/* Borders */
+html.dark .border-gray-100 { border-color: #1e293b; }
+html.dark .border-gray-200 { border-color: #334155; }
+html.dark .border-gray-300 { border-color: #475569; }
+
+/* Active nav pill: keep contrast in dark mode */
+html.dark .bg-gray-900  { background-color: #0f766e; }
+
+/* Form inputs */
+html.dark input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=submit]),
+html.dark select,
+html.dark textarea {
+  background-color: #0f172a;
+  color: #f1f5f9;
+  border-color: #334155;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder { color: #475569; }
+
+/* Hover overrides */
+html.dark .hover\:bg-gray-50:hover  { background-color: #1e293b; }
+html.dark .hover\:bg-gray-100:hover { background-color: #334155; }
+
+/* Skeleton shimmer */
+html.dark .skeleton-shimmer {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 37%, #1e293b 63%);
+  background-size: 800px 100%;
+}
+
+/* Elevated shadows */
+html.dark .shadow-sm  { box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+html.dark .shadow-xl  { box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+
+/* Code blocks */
+html.dark code { background-color: #0f172a; color: #7dd3fc; }
+
 .top-progress-bar::after {
   content: '';
   position: absolute;

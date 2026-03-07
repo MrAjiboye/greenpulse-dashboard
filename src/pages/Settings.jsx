@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../context/ThemeContext';
 import { authAPI } from '../services/api';
 import NavBar from '../components/NavBar';
 
@@ -16,7 +17,9 @@ function loadPrefs() {
 }
 
 const Settings = () => {
-  const { user, setUser, logout } = useAuth();
+  const { user, setUser, logout, hasRole } = useAuth();
+  const { dark, toggle: toggleDark } = useTheme();
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const [saving, setSaving] = useState(false);
 
@@ -41,6 +44,7 @@ const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPw, setShowPw] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
 
   // AI preferences
@@ -180,19 +184,34 @@ const Settings = () => {
               <div>
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-3">Workspace</h3>
                 <nav className="space-y-1">
-                  {[
-                    { icon: 'fa-regular fa-building', label: 'General' },
-                    { icon: 'fa-solid fa-users', label: 'Members' },
-                    { icon: 'fa-regular fa-credit-card', label: 'Billing' },
-                  ].map(({ icon, label }) => (
+                  <button
+                    onClick={() => showToast('General settings coming soon', 'info')}
+                    className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group text-left"
+                  >
+                    <i className="fa-regular fa-building w-4 text-center group-hover:text-emerald-500 transition-colors"></i> General
+                  </button>
+                  {hasRole('MANAGER', 'ADMIN') && (
                     <button
-                      key={label}
-                      onClick={() => showToast(`${label} settings coming soon`, 'info')}
+                      onClick={() => navigate('/team')}
                       className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group text-left"
                     >
-                      <i className={`${icon} w-4 text-center group-hover:text-emerald-500 transition-colors`}></i> {label}
+                      <i className="fa-solid fa-users w-4 text-center group-hover:text-emerald-500 transition-colors"></i> Team Members
                     </button>
-                  ))}
+                  )}
+                  {hasRole('MANAGER', 'ADMIN') && (
+                    <button
+                      onClick={() => navigate('/import')}
+                      className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group text-left"
+                    >
+                      <i className="fa-solid fa-file-import w-4 text-center group-hover:text-emerald-500 transition-colors"></i> Data Import
+                    </button>
+                  )}
+                  <button
+                    onClick={() => showToast('Billing settings coming soon', 'info')}
+                    className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group text-left"
+                  >
+                    <i className="fa-regular fa-credit-card w-4 text-center group-hover:text-emerald-500 transition-colors"></i> Billing
+                  </button>
                 </nav>
               </div>
 
@@ -381,40 +400,70 @@ const Settings = () => {
               <form onSubmit={handleChangePassword} className="p-6 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
-                  <input
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    required
-                    placeholder="••••••••"
-                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPw ? "text" : "password"}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      required
+                      placeholder="••••••••"
+                      className="w-full px-4 py-2.5 pr-10 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPw(v => !v)}
+                      tabIndex={-1}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <i className={`fa-regular ${showPw ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                    </button>
+                  </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                      minLength={8}
-                      placeholder="Min. 8 characters"
-                      className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPw ? "text" : "password"}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        required
+                        minLength={8}
+                        placeholder="Min. 8 characters"
+                        className="w-full px-4 py-2.5 pr-10 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPw(v => !v)}
+                        tabIndex={-1}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <i className={`fa-regular ${showPw ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                      </button>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                      placeholder="Repeat new password"
-                      className={`w-full px-4 py-2.5 bg-white border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 ${
-                        confirmPassword && confirmPassword !== newPassword ? 'border-red-400' : 'border-gray-300'
-                      }`}
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPw ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        placeholder="Repeat new password"
+                        className={`w-full px-4 py-2.5 pr-10 bg-white border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 ${
+                          confirmPassword && confirmPassword !== newPassword ? 'border-red-400' : 'border-gray-300'
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPw(v => !v)}
+                        tabIndex={-1}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <i className={`fa-regular ${showPw ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                      </button>
+                    </div>
                     {confirmPassword && confirmPassword !== newPassword && (
                       <p className="text-xs text-red-500 mt-1">Passwords do not match</p>
                     )}
@@ -434,6 +483,35 @@ const Settings = () => {
                   </button>
                 </div>
               </form>
+            </div>
+
+            {/* Appearance */}
+            <div className="bg-white rounded-xl border border-gray-300 shadow-sm overflow-hidden scroll-mt-24">
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-lg font-bold text-gray-900">Appearance</h3>
+                <p className="text-sm text-gray-500 mt-1">Choose your preferred interface theme. Saved locally on this device.</p>
+              </div>
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${dark ? 'bg-slate-800 text-yellow-400' : 'bg-gray-100 text-gray-600'}`}>
+                      <i className={`fa-solid ${dark ? 'fa-moon' : 'fa-sun'} text-lg`}></i>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{dark ? 'Dark mode' : 'Light mode'}</p>
+                      <p className="text-xs text-gray-500">{dark ? 'Easy on the eyes in low light' : 'Default bright theme'}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={toggleDark}
+                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${dark ? 'bg-emerald-500' : 'bg-gray-200'}`}
+                    role="switch"
+                    aria-checked={dark}
+                  >
+                    <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ${dark ? 'translate-x-5' : 'translate-x-0'}`} />
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* AI Insights Preferences */}

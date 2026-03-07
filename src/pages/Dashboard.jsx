@@ -5,9 +5,11 @@ import {
   ReferenceLine, ResponsiveContainer,
   PieChart, Pie, Cell, Label, Legend,
 } from 'recharts';
-import { dashboardAPI, insightsAPI, notificationsAPI, energyAPI } from '../services/api';
+import { dashboardAPI, insightsAPI, notificationsAPI, energyAPI, goalsAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import NavBar from '../components/NavBar';
 import { Skeleton } from '../components/Skeleton';
+import OnboardingWizard from '../components/OnboardingWizard';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 const streamColor = (name) => {
@@ -46,11 +48,17 @@ const PieCenterLabel = ({ viewBox, totalKg }) => {
 // ── Main component ───────────────────────────────────────────────────────────
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user, hasRole } = useAuth();
+
+  const [showOnboarding, setShowOnboarding] = useState(
+    () => !localStorage.getItem('greenpulse_onboarded') && hasRole?.('MANAGER', 'ADMIN')
+  );
   const [stats, setStats]             = useState(null);
   const [energyData, setEnergyData]   = useState(null);
   const [wasteData, setWasteData]     = useState(null);
   const [insights, setInsights]       = useState([]);
   const [recentAlerts, setRecentAlerts] = useState([]);
+  const [goalsSummary, setGoalsSummary] = useState([]);
   const [loading, setLoading]         = useState(true);
   const [energyStats, setEnergyStats] = useState(null);
   const [wasteStats, setWasteStats]   = useState(null);
@@ -129,6 +137,11 @@ const Dashboard = () => {
       const notifData = await notificationsAPI.getList();
       setRecentAlerts((notifData?.items ?? []).filter(n => ['alert','warning'].includes(n.type?.toLowerCase())).slice(0, 3));
     } catch { /* non-critical */ }
+
+    try {
+      const goalsData = await goalsAPI.getList();
+      setGoalsSummary(Array.isArray(goalsData) ? goalsData.slice(0, 3) : []);
+    } catch { /* non-critical */ }
   };
 
   // ── Loading skeleton ────────────────────────────────────────────────────────
@@ -188,6 +201,9 @@ const Dashboard = () => {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="bg-gray-50 min-h-screen">
+      {showOnboarding && (
+        <OnboardingWizard user={user} onDismiss={() => setShowOnboarding(false)} />
+      )}
       <NavBar />
 
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -445,6 +461,35 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* ── Goals Progress ── */}
+        {goalsSummary.length > 0 && (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-8">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-lg font-bold text-gray-900">Goals Progress</h3>
+              <button onClick={() => navigate('/goals')} className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">View all goals →</button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {goalsSummary.map(g => {
+                const pct = Math.min(g.progress_pct ?? 0, 100);
+                const barColor = g.status === 'exceeded' ? 'bg-red-500' : g.status === 'at_risk' ? 'bg-orange-500' : 'bg-emerald-500';
+                return (
+                  <div key={g.id} className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+                    <p className="text-sm font-semibold text-gray-800 mb-1 truncate">{g.name}</p>
+                    <div className="flex justify-between text-xs text-gray-500 mb-1.5">
+                      <span>{Number(g.actual_value ?? 0).toLocaleString()} {g.unit}</span>
+                      <span>{pct.toFixed(0)}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className={`h-full rounded-full ${barColor}`} style={{ width: `${pct}%` }}></div>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1.5">Target: {Number(g.target_value).toLocaleString()} {g.unit}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* ── Recent Alerts ── */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-8">
