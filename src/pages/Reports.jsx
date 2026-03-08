@@ -55,8 +55,11 @@ const Reports = () => {
       wasteAPI.getBreakdown(30),
     ]);
     if (perfRes.status === 'fulfilled')  setPerformance(perfRes.value);
+    else console.error('Reports /performance failed:', perfRes.reason);
     if (logRes.status === 'fulfilled')   setInsightsLog(Array.isArray(logRes.value) ? logRes.value : (logRes.value?.items ?? []));
+    else console.error('Reports /insights-log failed:', logRes.reason);
     if (statsRes.status === 'fulfilled') setDashStats(statsRes.value);
+    else console.error('Reports /dashboard/stats failed:', statsRes.reason);
     if (wasteRes.status === 'fulfilled') {
       const raw = wasteRes.value;
       setWasteBreakdown(Array.isArray(raw) ? raw : (raw?.breakdown ?? raw?.data ?? []));
