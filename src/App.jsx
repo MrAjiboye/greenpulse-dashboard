@@ -5,6 +5,7 @@ import { ToastProvider, useToast } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
+import CookieBanner from './components/CookieBanner';
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -79,6 +80,7 @@ function AnimatedRoutes() {
   return (
     <div className="page-transition">
       <TopProgressBar />
+      <CookieBanner />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
