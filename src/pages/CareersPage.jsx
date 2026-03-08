@@ -74,7 +74,7 @@ const CareersPage = () => {
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-4">No open positions right now</h2>
         <p className="text-gray-500 text-lg leading-relaxed mb-4">
-          We're a small, focused team and we're not actively hiring at the moment. But we're growing, and that will change — probably sooner than we expect.
+          We're a small, focused team and we're not actively hiring at the moment. But we're growing, and that will change. Probably sooner than we expect.
         </p>
         <p className="text-gray-500 text-lg leading-relaxed mb-10">
           If you're passionate about energy analytics, sustainability, or building software for the real world, we'd love to hear from you anyway. Send us your CV and a note about what you'd bring to GreenPulse.
