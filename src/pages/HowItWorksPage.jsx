@@ -21,8 +21,8 @@ const steps = [
     title: 'Monitor in real time',
     desc: 'Your dashboard shows live energy usage by zone, time of day, and equipment. See exactly what\'s consuming power at any given moment — not just the monthly total on your bill.',
     details: [
-      'Real-time consumption by zone and equipment',
-      'Automatic peak vs off-peak rate tracking',
+      'Real time consumption by zone and equipment',
+      'Automatic peak vs off peak rate tracking',
       'Foot traffic overlay for efficiency scoring',
       'Weekly and monthly trend reports',
     ],
@@ -31,7 +31,7 @@ const steps = [
   {
     number: '03',
     icon: 'fa-brain',
-    title: 'Get AI-powered insights',
+    title: 'Get AI powered insights',
     desc: 'GreenPulse analyses your usage patterns and surfaces specific, actionable problems — not generic tips. It finds the three to five things actually costing you money and tells you exactly what to do.',
     details: [
       'Automatic anomaly detection',
@@ -59,7 +59,7 @@ const steps = [
 const faqs = [
   {
     q: 'Do I need to install any hardware?',
-    a: 'Not to get started. GreenPulse works with your existing energy bills and smart meter data. For real-time monitoring, a standard smart meter is all you need — most UK commercial properties already have one.',
+    a: 'Not to get started. GreenPulse works with your existing energy bills and smart meter data. For real time monitoring, a standard smart meter is all you need — most UK commercial properties already have one.',
   },
   {
     q: 'How quickly will I see results?',

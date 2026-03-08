@@ -17,7 +17,26 @@
       "Bash(taskkill //F //PID 52584)",
       "Bash(taskkill //F //PID 39904 //PID 52140 //PID 46156 //PID 49100)",
       "Bash(pip install resend==2.10.0)",
-      "Bash(venv/Scripts/pip install resend==2.10.0)"
+      "Bash(venv/Scripts/pip install resend==2.10.0)",
+      "Read(//c/Users/ifeol/greenpulse-admin/**)",
+      "Read(//c/Users/ifeol/greenpulse-backend/app/routers/**)",
+      "Read(//c/Users/ifeol/AppData/Local/Temp/claude/c--Users-ifeol-greenpulse-dashboard/tasks/**)",
+      "Bash(curl -s http://localhost:8000/api/v1/auth/google/authorize)",
+      "Read(//c/Users/ifeol/greenpulse-backend/**)",
+      "Bash(taskkill //F //IM python.exe)",
+      "Bash(venv/Scripts/uvicorn app.main:app --reload --port 8000)",
+      "Bash(curl -s http://localhost:8501 -o /dev/null -w \"%{http_code}\")",
+      "Bash(\"C:\\\\Users\\\\ifeol\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\python.exe\" -m streamlit --version)",
+      "Bash(venv/Scripts/python.exe -c \":*)",
+      "Bash(curl -s -X POST \"http://localhost:8000/api/v1/auth/login\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"username=admin@greenpulse.com&password=password123\")",
+      "Bash(\"C:\\\\Users\\\\ifeol\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\python.exe\" -c \":*)",
+      "Bash(\"C:\\\\Users\\\\ifeol\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\python.exe\" -m streamlit run app.py --server.port 8501 --server.headless true)",
+      "Bash(curl -s -X POST \"http://localhost:8000/api/v1/auth/login\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"username=admin@greenpulseanalytics.com&password=password123\")",
+      "Bash(curl -s http://localhost:5173 -o /dev/null -w \"%{http_code}\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\ifeol\\greenpulse-admin",
+      "c:\\Users\\ifeol\\greenpulse-backend\\app"
     ]
   }
 }

@@ -144,7 +144,7 @@ const LandingPage = () => {
           </h1>
 
           <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Track energy consumption, manage waste streams, and receive AI-driven insights to reduce your carbon footprint and operational costs.
+            Track energy consumption, manage waste streams, and receive AI driven insights to reduce your carbon footprint and operational costs.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
@@ -235,7 +235,7 @@ const LandingPage = () => {
                   
                   <div className="bg-white p-3 rounded-lg shadow-sm mb-3 border border-blue-50">
                     <p className="text-[10px] font-bold text-blue-600 mb-1">Recommendation</p>
-                    <p className="text-xs text-gray-600 leading-tight">Switch HVAC to eco-mode during off-peak hours to save ~£450/mo.</p>
+                    <p className="text-xs text-gray-600 leading-tight">Switch HVAC to eco-mode during off peak hours to save ~£450/mo.</p>
                   </div>
                   
                   <div className="bg-white p-3 rounded-lg shadow-sm border border-red-50 opacity-80">
@@ -273,7 +273,7 @@ const LandingPage = () => {
                 <i className="fa-solid fa-bolt text-emerald-600 text-2xl"></i>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Energy Monitor</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">Real-time tracking of consumption across zones. Identify peak usage patterns and calculate costs instantly.</p>
+              <p className="text-gray-600 mb-6 leading-relaxed">Real time tracking of consumption across zones. Identify peak usage patterns and calculate costs instantly.</p>
               <ul className="space-y-3">
                 <li className="flex items-center gap-3 text-sm text-gray-700">
                   <i className="fa-solid fa-check text-emerald-500 text-xs"></i> Hourly & Weekly breakdowns
@@ -400,7 +400,7 @@ const LandingPage = () => {
             </div>
             <div className="px-4">
               <p className="text-4xl font-bold text-emerald-500 mb-2">24/7</p>
-              <p className="text-sm text-gray-400">Real-time Monitoring</p>
+              <p className="text-sm text-gray-400">Real time Monitoring</p>
             </div>
             <div className="px-4">
               <p className="text-4xl font-bold text-emerald-500 mb-2">£2M+</p>
@@ -442,7 +442,7 @@ const LandingPage = () => {
                 <span className="text-xl font-bold text-gray-900">GreenPulse</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed mb-6">
-                Empowering organizations to build a sustainable future through data-driven insights and intelligent resource management.
+                Empowering organizations to build a sustainable future through data driven insights and intelligent resource management.
               </p>
             </div>
 

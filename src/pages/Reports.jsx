@@ -442,7 +442,7 @@ const Reports = () => {
         <div className="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-xl shadow-lg p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
           <div className="relative z-10 max-w-2xl">
             <h3 className="text-2xl font-bold mb-2">Want to increase your savings?</h3>
-            <p className="text-emerald-100">Explore AI-generated recommendations waiting for your review.</p>
+            <p className="text-emerald-100">Explore AI generated recommendations waiting for your review.</p>
           </div>
           <div className="relative z-10 flex-shrink-0">
             <button onClick={() => navigate('/insights')} className="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-700 font-bold rounded-lg shadow-md hover:bg-emerald-50 transition-colors">

@@ -6,7 +6,7 @@ const cookieTypes = [
     name: 'Essential cookies',
     required: true,
     desc: 'These cookies are necessary for the platform to function. They keep you logged in and allow you to navigate between pages securely. You cannot opt out of essential cookies.',
-    examples: ['Session token (keeps you signed in)', 'CSRF protection token (prevents cross-site attacks)', 'User preferences (dark mode, language)'],
+    examples: ['Session token (keeps you signed in)', 'CSRF protection token (prevents cross site attacks)', 'User preferences (dark mode, language)'],
   },
   {
     name: 'Analytics cookies',

@@ -76,7 +76,7 @@ const sections = [
           'Electricity consumption readings (kWh) by zone and timestamp — uploaded via smart meter API or manual entry',
           'IoT device identifiers and facility/zone labels you assign',
           'Waste log entries: waste stream, weight, date, and facility',
-          'Anomaly flags and AI-generated insight scores associated with your energy data',
+          'Anomaly flags and AI generated insight scores associated with your energy data',
           'Baseline and threshold values you configure in the platform',
         ],
       },
@@ -150,7 +150,7 @@ const sections = [
         ['Process energy, waste, and operational data you submit', 'Performance of a contract'],
         ['Authenticate your identity and keep your account secure', 'Performance of a contract / Legitimate interests'],
         ['Send service notifications (e.g. system alerts, maintenance)', 'Performance of a contract / Legitimate interests'],
-        ['Generate AI-powered recommendations and anomaly alerts', 'Performance of a contract'],
+        ['Generate AI powered recommendations and anomaly alerts', 'Performance of a contract'],
         ['Improve and develop the platform (e.g. usage analytics)', 'Legitimate interests'],
         ['Fraud detection, abuse prevention, and platform security', 'Legitimate interests / Legal obligation'],
         ['Send marketing emails and product updates', 'Consent (you can withdraw at any time)'],
@@ -272,7 +272,7 @@ const sections = [
       rows: [
         ['Account and profile data', 'Duration of account + 90 days after closure'],
         ['Energy and operational readings', '2 years from collection date'],
-        ['AI-generated insights and recommendations', '1 year from generation date'],
+        ['AI generated insights and recommendations', '1 year from generation date'],
         ['Waste log entries', '2 years from entry date'],
         ['Authentication and security logs', '12 months'],
         ['Support correspondence', '3 years from last interaction'],
@@ -321,7 +321,7 @@ const sections = [
       {
         subtitle: 'Right to data portability',
         content:
-          'You can ask for your personal data in a structured, machine-readable format (CSV or JSON) so you can transfer it to another service. ' +
+          'You can ask for your personal data in a structured, machine readable format (CSV or JSON) so you can transfer it to another service. ' +
           'This right applies to data you provided to us which we process by automated means on a contractual or consent basis.',
       },
       {
@@ -377,9 +377,9 @@ const sections = [
       'We take the security of your data seriously and implement the following measures:',
     bullets: [
       'All data in transit is encrypted using TLS 1.2 or higher (HTTPS).',
-      'Passwords are stored using a one-way cryptographic hash (bcrypt) — we cannot recover or read your password.',
-      'Authentication tokens are time-limited and stored only on the client side.',
-      'Access to production systems is restricted to authorised personnel and protected by multi-factor authentication.',
+      'Passwords are stored using a one way cryptographic hash (bcrypt) — we cannot recover or read your password.',
+      'Authentication tokens are time limited and stored only on the client side.',
+      'Access to production systems is restricted to authorised personnel and protected by multi factor authentication.',
       'We carry out regular security assessments of our infrastructure and code.',
       'Our admin panel is protected by an additional authentication layer (Cloudflare Access) restricting access to authorised email domains.',
     ],
@@ -402,14 +402,14 @@ const sections = [
       ],
     },
     note:
-      'We do not use advertising or cross-site tracking cookies. See our Cookies Policy at greenpulseanalytics.com/cookies for full details and opt-out instructions.',
+      'We do not use advertising or cross site tracking cookies. See our Cookies Policy at greenpulseanalytics.com/cookies for full details and opt-out instructions.',
   },
 
   // ─────────────────────────────────────────────────────────────────────
   {
     title: '13. Children\'s privacy',
     content:
-      'The GreenPulse platform is a business-to-business service and is not intended for individuals under the age of 18. ' +
+      'The GreenPulse platform is a business to business service and is not intended for individuals under the age of 18. ' +
       'We do not knowingly collect personal data from anyone under 18. ' +
       'If you believe we have inadvertently collected such data, please contact us immediately at privacy@greenpulseanalytics.com and we will delete it promptly.',
   },

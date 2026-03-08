@@ -129,17 +129,17 @@ const BlogPost1 = () => {
         {/* Section 3 */}
         <h2 className="text-3xl font-bold text-gray-900 mt-14 mb-5">3. Peak Hour Energy Rates (That You're Ignoring)</h2>
 
-        <p className="text-lg text-gray-700 mb-5 leading-relaxed">Most UK energy providers charge different rates throughout the day. Peak hours (typically 4-7 PM) can cost 3x more than off-peak rates.</p>
+        <p className="text-lg text-gray-700 mb-5 leading-relaxed">Most UK energy providers charge different rates throughout the day. Peak hours (typically 4-7 PM) can cost 3x more than off peak rates.</p>
 
         <p className="text-lg text-gray-700 mb-5 leading-relaxed">When do most restaurants do their highest-energy activities? Exactly during peak hours. Prepping for dinner service, running all equipment at once, maxing out ventilation.</p>
 
         <p className="text-lg text-gray-700 mb-5 leading-relaxed">
-          <span className="text-emerald-600 font-semibold">The numbers:</span> Shifting just 30% of your energy-intensive tasks to off-peak hours can cut £200-400 from your monthly bill.
+          <span className="text-emerald-600 font-semibold">The numbers:</span> Shifting just 30% of your energy-intensive tasks to off peak hours can cut £200-400 from your monthly bill.
         </p>
 
         <div className="bg-emerald-50 border-l-4 border-emerald-500 px-6 py-5 rounded-r-lg my-8">
           <p className="text-gray-700 text-lg">
-            <span className="font-semibold text-emerald-700">Quick win:</span> Check your energy bill for time-of-use rates. If you have them, shift prep work earlier. Run dishwashers after 8 PM. Do deep cleaning overnight. The work is the same. The cost is not.
+            <span className="font-semibold text-emerald-700">Quick win:</span> Check your energy bill for time of use rates. If you have them, shift prep work earlier. Run dishwashers after 8 PM. Do deep cleaning overnight. The work is the same. The cost is not.
           </p>
         </div>
 

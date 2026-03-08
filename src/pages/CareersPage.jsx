@@ -6,7 +6,7 @@ const CareersPage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const values = [
-    { icon: 'fa-seedling', title: 'Mission-driven', desc: 'We care deeply about sustainability. Everyone on the team shares a genuine belief that data can change how businesses relate to energy.' },
+    { icon: 'fa-seedling', title: 'Mission driven', desc: 'We care deeply about sustainability. Everyone on the team shares a genuine belief that data can change how businesses relate to energy.' },
     { icon: 'fa-lightbulb', title: 'Clear thinking', desc: 'We value people who can take a complex problem, strip out the noise, and explain what actually matters — to a customer or to a team.' },
     { icon: 'fa-users', title: 'Collaborative', desc: 'Small team means everyone contributes across multiple areas. We look for people who help, share, and build things together.' },
     { icon: 'fa-chart-line', title: 'Ownership mindset', desc: 'We don\'t micromanage. If you take something on, you see it through. We look for people who take pride in finishing what they start.' },

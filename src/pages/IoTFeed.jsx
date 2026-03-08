@@ -94,7 +94,7 @@ export default function IoTFeed() {
         <div className="flex items-start justify-between mb-8 gap-4 flex-wrap">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">IoT Live Feed</h1>
-            <p className="text-gray-500 mt-1">Real-time energy readings from your connected devices</p>
+            <p className="text-gray-500 mt-1">Real time energy readings from your connected devices</p>
           </div>
           <div className="flex items-center gap-3">
             {lastAt && (

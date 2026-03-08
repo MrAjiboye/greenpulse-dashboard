@@ -65,7 +65,7 @@ const BlogPost3 = () => {
         </div>
 
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
-          Scotland's 2030 Net-Zero Target: What Small Hotels Need to Do
+          Scotland's 2030 Net Zero Target: What Small Hotels Need to Do
         </h1>
 
         <p className="text-xl text-gray-500 leading-relaxed">
@@ -86,16 +86,16 @@ const BlogPost3 = () => {
       {/* ── Article Body ── */}
       <div className="max-w-3xl mx-auto px-6 pb-24">
 
-        <p className="text-lg text-gray-700 mb-5 leading-relaxed">Scotland wants to hit net-zero emissions by 2045. The interim target for 2030 is a 75% reduction from 1990 levels. That's five years away.</p>
+        <p className="text-lg text-gray-700 mb-5 leading-relaxed">Scotland wants to hit net zero emissions by 2045. The interim target for 2030 is a 75% reduction from 1990 levels. That's five years away.</p>
 
-        <p className="text-lg text-gray-700 mb-5 leading-relaxed">For large hotel chains, that means hiring sustainability consultants, carbon offset programs, and multi-million-pound equipment upgrades. For a 12-room bed and breakfast in the Highlands, it means something different.</p>
+        <p className="text-lg text-gray-700 mb-5 leading-relaxed">For large hotel chains, that means hiring sustainability consultants, carbon offset programs, and multimillion pound equipment upgrades. For a 12-room bed and breakfast in the Highlands, it means something different.</p>
 
         <p className="text-lg text-gray-700 mb-5 leading-relaxed">Here's what compliance looks like for small hospitality operators, and what you can do now without breaking the bank.</p>
 
         {/* What the Law Requires */}
         <h2 className="text-3xl font-bold text-gray-900 mt-14 mb-5">What the Law Requires</h2>
 
-        <p className="text-lg text-gray-700 mb-5 leading-relaxed">Scotland's net-zero target includes all sectors, including hospitality. But enforcement varies by business size.</p>
+        <p className="text-lg text-gray-700 mb-5 leading-relaxed">Scotland's net zero target includes all sectors, including hospitality. But enforcement varies by business size.</p>
 
         <p className="text-lg text-gray-700 mb-3 leading-relaxed">
           <span className="text-emerald-600 font-semibold">Large businesses (250+ employees):</span> Mandatory carbon reporting, emissions reduction plans, annual audits.
@@ -113,14 +113,14 @@ const BlogPost3 = () => {
 
         <div className="bg-emerald-50 border-l-4 border-emerald-500 px-6 py-5 rounded-r-lg my-8">
           <p className="text-gray-700 text-lg">
-            <span className="font-semibold text-emerald-700">The bottom line:</span> You won't face fines in 2030 for missing net-zero. But you might lose access to grants, pay higher energy costs, and watch customers choose greener competitors.
+            <span className="font-semibold text-emerald-700">The bottom line:</span> You won't face fines in 2030 for missing net zero. But you might lose access to grants, pay higher energy costs, and watch customers choose greener competitors.
           </p>
         </div>
 
         {/* What Compliance Costs */}
         <h2 className="text-3xl font-bold text-gray-900 mt-14 mb-5">What Compliance Costs</h2>
 
-        <p className="text-lg text-gray-700 mb-5 leading-relaxed">The corporate approach to net-zero involves consultants, audits, and expensive retrofits. That doesn't work for a 10-room hotel running on thin margins.</p>
+        <p className="text-lg text-gray-700 mb-5 leading-relaxed">The corporate approach to net zero involves consultants, audits, and expensive retrofits. That doesn't work for a 10-room hotel running on thin margins.</p>
 
         <p className="text-lg text-gray-700 mb-5 leading-relaxed">The practical approach for small hotels focuses on three things, in order:</p>
 
@@ -165,24 +165,24 @@ const BlogPost3 = () => {
 
         <div className="bg-emerald-50 border-l-4 border-emerald-500 px-6 py-5 rounded-r-lg my-8">
           <p className="text-gray-700 text-lg">
-            <span className="font-semibold text-emerald-700">Real example:</span> A 15-room hotel in Perth tracked their energy usage for three months. They found they were heating empty rooms, running laundry equipment during peak rate hours, and keeping lobby lights at full brightness 24/7. Simple fixes: zone heating to match occupancy, shift laundry to off-peak hours, install motion sensors in public areas. Carbon footprint dropped 28%. Cost: £340.
+            <span className="font-semibold text-emerald-700">Real example:</span> A 15-room hotel in Perth tracked their energy usage for three months. They found they were heating empty rooms, running laundry equipment during peak rate hours, and keeping lobby lights at full brightness 24/7. Simple fixes: zone heating to match occupancy, shift laundry to off peak hours, install motion sensors in public areas. Carbon footprint dropped 28%. Cost: £340.
           </p>
         </div>
 
         {/* 2030 Checklist */}
         <h2 className="text-3xl font-bold text-gray-900 mt-14 mb-5">The 2030 Checklist for Small Hotels</h2>
 
-        <p className="text-lg text-gray-700 mb-5 leading-relaxed">If you want to be ahead of requirements and attract sustainability-minded guests, aim for these benchmarks by 2030:</p>
+        <p className="text-lg text-gray-700 mb-5 leading-relaxed">If you want to be ahead of requirements and attract sustainability minded guests, aim for these benchmarks by 2030:</p>
 
         <ul className="list-disc list-inside space-y-3 mb-5 text-lg text-gray-700 ml-2 leading-relaxed">
           <li><span className="font-semibold">Energy tracking:</span> Know your consumption per guest night and per square meter</li>
           <li><span className="font-semibold">EPC rating:</span> Minimum Band C (most small hotels sit at D or E)</li>
           <li><span className="font-semibold">Waste reduction:</span> 30% less energy waste than your 2024 baseline</li>
           <li><span className="font-semibold">Hot water efficiency:</span> On-demand or smart systems, not 24/7 heating</li>
-          <li><span className="font-semibold">Documentation:</span> Records showing year-over-year carbon reduction</li>
+          <li><span className="font-semibold">Documentation:</span> Records showing year over year carbon reduction</li>
         </ul>
 
-        <p className="text-lg text-gray-700 mb-5 leading-relaxed">This isn't corporate net-zero. It's practical sustainability for businesses with limited budgets. The goal is to cut costs, stay competitive, and prepare for tightening standards without massive capital investment.</p>
+        <p className="text-lg text-gray-700 mb-5 leading-relaxed">This isn't corporate net zero. It's practical sustainability for businesses with limited budgets. The goal is to cut costs, stay competitive, and prepare for tightening standards without massive capital investment.</p>
 
         {/* What happens if you do nothing */}
         <h2 className="text-3xl font-bold text-gray-900 mt-14 mb-5">What Happens If You Do Nothing</h2>

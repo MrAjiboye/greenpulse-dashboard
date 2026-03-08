@@ -39,7 +39,7 @@ const stories = [
     location: 'Perth, Scotland',
     type: 'Guest House · 15 rooms',
     challenge: 'Heating unoccupied rooms to full temperature, running laundry equipment during peak rate hours, and keeping lobby lights at full brightness around the clock.',
-    result: 'Zoned heating to match occupancy, shifted laundry to off-peak hours, installed motion sensors in common areas. Carbon footprint dropped 28% in 90 days.',
+    result: 'Zoned heating to match occupancy, shifted laundry to off peak hours, installed motion sensors in common areas. Carbon footprint dropped 28% in 90 days.',
     savings: '28%',
     period: 'carbon reduction',
     stat2: '£340',

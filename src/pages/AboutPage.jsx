@@ -95,7 +95,7 @@ const AboutPage = () => {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            GreenPulse Analytics was founded to help UK hospitality businesses take control of their energy costs while supporting Scotland's net-zero targets.
+            GreenPulse Analytics was founded to help UK hospitality businesses take control of their energy costs while supporting Scotland's net zero targets.
           </p>
         </div>
       </section>
@@ -248,7 +248,7 @@ const AboutPage = () => {
                 <span className="text-xl font-bold text-gray-900">GreenPulse</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed mb-6">
-                Empowering organisations to build a sustainable future through data-driven insights and intelligent resource management.
+                Empowering organisations to build a sustainable future through data driven insights and intelligent resource management.
               </p>
             </div>
 

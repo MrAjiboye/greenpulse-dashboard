@@ -28,7 +28,7 @@ const posts = [
     alt: 'Data visualization',
     category: 'Sustainability',
     readTime: '4 min read',
-    title: "Scotland's 2030 Net-Zero Target: What Small Hotels Need to Do",
+    title: "Scotland's 2030 Net Zero Target: What Small Hotels Need to Do",
     excerpt:
       "The deadline is closer than you think. Here's what compliance looks like for independent hospitality businesses, without the corporate jargon.",
   },
