@@ -145,7 +145,7 @@ const CareersPage = () => {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">&copy; 2025 GreenPulse Analytics. All rights reserved.</p>
+            <p className="text-gray-500 text-sm">&copy; 2026 GreenPulse Analytics. All rights reserved.</p>
             <div className="flex gap-6">
               <Link to="/terms" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Terms</Link>
               <Link to="/privacy" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Privacy</Link>
