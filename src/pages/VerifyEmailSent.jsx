@@ -74,7 +74,7 @@ export default function VerifyEmailSent() {
             {resending
               ? 'Sending…'
               : resent && cooldown > 0
-              ? `Email sent — resend in ${cooldown}s`
+              ? `Email sent. Resend in ${cooldown}s`
               : 'Resend verification email'}
           </button>
 

@@ -308,7 +308,7 @@ const EnergyMonitor = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    Your Usage — Last 24 Hours
+                    Your Usage: Last 24 Hours
                     <i className="fa-regular fa-circle-question text-gray-400 text-sm" title="Shows hourly consumption vs baseline"></i>
                   </h3>
                   <div className="flex items-center gap-4 mt-1">
@@ -483,7 +483,7 @@ const EnergyMonitor = () => {
                           <div>
                             <h4 className="text-sm font-semibold text-gray-900">{name}</h4>
                             <span className={`text-[10px] ${warn ? 'text-orange-600 font-medium' : 'text-gray-500'}`}>
-                              {kwh.toFixed(0)} kWh{warn ? ' — Above average' : ''}
+                              {kwh.toFixed(0)} kWh{warn ? ', above average' : ''}
                             </span>
                           </div>
                         </div>

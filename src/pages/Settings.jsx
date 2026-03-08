@@ -113,7 +113,7 @@ const Settings = () => {
         emailDigest, criticalAlerts, newInsights, insightsFreq,
         currency, energyUnit, weightUnit, dateFormat,
       }));
-      showToast('Preferences saved. Profile update failed — please try again.', 'warning');
+      showToast('Preferences saved. Profile update failed. Please try again.', 'warning');
     } finally {
       setSaving(false);
     }

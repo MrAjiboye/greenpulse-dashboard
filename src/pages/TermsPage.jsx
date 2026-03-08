@@ -23,17 +23,17 @@ const sections = [
       {
         subtitle: 'Who these Terms apply to',
         content:
-          'These Terms apply to all users of the platform — whether you access it as an individual, as an employee or representative of a business, ' +
+          'These Terms apply to all users of the platform, whether you access it as an individual, as an employee or representative of a business, ' +
           'or through an admin or manager account provisioned by your employer. ' +
           'If you are accepting on behalf of an organisation, you represent that you have authority to bind that organisation to these Terms.',
       },
       {
         subtitle: 'Related policies',
         bullets: [
-          'Privacy Policy — how we collect, use, and protect personal data.',
-          'Cookies Policy — how we use cookies and tracking technologies.',
-          'Data Processing Agreement (DPA) — incorporated into these Terms; sets out our obligations as your data processor under UK GDPR.',
-          'Acceptable Use Policy — additional rules for use of the platform (set out in Section 9).',
+          'Privacy Policy: how we collect, use, and protect personal data.',
+          'Cookies Policy: how we use cookies and tracking technologies.',
+          'Data Processing Agreement (DPA), incorporated into these Terms; sets out our obligations as your data processor under UK GDPR.',
+          'Acceptable Use Policy: additional rules for use of the platform (set out in Section 9).',
         ],
       },
     ],
@@ -47,7 +47,7 @@ const sections = [
       rows: [
         ['"Service"', 'The GreenPulse web application, APIs, AI features, and any associated software or documentation.'],
         ['"Account"', 'Your registered user profile and associated access credentials.'],
-        ['"Customer Data"', 'Any data — including energy readings, waste logs, and operational records — that you upload to or generate within the Service.'],
+        ['"Customer Data"', 'Any data, including energy readings, waste logs, and operational records, that you upload to or generate within the Service.'],
         ['"Subscription"', 'Your paid or free-tier licence to access the Service.'],
         ['"Authorised User"', 'An individual granted access to the Service under your Subscription.'],
         ['"Confidential Information"', 'Non-public information either party discloses to the other in connection with the Service.'],
@@ -261,7 +261,7 @@ const sections = [
       },
     ],
     note:
-      'GreenPulse AI features are tools to help your team — not substitutes for professional advice. ' +
+      'GreenPulse AI features are tools to help your team, not substitutes for professional advice. ' +
       'Any decisions made based on platform outputs remain your responsibility.',
   },
 
@@ -280,7 +280,7 @@ const sections = [
         subtitle: 'Your controller obligations',
         content:
           'As data controller, you are responsible for ensuring that your use of the Service — ' +
-          'including the personal data you submit — complies with applicable data protection law. ' +
+          'including the personal data you submit, complies with applicable data protection law. ' +
           'This includes providing a lawful basis for processing and informing data subjects (e.g. employees) about their data rights.',
       },
       {
@@ -390,7 +390,7 @@ const sections = [
         subtitle: 'Cap on direct liability',
         content:
           'GreenPulse\'s total aggregate liability to you for any and all claims arising under or in connection with these Terms — whether in contract, tort, ' +
-          'statute, or otherwise — shall not exceed the greater of: (a) the total Fees paid by you to GreenPulse in the three calendar months immediately preceding ' +
+          'statute, or otherwise, shall not exceed the greater of: (a) the total Fees paid by you to GreenPulse in the three calendar months immediately preceding ' +
           'the event giving rise to the claim; or (b) £100 GBP.',
       },
       {

@@ -88,7 +88,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirm) { setError('Passwords do not match.'); return; }
-    if (getStrength(form.password) < 5) { setError('Please choose a stronger password — all 5 requirements must be met.'); return; }
+    if (getStrength(form.password) < 5) { setError('Please choose a stronger password. All 5 requirements must be met.'); return; }
     setLoading(true);
     setError('');
     try {

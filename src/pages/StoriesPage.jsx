@@ -6,7 +6,7 @@ const stories = [
     business: 'The Amber Cup',
     location: 'Edinburgh, Scotland',
     type: 'Independent Café · 12 tables',
-    challenge: 'Running three commercial fridges overnight, heating a space adjacent to cold storage, and doing all prep during peak energy rate hours — without realising any of it.',
+    challenge: 'Running three commercial fridges overnight, heating a space adjacent to cold storage, and doing all prep during peak energy rate hours, without realising any of it.',
     result: 'Identified and fixed three separate energy waste issues over two weeks. New monthly bill dropped from £1,800 to £1,240.',
     savings: '£560',
     period: 'per month',
@@ -22,7 +22,7 @@ const stories = [
     business: 'Thistle & Grain',
     location: 'Glasgow, Scotland',
     type: 'Restaurant & Bar · 45 covers',
-    challenge: 'Foot traffic varied dramatically — 80 customers Monday morning vs 240 Saturday — but energy usage was identical both days. Full heating, cooling, and lighting running regardless of how busy they were.',
+    challenge: 'Foot traffic varied dramatically. 80 customers Monday morning vs 240 Saturday, but energy usage was identical both days. Full heating, cooling, and lighting running regardless of how busy they were.',
     result: 'Adjusted HVAC schedules to mirror actual foot traffic patterns. Stopped heating and cooling empty spaces during slow periods.',
     savings: '£340',
     period: 'per month',
@@ -44,7 +44,7 @@ const stories = [
     period: 'carbon reduction',
     stat2: '£340',
     stat2label: 'Setup cost total',
-    quote: 'We\'re a small guest house trying to do the right thing for the environment without spending money we don\'t have. GreenPulse showed us what was actually possible — and it turned out to be more than we expected.',
+    quote: 'We\'re a small guest house trying to do the right thing for the environment without spending money we don\'t have. GreenPulse showed us what was actually possible. It turned out to be more than we expected.',
     author: 'Owner, Cairn View Guest House',
     icon: 'fa-bed',
     color: 'purple',
@@ -127,7 +127,7 @@ const StoriesPage = () => {
         </span>
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Stories</h1>
         <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
-          Independent restaurants, cafés, and hotels across Scotland that found out where their energy money was actually going — and stopped the waste.
+          Independent restaurants, cafés, and hotels across Scotland that found out where their energy money was actually going, and stopped the waste.
         </p>
       </section>
 
@@ -181,7 +181,7 @@ const StoriesPage = () => {
                   </div>
                   <blockquote className="border-l-4 border-emerald-400 pl-5 py-1">
                     <p className="text-gray-700 italic leading-relaxed mb-2">"{s.quote}"</p>
-                    <p className="text-sm text-gray-400 font-medium">— {s.author}</p>
+                    <p className="text-sm text-gray-400 font-medium">{s.author}</p>
                   </blockquote>
                 </div>
 

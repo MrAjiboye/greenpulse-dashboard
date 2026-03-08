@@ -149,7 +149,7 @@ const AboutPage = () => {
                 color: 'yellow',
                 emoji: '💡',
                 title: 'Simplicity',
-                desc: 'Complex problems deserve simple solutions. No jargon, no complexity — just clear, actionable data.',
+                desc: 'Complex problems deserve simple solutions. No jargon, no complexity. Just clear, actionable data.',
               },
               {
                 icon: 'fa-bullseye',
@@ -163,7 +163,7 @@ const AboutPage = () => {
                 color: 'emerald',
                 emoji: '🌍',
                 title: 'Sustainability',
-                desc: "Saving money and protecting the planet go hand in hand — and we're proving it every day.",
+                desc: "Saving money and protecting the planet go hand in hand. We're proving it every day.",
               },
               {
                 icon: 'fa-handshake',

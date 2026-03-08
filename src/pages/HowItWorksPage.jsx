@@ -6,7 +6,7 @@ const steps = [
     number: '01',
     icon: 'fa-plug',
     title: 'Connect your data',
-    desc: 'Sign up and connect GreenPulse to your energy meters, point-of-sale system, or manually import your billing data. We work with what you have — no specialist hardware required to get started.',
+    desc: 'Sign up and connect GreenPulse to your energy meters, point-of-sale system, or manually import your billing data. We work with what you have. No specialist hardware required to get started.',
     details: [
       'Works with standard smart meters',
       'Manual CSV import for any billing format',
@@ -19,7 +19,7 @@ const steps = [
     number: '02',
     icon: 'fa-chart-line',
     title: 'Monitor in real time',
-    desc: 'Your dashboard shows live energy usage by zone, time of day, and equipment. See exactly what\'s consuming power at any given moment — not just the monthly total on your bill.',
+    desc: 'Your dashboard shows live energy usage by zone, time of day, and equipment. See exactly what\'s consuming power at any given moment, not just the monthly total on your bill.',
     details: [
       'Real time consumption by zone and equipment',
       'Automatic peak vs off peak rate tracking',
@@ -32,7 +32,7 @@ const steps = [
     number: '03',
     icon: 'fa-brain',
     title: 'Get AI powered insights',
-    desc: 'GreenPulse analyses your usage patterns and surfaces specific, actionable problems — not generic tips. It finds the three to five things actually costing you money and tells you exactly what to do.',
+    desc: 'GreenPulse analyses your usage patterns and surfaces specific, actionable problems, not generic tips. It finds the three to five things actually costing you money and tells you exactly what to do.',
     details: [
       'Automatic anomaly detection',
       'Equipment-level cost breakdown',
@@ -45,7 +45,7 @@ const steps = [
     number: '04',
     icon: 'fa-circle-check',
     title: 'Act and track your savings',
-    desc: 'Apply the recommendations — most require no new equipment. Track the savings over time in real money. Build a record of your sustainability improvements for grants, guests, and compliance.',
+    desc: 'Apply the recommendations. Most require no new equipment. Track the savings over time in real money. Build a record of your sustainability improvements for grants, guests, and compliance.',
     details: [
       'Step-by-step implementation guides',
       'Before/after cost comparison',
@@ -59,7 +59,7 @@ const steps = [
 const faqs = [
   {
     q: 'Do I need to install any hardware?',
-    a: 'Not to get started. GreenPulse works with your existing energy bills and smart meter data. For real time monitoring, a standard smart meter is all you need — most UK commercial properties already have one.',
+    a: 'Not to get started. GreenPulse works with your existing energy bills and smart meter data. For real time monitoring, a standard smart meter is all you need. Most UK commercial properties already have one.',
   },
   {
     q: 'How quickly will I see results?',
@@ -71,7 +71,7 @@ const faqs = [
   },
   {
     q: 'What size businesses does GreenPulse work for?',
-    a: 'GreenPulse is built specifically for independent and small chain hospitality businesses — restaurants, cafés, pubs, and hotels with 1 to 30 locations. We\'re not designed for large enterprise operations.',
+    a: 'GreenPulse is built specifically for independent and small chain hospitality businesses: restaurants, cafés, pubs, and hotels with 1 to 30 locations. We\'re not designed for large enterprise operations.',
   },
   {
     q: 'How does pricing work?',
@@ -149,7 +149,7 @@ const HowItWorksPage = () => {
         </span>
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">How GreenPulse Works</h1>
         <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
-          From messy energy bills to clear, actionable insights — in four steps. No engineering degree required.
+          From messy energy bills to clear, actionable insights, in four steps. No engineering degree required.
         </p>
       </section>
 

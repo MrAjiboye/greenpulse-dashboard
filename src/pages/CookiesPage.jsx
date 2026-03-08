@@ -11,7 +11,7 @@ const cookieTypes = [
   {
     name: 'Analytics cookies',
     required: false,
-    desc: 'These help us understand how users interact with GreenPulse — which features are used most, where users get stuck, and how we can improve the platform. All analytics data is aggregated and not linked to individual users.',
+    desc: 'These help us understand how users interact with GreenPulse: which features are used most, where users get stuck, and how we can improve the platform. All analytics data is aggregated and not linked to individual users.',
     examples: ['Page views and navigation patterns', 'Feature usage frequency', 'Session duration and entry/exit points'],
   },
 ];
@@ -104,7 +104,7 @@ const CookiesPage = () => {
         <div>
           <h2 className="text-xl font-bold text-gray-900 mb-3">How to manage cookies</h2>
           <p className="text-gray-600 leading-relaxed mb-4">
-            You can control cookies through your browser settings. Most browsers allow you to block or delete cookies, though doing so may affect how GreenPulse works — particularly essential cookies that keep you logged in.
+            You can control cookies through your browser settings. Most browsers allow you to block or delete cookies, though doing so may affect how GreenPulse works, particularly the essential cookies that keep you logged in.
           </p>
           <p className="text-gray-600 leading-relaxed mb-4">
             Browser cookie settings can usually be found under: <span className="font-medium text-gray-700">Settings → Privacy → Cookies</span> (exact path varies by browser).

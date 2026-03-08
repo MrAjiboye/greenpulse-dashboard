@@ -35,7 +35,7 @@ export default class ErrorBoundary extends Component {
           {/* Heading */}
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h1>
           <p className="text-gray-500 mb-2">
-            An unexpected error occurred. Your data is safe — this is just a display issue.
+            An unexpected error occurred. Your data is safe. This is just a display issue.
           </p>
 
           {/* Collapsible error detail */}

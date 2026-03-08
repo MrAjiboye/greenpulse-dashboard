@@ -16,7 +16,7 @@ const sections = [
     title: '1. Who we are and how to contact us',
     intro:
       'GreenPulse Analytics ("GreenPulse", "we", "us", "our") is a software company registered in Scotland, United Kingdom. ' +
-      'We operate the GreenPulse platform — a sustainability analytics and energy management service for hospitality businesses.',
+      'We operate the GreenPulse platform, a sustainability analytics and energy management service for hospitality businesses.',
     subsections: [
       {
         subtitle: 'Data Controller',
@@ -73,7 +73,7 @@ const sections = [
       {
         subtitle: 'Energy and operational data',
         bullets: [
-          'Electricity consumption readings (kWh) by zone and timestamp — uploaded via smart meter API or manual entry',
+          'Electricity consumption readings (kWh) by zone and timestamp, uploaded via smart meter API or manual entry',
           'IoT device identifiers and facility/zone labels you assign',
           'Waste log entries: waste stream, weight, date, and facility',
           'Anomaly flags and AI generated insight scores associated with your energy data',
@@ -161,7 +161,7 @@ const sections = [
     },
     note:
       'Where we rely on legitimate interests, we have carried out a balancing test and concluded that our interests do not override your rights and freedoms. ' +
-      'You may object to processing on this basis — see Section 9.',
+      'You may object to processing on this basis (see Section 9).',
   },
 
   // ─────────────────────────────────────────────────────────────────────
@@ -176,7 +176,7 @@ const sections = [
         content:
           'Our models are trained on anonymised energy and operational data patterns. ' +
           'When applied to your data, they identify consumption anomalies, predict future demand, and suggest cost-saving measures. ' +
-          'All recommendations are presented as advisory suggestions — a human (you or your team) makes the final decision on whether to act.',
+          'All recommendations are presented as advisory suggestions. You or your team makes the final decision on whether to act.',
       },
       {
         subtitle: 'No solely automated decisions with legal effect',
@@ -295,7 +295,7 @@ const sections = [
       {
         subtitle: 'Right to be informed',
         content:
-          'You have the right to be told how your personal data is used — which is what this Privacy Policy provides.',
+          'You have the right to be told how your personal data is used, which is what this Privacy Policy provides.',
       },
       {
         subtitle: 'Right of access',
@@ -311,12 +311,12 @@ const sections = [
         subtitle: 'Right to erasure ("right to be forgotten")',
         content:
           'You can ask us to delete your personal data where there is no compelling reason for us to continue processing it. ' +
-          'This right is not absolute — we may need to retain some data for legal compliance. We will tell you if that is the case.',
+          'This right is not absolute. We may need to retain some data for legal compliance. We will tell you if that is the case.',
       },
       {
         subtitle: 'Right to restriction of processing',
         content:
-          'You can ask us to suspend processing of your data — for example, while you contest its accuracy or object to us using it.',
+          'You can ask us to suspend processing of your data, for example, while you contest its accuracy or object to us using it.',
       },
       {
         subtitle: 'Right to data portability',
@@ -377,7 +377,7 @@ const sections = [
       'We take the security of your data seriously and implement the following measures:',
     bullets: [
       'All data in transit is encrypted using TLS 1.2 or higher (HTTPS).',
-      'Passwords are stored using a one way cryptographic hash (bcrypt) — we cannot recover or read your password.',
+      'Passwords are stored using a one way cryptographic hash (bcrypt). We cannot recover or read your password.',
       'Authentication tokens are time limited and stored only on the client side.',
       'Access to production systems is restricted to authorised personnel and protected by multi factor authentication.',
       'We carry out regular security assessments of our infrastructure and code.',

@@ -83,7 +83,7 @@ export default function OnboardingWizard({ user, onDismiss }) {
             </h2>
             <p className="text-gray-500 mb-8">
               Your workspace is ready. Let's send your first energy reading
-              so your dashboard comes alive — takes under a minute.
+              so your dashboard comes alive. It takes under a minute.
             </p>
             <div className="grid grid-cols-3 gap-3 mb-8 text-sm">
               {[

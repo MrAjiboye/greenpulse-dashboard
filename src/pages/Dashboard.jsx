@@ -209,7 +209,7 @@ const Dashboard = () => {
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Dashboard Overview</h1>
-          <p className="text-gray-500">Your energy, costs and waste — updated live</p>
+          <p className="text-gray-500">Your energy, costs and waste, updated live</p>
         </div>
 
         {/* ── KPI Cards ── */}
@@ -440,7 +440,7 @@ const Dashboard = () => {
               <p className="text-emerald-100 text-sm mb-6">
                 {insights.length > 0
                   ? `${insights.length} cost-saving idea${insights.length > 1 ? 's' : ''} ready to review`
-                  : "You're all caught up — no new suggestions right now."}
+                  : "You're all caught up. No new suggestions right now."}
               </p>
               {insights.length > 0 && (
                 <div className="space-y-3 mb-6">
@@ -500,7 +500,7 @@ const Dashboard = () => {
           {recentAlerts.length === 0 ? (
             <div className="text-center py-6 text-gray-400">
               <i className="fa-solid fa-circle-check text-2xl text-emerald-400 mb-2 block"></i>
-              <p className="text-sm">No active alerts — all systems normal</p>
+              <p className="text-sm">No active alerts. All systems normal.</p>
             </div>
           ) : (
             <div className="space-y-3">

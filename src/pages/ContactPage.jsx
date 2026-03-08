@@ -87,7 +87,7 @@ const ContactPage = () => {
       <section className="pt-32 pb-16 bg-gradient-to-br from-gray-50 via-emerald-50/30 to-gray-50 text-center px-6">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Get in Touch</h1>
         <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed">
-          Whether you have a question about the product, want to sign up, or just want to say hello — we're happy to hear from you.
+          Whether you have a question about the product, want to sign up, or just want to say hello, we are happy to hear from you.
         </p>
       </section>
 
