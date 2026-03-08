@@ -190,7 +190,7 @@ const AIInsights = () => {
 
   const fetchInsights = useCallback(async () => {
     try {
-      const data = await insightsAPI.getList('pending');
+      const data = await insightsAPI.getList('PENDING');
       setInsights(Array.isArray(data) ? data : (data?.items ?? []));
     } catch {
       setInsights([]);
