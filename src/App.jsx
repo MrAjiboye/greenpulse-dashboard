@@ -47,6 +47,7 @@ import CookiesPage from './pages/CookiesPage';
 import AdminPanel from './pages/AdminPanel';
 import IoTDocs from './pages/IoTDocs';
 import IoTFeed from './pages/IoTFeed';
+import GlossaryPage from './pages/GlossaryPage';
 
 function TopProgressBar() {
   const location = useLocation();
@@ -192,6 +193,9 @@ function AnimatedRoutes() {
             <AdminPanel />
           </ProtectedRoute>
         } />
+
+        {/* Glossary — public */}
+        <Route path="/glossary" element={<GlossaryPage />} />
 
         {/* IoT Docs — public */}
         <Route path="/docs/iot" element={<IoTDocs />} />

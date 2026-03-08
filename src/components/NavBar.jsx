@@ -73,6 +73,13 @@ export default function NavBar() {
           {/* ── Right: bell + avatar + hamburger ── */}
           <div className="flex items-center gap-3">
             <button
+              onClick={() => navigate('/glossary')}
+              title="Glossary"
+              className={`p-2 transition-colors hidden sm:block ${isActive('/glossary') ? 'text-emerald-600' : 'text-gray-400 hover:text-gray-700'}`}
+            >
+              <i className="fa-solid fa-book-open text-base"></i>
+            </button>
+            <button
               onClick={() => navigate('/notifications')}
               className={`relative p-2 transition-colors ${isActive('/notifications') ? 'text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
             >
