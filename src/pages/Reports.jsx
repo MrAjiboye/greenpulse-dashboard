@@ -464,7 +464,7 @@ const Reports = () => {
           <div className="flex gap-6 text-xs text-gray-500">
             <Link to="/privacy" className="hover:text-gray-900">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-gray-900">Terms of Service</Link>
-            <a href="#" className="hover:text-gray-900">Help Center</a>
+            <Link to="/contact" className="hover:text-gray-900">Help Center</Link>
           </div>
         </div>
       </footer>

@@ -262,13 +262,22 @@ export const adminAPI = {
     const response = await api.delete(`/admin/users/${userId}`);
     return response.data;
   },
+
+  getOrganizations: async (limit = 100, offset = 0) => {
+    const response = await api.get('/admin/organizations', { params: { limit, offset } });
+    return response.data;
+  },
 };
 
+const _qs = (orgId) => orgId ? `?organization_id=${orgId}` : '';
+
 export const mlAPI = {
-  getStatus:    async () => (await api.get('/admin/ml/status')).data,
-  train:        async () => (await api.post('/admin/ml/train')).data,
-  getAnomalies: async () => (await api.get('/admin/ml/anomalies')).data,
-  getForecast:  async () => (await api.get('/admin/ml/forecast')).data,
+  getStatus:        async ()        => (await api.get('/admin/ml/status')).data,
+  train:            async (orgId)   => (await api.post(`/admin/ml/train${_qs(orgId)}`)).data,
+  trainAndInsights: async (orgId)   => (await api.post(`/admin/ml/train-and-insights${_qs(orgId)}`)).data,
+  generateInsights: async (orgId)   => (await api.post(`/admin/ml/generate-insights${_qs(orgId)}`)).data,
+  getAnomalies:     async (orgId)   => (await api.get(`/admin/ml/anomalies${_qs(orgId)}`)).data,
+  getForecast:      async (orgId)   => (await api.get(`/admin/ml/forecast${_qs(orgId)}`)).data,
 };
 
 export const carbonAPI = {

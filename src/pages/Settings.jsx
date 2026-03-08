@@ -254,7 +254,7 @@ const Settings = () => {
                 <div>
                   <h4 className="text-sm font-bold text-gray-900 mb-1">Need help?</h4>
                   <p className="text-xs text-gray-500 mb-3">Our support team is available 24/7 to assist you.</p>
-                  <a href="#" className="text-xs font-semibold text-emerald-600 hover:text-emerald-700">Contact Support →</a>
+                  <Link to="/contact" className="text-xs font-semibold text-emerald-600 hover:text-emerald-700">Contact Support →</Link>
                 </div>
               </div>
             </div>
@@ -752,8 +752,8 @@ const Settings = () => {
           <div className="flex gap-6 text-xs text-gray-500">
             <Link to="/privacy" className="hover:text-gray-900">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-gray-900">Terms of Service</Link>
-            <a href="#" className="hover:text-gray-900">Help Center</a>
-            <a href="#" className="hover:text-gray-900">Contact Support</a>
+            <Link to="/contact" className="hover:text-gray-900">Help Center</Link>
+            <Link to="/contact" className="hover:text-gray-900">Contact Support</Link>
           </div>
         </div>
       </footer>

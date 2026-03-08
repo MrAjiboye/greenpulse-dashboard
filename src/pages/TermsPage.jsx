@@ -346,7 +346,7 @@ const sections = [
       {
         subtitle: 'Support',
         content:
-          'Support is available by email at info@greenpulseanalytics.com. ' +
+          'Support is available by email at support@greenpulseanalytics.com. ' +
           'We aim to respond to support enquiries within 2 business days. ' +
           'Priority support response times may differ based on your Subscription plan.',
       },

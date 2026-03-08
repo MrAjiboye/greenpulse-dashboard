@@ -250,11 +250,6 @@ const AboutPage = () => {
               <p className="text-sm text-gray-500 leading-relaxed mb-6">
                 Empowering organisations to build a sustainable future through data-driven insights and intelligent resource management.
               </p>
-              <div className="flex gap-4">
-                <a href="#" className="text-gray-400 hover:text-emerald-500 transition-colors"><i className="fa-brands fa-twitter"></i></a>
-                <a href="#" className="text-gray-400 hover:text-emerald-500 transition-colors"><i className="fa-brands fa-linkedin"></i></a>
-                <a href="#" className="text-gray-400 hover:text-emerald-500 transition-colors"><i className="fa-brands fa-github"></i></a>
-              </div>
             </div>
 
             <div>

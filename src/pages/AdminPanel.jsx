@@ -46,10 +46,18 @@ function ConfirmModal({ user, onConfirm, onCancel }) {
 function MLEnginePanel({ showToast }) {
   const [mlStatus, setMlStatus]       = useState(null);
   const [training, setTraining]       = useState(false);
+  const [trainAndIng, setTrainAndIng] = useState(false);
   const [anomalies, setAnomalies]     = useState(null);
   const [detecting, setDetecting]     = useState(false);
   const [forecast, setForecast]       = useState(null);
   const [forecasting, setForecasting] = useState(false);
+  const [orgs, setOrgs]               = useState([]);
+  const [selectedOrg, setSelectedOrg] = useState('');   // '' = all orgs
+
+  // Load orgs for the selector
+  useEffect(() => {
+    adminAPI.getOrganizations().then(d => setOrgs(d.items ?? [])).catch(() => {});
+  }, []);
 
   const loadStatus = useCallback(async () => {
     try { setMlStatus(await mlAPI.getStatus()); } catch { /* ignore */ }
@@ -57,25 +65,44 @@ function MLEnginePanel({ showToast }) {
 
   useEffect(() => { loadStatus(); }, [loadStatus]);
 
+  const orgId = selectedOrg || null;
+  const orgLabel = selectedOrg
+    ? orgs.find(o => String(o.id) === selectedOrg)?.name ?? 'Selected org'
+    : 'all organisations';
+
   const handleTrain = async () => {
     setTraining(true);
     try {
-      const result = await mlAPI.train();
-      showToast(`Model trained on ${result.n_samples} samples`, 'success');
+      const result = await mlAPI.train(orgId);
+      showToast(`Model trained on ${result.n_samples} samples (${orgLabel})`, 'success');
       loadStatus();
     } catch (err) {
-      showToast(err.response?.data?.error?.message || 'Training failed', 'error');
+      showToast(err.response?.data?.detail || 'Training failed', 'error');
     } finally {
       setTraining(false);
+    }
+  };
+
+  const handleTrainAndInsights = async () => {
+    setTrainAndIng(true);
+    try {
+      const result = await mlAPI.trainAndInsights(orgId);
+      const insightCount = result.insights?.created ?? result.insights?.length ?? '?';
+      showToast(`Trained on ${result.n_samples} samples · ${insightCount} insights generated for ${orgLabel}`, 'success');
+      loadStatus();
+    } catch (err) {
+      showToast(err.response?.data?.detail || 'Train & insights failed', 'error');
+    } finally {
+      setTrainAndIng(false);
     }
   };
 
   const handleDetect = async () => {
     setDetecting(true);
     try {
-      setAnomalies(await mlAPI.getAnomalies());
+      setAnomalies(await mlAPI.getAnomalies(orgId));
     } catch (err) {
-      showToast(err.response?.data?.error?.message || 'Detection failed', 'error');
+      showToast(err.response?.data?.detail || 'Detection failed', 'error');
     } finally {
       setDetecting(false);
     }
@@ -84,11 +111,11 @@ function MLEnginePanel({ showToast }) {
   const handleForecast = async () => {
     setForecasting(true);
     try {
-      const data = await mlAPI.getForecast();
+      const data = await mlAPI.getForecast(orgId);
       // Sample every 4th point for a cleaner chart (168 → 42 points)
       setForecast(data.forecast.filter((_, i) => i % 4 === 0));
     } catch (err) {
-      showToast(err.response?.data?.error?.message || 'Forecast failed', 'error');
+      showToast(err.response?.data?.detail || 'Forecast failed', 'error');
     } finally {
       setForecasting(false);
     }
@@ -101,8 +128,46 @@ function MLEnginePanel({ showToast }) {
     </svg>
   );
 
+  const busy = training || trainAndIng || detecting || forecasting;
+
   return (
     <div className="space-y-6">
+
+      {/* Organisation selector */}
+      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <h2 className="font-semibold text-gray-800 text-lg mb-1">Target Organisation</h2>
+        <p className="text-sm text-gray-500 mb-4">
+          Select an organisation to scope training, anomaly detection, and forecasts to their data only.
+          Leave as "All organisations" to train a global model.
+        </p>
+        <select
+          value={selectedOrg}
+          onChange={e => { setSelectedOrg(e.target.value); setAnomalies(null); setForecast(null); }}
+          className="w-full sm:w-80 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+        >
+          <option value="">All organisations (global model)</option>
+          {orgs.map(o => (
+            <option key={o.id} value={String(o.id)}>
+              {o.name} — {o.user_count} user{o.user_count !== 1 ? 's' : ''}, {o.reading_count} readings
+            </option>
+          ))}
+        </select>
+
+        {/* One-click: Train + Generate Insights */}
+        <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap items-center gap-3">
+          <button
+            onClick={handleTrainAndInsights}
+            disabled={busy}
+            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 disabled:opacity-50 shadow-sm"
+          >
+            {trainAndIng ? <><Spinner /> Working…</> : <><i className="fa-solid fa-wand-magic-sparkles"></i> Train &amp; Generate Insights</>}
+          </button>
+          <p className="text-xs text-gray-400">
+            Trains the model on {orgLabel}'s energy data, then auto-generates AI Insight records that appear on their dashboard.
+          </p>
+        </div>
+      </div>
+
       {/* Model Status */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
@@ -112,10 +177,10 @@ function MLEnginePanel({ showToast }) {
           </div>
           <button
             onClick={handleTrain}
-            disabled={training}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
+            disabled={busy}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-white rounded-lg text-sm font-medium hover:bg-gray-900 disabled:opacity-50"
           >
-            {training ? <><Spinner /> Training…</> : <><i className="fa-solid fa-brain"></i> Train Model</>}
+            {training ? <><Spinner /> Training…</> : <><i className="fa-solid fa-brain"></i> Train Only</>}
           </button>
         </div>
 
@@ -157,9 +222,9 @@ function MLEnginePanel({ showToast }) {
           </div>
           <button
             onClick={handleDetect}
-            disabled={detecting || !mlStatus?.trained}
+            disabled={busy || !mlStatus?.trained}
             className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-700 disabled:opacity-40"
-            title={!mlStatus?.trained ? 'Train the model first' : ''}
+            title={!mlStatus?.trained ? 'Train the model first' : `Scanning ${orgLabel}`}
           >
             {detecting ? <><Spinner /> Detecting…</> : <><i className="fa-solid fa-magnifying-glass-chart"></i> Detect Anomalies</>}
           </button>
@@ -218,9 +283,9 @@ function MLEnginePanel({ showToast }) {
           </div>
           <button
             onClick={handleForecast}
-            disabled={forecasting || !mlStatus?.trained}
+            disabled={busy || !mlStatus?.trained}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-40"
-            title={!mlStatus?.trained ? 'Train the model first' : ''}
+            title={!mlStatus?.trained ? 'Train the model first' : `Forecasting for ${orgLabel}`}
           >
             {forecasting ? <><Spinner /> Running…</> : <><i className="fa-solid fa-chart-line"></i> Run Forecast</>}
           </button>
@@ -308,8 +373,8 @@ export default function AdminPanel() {
   const handleRoleChange = async (userId, role) => {
     setUpdatingFor(userId, 'role', true);
     try {
-      await adminAPI.updateRole(userId, role);
-      setUsers(prev => prev.map(u => u.id === userId ? { ...u, role } : u));
+      const updated = await adminAPI.updateRole(userId, role);
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: updated.role } : u));
       showToast('Role updated', 'success');
     } catch (err) {
       showToast(err.response?.data?.error?.message || 'Failed to update role', 'error');
@@ -321,9 +386,9 @@ export default function AdminPanel() {
   const handleToggleStatus = async (userId, currentStatus) => {
     setUpdatingFor(userId, 'status', true);
     try {
-      await adminAPI.toggleStatus(userId, !currentStatus);
-      setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_active: !currentStatus } : u));
-      showToast(`User ${!currentStatus ? 'activated' : 'deactivated'}`, 'success');
+      const updated = await adminAPI.toggleStatus(userId, !currentStatus);
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_active: updated.is_active } : u));
+      showToast(`User ${updated.is_active ? 'activated' : 'deactivated'}`, 'success');
     } catch (err) {
       showToast(err.response?.data?.error?.message || 'Failed to update status', 'error');
     } finally {

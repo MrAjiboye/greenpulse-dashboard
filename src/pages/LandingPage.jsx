@@ -1,8 +1,39 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterDone, setNewsletterDone] = useState(false);
+  const [newsletterError, setNewsletterError] = useState('');
+
+  const handleNewsletter = (e) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+
+    const MAILCHIMP_URL = 'https://slowfoodglasgow.us19.list-manage.com/subscribe/post-json?u=0db25962120ceda5272370437&id=0310e47181&f_id=00fb8ae3f0';
+    const callbackName = 'mc_' + Date.now();
+    const url = `${MAILCHIMP_URL}&EMAIL=${encodeURIComponent(newsletterEmail)}&b_0db25962120ceda5272370437_0310e47181=&c=${callbackName}`;
+
+    const script = document.createElement('script');
+    script.src = url;
+
+    window[callbackName] = (data) => {
+      delete window[callbackName];
+      if (document.body.contains(script)) document.body.removeChild(script);
+      if (data.result === 'success') {
+        setNewsletterDone(true);
+        setNewsletterError('');
+      } else {
+        const msg = data.msg || '';
+        setNewsletterError(msg.toLowerCase().includes('already subscribed')
+          ? "You're already subscribed!"
+          : 'Something went wrong. Please try again.');
+      }
+    };
+
+    document.body.appendChild(script);
+  };
 
   useEffect(() => {
     if (window.Plotly) {
@@ -413,11 +444,6 @@ const LandingPage = () => {
               <p className="text-sm text-gray-500 leading-relaxed mb-6">
                 Empowering organizations to build a sustainable future through data-driven insights and intelligent resource management.
               </p>
-              <div className="flex gap-4">
-                <a href="#" className="text-gray-400 hover:text-emerald-500 transition-all duration-200"><i className="fa-brands fa-twitter"></i></a>
-                <a href="#" className="text-gray-400 hover:text-emerald-500 transition-all duration-200"><i className="fa-brands fa-linkedin"></i></a>
-                <a href="#" className="text-gray-400 hover:text-emerald-500 transition-all duration-200"><i className="fa-brands fa-github"></i></a>
-              </div>
             </div>
 
             <div>
@@ -427,7 +453,7 @@ const LandingPage = () => {
                 <li><a href="/waste" className="hover:text-emerald-600 transition-all duration-200">Waste Management</a></li>
                 <li><a href="/insights" className="hover:text-emerald-600 transition-all duration-200">AI Insights</a></li>
                 <li><a href="/reports" className="hover:text-emerald-600 transition-all duration-200">Reporting</a></li>
-                <li><a href="/signin" className="hover:text-emerald-600 transition-all duration-200">Mobile App</a></li>
+                <li><a href="/carbon" className="hover:text-emerald-600 transition-all duration-200">Carbon Footprint</a></li>
               </ul>
             </div>
 
@@ -445,10 +471,24 @@ const LandingPage = () => {
             <div>
               <h4 className="font-bold text-gray-900 mb-6">Stay Updated</h4>
               <p className="text-sm text-gray-500 mb-4">Subscribe to our newsletter for the latest sustainability tips.</p>
-              <form className="flex gap-2">
-                <input type="email" placeholder="Enter your email" className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all" />
-                <button className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors text-sm font-semibold">Subscribe</button>
-              </form>
+              {newsletterDone ? (
+                <p className="text-sm text-emerald-600 font-medium"><i className="fa-solid fa-circle-check mr-1.5"></i>Thanks! You're subscribed.</p>
+              ) : (
+                <>
+                  <form onSubmit={handleNewsletter} className="flex gap-2">
+                    <input
+                      type="email"
+                      required
+                      placeholder="Enter your email"
+                      value={newsletterEmail}
+                      onChange={e => { setNewsletterEmail(e.target.value); setNewsletterError(''); }}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    />
+                    <button type="submit" className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors text-sm font-semibold">Subscribe</button>
+                  </form>
+                  {newsletterError && <p className="text-xs text-red-500 mt-2">{newsletterError}</p>}
+                </>
+              )}
             </div>
           </div>
 

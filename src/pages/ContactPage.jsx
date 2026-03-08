@@ -7,11 +7,18 @@ const ContactPage = () => {
 
   const channels = [
     {
+      icon: 'fa-headset',
+      label: 'Support',
+      value: 'support@greenpulseanalytics.com',
+      href: 'mailto:support@greenpulseanalytics.com',
+      note: 'Account, billing, and technical help.',
+    },
+    {
       icon: 'fa-envelope',
-      label: 'Email',
+      label: 'General',
       value: 'info@greenpulseanalytics.com',
       href: 'mailto:info@greenpulseanalytics.com',
-      note: 'We reply within one business day.',
+      note: 'Partnerships, press, and general enquiries.',
     },
     {
       icon: 'fa-phone',
@@ -86,7 +93,7 @@ const ContactPage = () => {
 
       {/* ── Contact cards ── */}
       <section className="max-w-4xl mx-auto px-6 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {channels.map(({ icon, label, value, href, note }) => (
             <div key={label} className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-emerald-100 transition-all text-center">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center mx-auto mb-5">
@@ -152,14 +159,14 @@ const ContactPage = () => {
             <div>
               <h4 className="text-emerald-400 font-semibold mb-4">Contact</h4>
               <ul className="space-y-3">
+                <li><a href="mailto:support@greenpulseanalytics.com" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">support@greenpulseanalytics.com</a></li>
                 <li><a href="mailto:info@greenpulseanalytics.com" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">info@greenpulseanalytics.com</a></li>
                 <li><a href="tel:+447961790837" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">07961 790837</a></li>
-                <li><p className="text-gray-500 text-sm">Based in Scotland, UK</p></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">&copy; 2025 GreenPulse Analytics. All rights reserved.</p>
+            <p className="text-gray-500 text-sm">&copy; 2026 GreenPulse Analytics. All rights reserved.</p>
             <div className="flex gap-6">
               <Link to="/terms" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Terms</Link>
               <Link to="/privacy" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Privacy</Link>
