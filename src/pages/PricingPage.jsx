@@ -9,7 +9,7 @@ const PLANS = [
     name: 'Core',
     price: '£49',
     period: '/month',
-    tagline: 'Everything you need to get started',
+    tagline: 'Automated data, no hardware required',
     color: 'emerald',
     features: [
       'Full energy & waste dashboard',
@@ -17,6 +17,7 @@ const PLANS = [
       'Carbon footprint tracking',
       'Goal setting & tracking',
       'CSV data import',
+      'Energy provider API (Octopus, n3rgy) — coming soon',
       'Automated PDF reports',
       'Up to 3 team members',
       'Email support',
@@ -29,11 +30,12 @@ const PLANS = [
     name: 'Pro',
     price: '£99',
     period: '/month',
-    tagline: 'For businesses scaling their sustainability',
+    tagline: 'Real-time monitoring with IoT sensors',
     color: 'emerald',
     features: [
       'Everything in Core',
-      'Real-time IoT & API data ingestion',
+      'IoT device data ingestion (real-time)',
+      'Physical sensor support — kitchens, floors, zones',
       'Unlimited team members',
       'Spike anomaly alerts',
       'ML forecasting & anomaly detection',
@@ -49,17 +51,17 @@ const PLANS = [
     name: 'Enterprise',
     price: 'Custom',
     period: '',
-    tagline: 'Multi-property portfolios & custom needs',
+    tagline: 'Multi-site management for hotels, chains & portfolios',
     color: 'gray',
     features: [
       'Everything in Pro',
-      'Multi-property management',
+      'Multi-property dashboard',
+      'Cross-site reporting & benchmarking',
       'Dedicated account manager',
       'Custom integrations',
       'SLA-backed uptime',
       'Onboarding & training',
       'Invoice billing',
-      'Custom contracts',
     ],
     cta: 'Contact us',
     highlight: false,
@@ -69,23 +71,27 @@ const PLANS = [
 const FAQ = [
   {
     q: 'Is there a free trial?',
-    a: 'Yes — all new accounts get a 30-day free trial. No credit card required. You can import data via CSV and explore the full dashboard during the trial.',
+    a: 'Yes — all new accounts get a 30-day free trial with full Core-level access. No credit card required. Upload your data via CSV and explore the complete dashboard from day one.',
+  },
+  {
+    q: 'What\'s the difference between Core and Pro?',
+    a: 'Core gives you automated data via CSV and energy provider APIs (Octopus Energy, n3rgy) — no hardware needed. Pro adds real-time IoT sensor ingestion for zone-level monitoring inside your premises, plus unlimited team members.',
+  },
+  {
+    q: 'Who is Enterprise for?',
+    a: 'Enterprise is built for businesses managing multiple sites — hotel groups, restaurant chains, retail portfolios. You get a single dashboard across all properties, cross-site benchmarking, a dedicated account manager, and invoiced billing.',
   },
   {
     q: 'Can I upgrade or downgrade at any time?',
-    a: 'Yes. You can upgrade from Core to Pro at any time and the change takes effect immediately. Downgrades take effect at the end of your billing cycle.',
+    a: 'Yes. Upgrades take effect immediately. Downgrades take effect at the end of your current billing cycle.',
   },
   {
     q: 'What happens when my trial ends?',
-    a: 'Your data is preserved. You\'ll need to choose a plan to continue accessing the dashboard. We\'ll send reminders before your trial expires.',
-  },
-  {
-    q: 'Do you offer annual billing?',
-    a: 'Annual billing with a discount is coming soon. Contact us if you\'d like to discuss this.',
+    a: 'Your data is preserved. You\'ll need to choose a plan to continue. We\'ll email you reminders before your trial expires.',
   },
   {
     q: 'What counts as a "team member"?',
-    a: 'Any user invited to your organisation counts as a team member. Core allows up to 3 (including you). Pro has no limit.',
+    a: 'Any user invited to your organisation. Core allows up to 3 (including you). Pro and Enterprise have no limit.',
   },
 ];
 
