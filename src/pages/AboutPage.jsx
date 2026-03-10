@@ -296,7 +296,15 @@ const AboutPage = () => {
           </div>
 
           <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-400">© 2025 GreenPulse Analytics. All rights reserved.</p>
+            <p className="text-xs text-gray-400">© 2026 GreenPulse Analytics. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <a href="https://linkedin.com/greenpulse-analytics-uk" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="LinkedIn">
+                <i className="fa-brands fa-linkedin-in text-sm"></i>
+              </a>
+              <a href="https://x.com/GreenPulseUK?s=20" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="X (Twitter)">
+                <i className="fa-brands fa-x-twitter text-sm"></i>
+              </a>
+            </div>
             <div className="flex gap-6">
               <Link to="/terms" className="text-xs text-gray-400 hover:text-gray-600">Terms</Link>
               <Link to="/privacy" className="text-xs text-gray-400 hover:text-gray-600">Privacy</Link>

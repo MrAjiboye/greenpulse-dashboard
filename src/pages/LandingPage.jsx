@@ -1,11 +1,63 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
+const FEATURES = [
+  {
+    icon: 'fa-bolt', color: 'emerald',
+    title: 'Energy Monitor',
+    desc: 'Real time tracking of consumption across zones. Identify peak usage patterns and calculate costs instantly.',
+    bullets: ['Hourly & Weekly breakdowns', 'Peak usage alerts'],
+  },
+  {
+    icon: 'fa-recycle', color: 'orange',
+    title: 'Waste Management',
+    desc: 'Digitize your waste logging process. Track diversion rates and visualize trends by waste stream category.',
+    bullets: ['Food vs Packaging breakdown', 'Manual logging forms'],
+  },
+  {
+    icon: 'fa-brain', color: 'blue',
+    title: 'AI Insights',
+    desc: 'Smart recommendations tailored to your facility. Identify savings opportunities and act on them with one click.',
+    bullets: ['Potential savings ranking', 'Automated anomaly detection'],
+  },
+  {
+    icon: 'fa-chart-line', color: 'purple',
+    title: 'Cost Predictions',
+    desc: 'Know what your bill will be before it arrives. Plan ahead and avoid surprises with ML-powered forecasting.',
+    bullets: ['7-day ahead forecasts', 'Confidence intervals included'],
+  },
+  {
+    icon: 'fa-bell', color: 'rose',
+    title: 'Smart Alerts',
+    desc: 'Get notified the moment equipment runs inefficiently or usage spikes unexpectedly — straight to your inbox.',
+    bullets: ['Real-time spike detection', 'Email alerts to managers'],
+  },
+  {
+    icon: 'fa-plug', color: 'amber',
+    title: 'Equipment Insights',
+    desc: 'Equipment-level tracking shows your biggest energy drains so you know exactly where to act.',
+    bullets: ['Zone-level breakdowns', 'Identify high-draw equipment'],
+  },
+];
+
+const COLOR_MAP = {
+  emerald: { bg: 'bg-emerald-100', text: 'text-emerald-600' },
+  orange:  { bg: 'bg-orange-100',  text: 'text-orange-600'  },
+  blue:    { bg: 'bg-blue-100',    text: 'text-blue-600'    },
+  purple:  { bg: 'bg-purple-100',  text: 'text-purple-600'  },
+  rose:    { bg: 'bg-rose-100',    text: 'text-rose-600'    },
+  amber:   { bg: 'bg-amber-100',   text: 'text-amber-600'   },
+};
+
 const LandingPage = () => {
   const navigate = useNavigate();
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterDone, setNewsletterDone] = useState(false);
   const [newsletterError, setNewsletterError] = useState('');
+  const [featurePage, setFeaturePage] = useState(0);
+  const PER_PAGE = 3;
+  const totalPages = Math.ceil(FEATURES.length / PER_PAGE);
+  const visibleFeatures = FEATURES.slice(featurePage * PER_PAGE, featurePage * PER_PAGE + PER_PAGE);
 
   const handleNewsletter = (e) => {
     e.preventDefault();
@@ -267,54 +319,52 @@ const LandingPage = () => {
             <p className="text-gray-600 text-lg">Everything you need to track, analyze, and improve your organization's sustainability performance in one unified platform.</p>
           </div>
 
+          {/* Feature slider */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-2xl bg-gray-50 hover:bg-white border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <i className="fa-solid fa-bolt text-emerald-600 text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Energy Monitor</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">Real time tracking of consumption across zones. Identify peak usage patterns and calculate costs instantly.</p>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <i className="fa-solid fa-check text-emerald-500 text-xs"></i> Hourly & Weekly breakdowns
-                </li>
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <i className="fa-solid fa-check text-emerald-500 text-xs"></i> Peak usage alerts
-                </li>
-              </ul>
-            </div>
+            {visibleFeatures.map((f) => {
+              const c = COLOR_MAP[f.color];
+              return (
+                <div key={f.title} className="p-8 rounded-2xl bg-gray-50 hover:bg-white border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                  <div className={`w-14 h-14 ${c.bg} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                    <i className={`fa-solid ${f.icon} ${c.text} text-2xl`}></i>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{f.title}</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">{f.desc}</p>
+                  <ul className="space-y-3">
+                    {f.bullets.map(b => (
+                      <li key={b} className="flex items-center gap-3 text-sm text-gray-700">
+                        <i className="fa-solid fa-check text-emerald-500 text-xs"></i> {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
 
-            <div className="p-8 rounded-2xl bg-gray-50 hover:bg-white border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <i className="fa-solid fa-recycle text-orange-600 text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Waste Management</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">Digitize your waste logging process. Track diversion rates and visualize trends by waste stream category.</p>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <i className="fa-solid fa-check text-emerald-500 text-xs"></i> Food vs Packaging breakdown
-                </li>
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <i className="fa-solid fa-check text-emerald-500 text-xs"></i> Manual logging forms
-                </li>
-              </ul>
-            </div>
-
-            <div className="p-8 rounded-2xl bg-gray-50 hover:bg-white border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <i className="fa-solid fa-brain text-blue-600 text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">AI Insights</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">Smart recommendations tailored to your facility. Identify savings opportunities and act on them with one click.</p>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <i className="fa-solid fa-check text-emerald-500 text-xs"></i> Potential savings ranking
-                </li>
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <i className="fa-solid fa-check text-emerald-500 text-xs"></i> Automated anomaly detection
-                </li>
-              </ul>
-            </div>
+          {/* Pagination dots + arrows */}
+          <div className="flex items-center justify-center gap-4 mt-10">
+            <button
+              onClick={() => setFeaturePage(p => Math.max(0, p - 1))}
+              disabled={featurePage === 0}
+              className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-emerald-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <i className="fa-solid fa-chevron-left text-xs"></i>
+            </button>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setFeaturePage(i)}
+                className={`w-2.5 h-2.5 rounded-full transition-all ${featurePage === i ? 'bg-emerald-500 scale-125' : 'bg-gray-200 hover:bg-gray-300'}`}
+              />
+            ))}
+            <button
+              onClick={() => setFeaturePage(p => Math.min(totalPages - 1, p + 1))}
+              disabled={featurePage === totalPages - 1}
+              className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-emerald-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <i className="fa-solid fa-chevron-right text-xs"></i>
+            </button>
           </div>
         </div>
       </section>
@@ -494,6 +544,14 @@ const LandingPage = () => {
 
           <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-gray-400">© 2026 GreenPulse Inc. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <a href="https://linkedin.com/greenpulse-analytics-uk" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="LinkedIn">
+                <i className="fa-brands fa-linkedin-in text-sm"></i>
+              </a>
+              <a href="https://x.com/GreenPulseUK?s=20" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="X (Twitter)">
+                <i className="fa-brands fa-x-twitter text-sm"></i>
+              </a>
+            </div>
             <div className="flex gap-6">
               <a href="/terms" className="text-xs text-gray-400 hover:text-gray-600">Terms</a>
               <a href="/privacy" className="text-xs text-gray-400 hover:text-gray-600">Privacy</a>
