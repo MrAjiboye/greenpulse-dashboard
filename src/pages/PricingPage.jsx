@@ -95,11 +95,40 @@ const FAQ = [
   },
 ];
 
+// Plan rank — higher = more expensive
+const PLAN_RANK = { free: 0, core: 1, pro: 2, enterprise: 3 };
+
 export default function PricingPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
+
+  const currentPlan = user?.organization_plan ?? null; // "free"|"core"|"pro"|"enterprise"|null
+
+  // Determine button label and whether it's disabled for a given plan card
+  const getPlanMeta = (planKey) => {
+    if (!user) {
+      return { label: planKey === 'enterprise' ? 'Contact us' : `Start with ${planKey === 'core' ? 'Core' : 'Pro'}`, disabled: false, style: 'normal' };
+    }
+    if (planKey === 'enterprise') {
+      if (currentPlan === 'enterprise') return { label: 'Current plan', disabled: true, style: 'current' };
+      return { label: 'Contact us', disabled: false, style: 'enterprise' };
+    }
+    if (planKey === currentPlan || (planKey === 'core' && currentPlan === 'free')) {
+      // free users see Core as their "current" trial
+      if (currentPlan === 'free' && planKey === 'core') {
+        return { label: 'Start with Core', disabled: false, style: 'normal' };
+      }
+      return { label: 'Current plan', disabled: true, style: 'current' };
+    }
+    const targetRank = PLAN_RANK[planKey] ?? 0;
+    const currentRank = PLAN_RANK[currentPlan] ?? 0;
+    if (targetRank > currentRank) {
+      return { label: `Upgrade to ${planKey === 'core' ? 'Core' : 'Pro'}`, disabled: false, style: 'upgrade' };
+    }
+    return { label: `Switch to ${planKey === 'core' ? 'Core' : 'Pro'}`, disabled: false, style: 'downgrade' };
+  };
 
   const handlePlanClick = async (plan) => {
     if (plan === 'enterprise') {
@@ -159,72 +188,93 @@ export default function PricingPage() {
           Plans for every business
         </h1>
         <p className="text-lg text-gray-500 max-w-xl mx-auto">
-          Start your 30-day free trial - no credit card required. Upgrade when you're ready.
+          {currentPlan && currentPlan !== 'free'
+            ? `You're currently on the ${currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} plan. Upgrade or switch any time.`
+            : 'Start your 30-day free trial - no credit card required. Upgrade when you\'re ready.'}
         </p>
       </div>
 
       {/* Plan cards */}
       <div className="max-w-6xl mx-auto px-6 pb-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-          {PLANS.map((plan) => (
-            <div
-              key={plan.key}
-              className={`relative rounded-2xl border-2 p-8 flex flex-col ${
-                plan.highlight
-                  ? 'border-emerald-500 shadow-xl shadow-emerald-100'
-                  : 'border-gray-200'
-              }`}
-            >
-              {plan.highlight && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-full">
-                    Most popular
-                  </span>
-                </div>
-              )}
+          {PLANS.map((plan) => {
+            const meta = getPlanMeta(plan.key);
+            const isCurrent = meta.style === 'current';
+            const isDowngrade = meta.style === 'downgrade';
 
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-1">{plan.name}</h2>
-                <p className="text-sm text-gray-500 mb-4">{plan.tagline}</p>
-                <div className="flex items-end gap-1">
-                  <span className="text-4xl font-extrabold text-gray-900">{plan.price}</span>
-                  {plan.period && (
-                    <span className="text-gray-400 mb-1">{plan.period}</span>
-                  )}
-                </div>
-              </div>
-
-              <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-gray-700">
-                    <i className="fa-solid fa-check text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                onClick={() => handlePlanClick(plan.key)}
-                disabled={loading === plan.key}
-                className={`w-full py-3 rounded-xl text-sm font-semibold transition-colors ${
-                  plan.highlight
-                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                    : plan.key === 'enterprise'
-                    ? 'bg-gray-900 hover:bg-gray-800 text-white'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
-                } disabled:opacity-60`}
+            return (
+              <div
+                key={plan.key}
+                className={`relative rounded-2xl border-2 p-8 flex flex-col ${
+                  isCurrent
+                    ? 'border-emerald-500 shadow-xl shadow-emerald-100'
+                    : plan.highlight && !isCurrent
+                    ? 'border-emerald-500 shadow-xl shadow-emerald-100'
+                    : 'border-gray-200'
+                }`}
               >
-                {loading === plan.key ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <i className="fa-solid fa-circle-notch fa-spin text-xs"></i>
-                    Redirecting…
-                  </span>
-                ) : (
-                  plan.cta
-                )}
-              </button>
-            </div>
-          ))}
+                {/* Badge: Current plan takes priority over "Most popular" */}
+                {isCurrent ? (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-emerald-600 text-white text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-1.5">
+                      <i className="fa-solid fa-circle-check text-xs"></i> Your plan
+                    </span>
+                  </div>
+                ) : plan.highlight ? (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-full">
+                      Most popular
+                    </span>
+                  </div>
+                ) : null}
+
+                <div className="mb-6">
+                  <h2 className="text-xl font-bold text-gray-900 mb-1">{plan.name}</h2>
+                  <p className="text-sm text-gray-500 mb-4">{plan.tagline}</p>
+                  <div className="flex items-end gap-1">
+                    <span className="text-4xl font-extrabold text-gray-900">{plan.price}</span>
+                    {plan.period && (
+                      <span className="text-gray-400 mb-1">{plan.period}</span>
+                    )}
+                  </div>
+                </div>
+
+                <ul className="space-y-3 mb-8 flex-1">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2.5 text-sm text-gray-700">
+                      <i className="fa-solid fa-check text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  onClick={() => !meta.disabled && handlePlanClick(plan.key)}
+                  disabled={meta.disabled || loading === plan.key}
+                  className={`w-full py-3 rounded-xl text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-default ${
+                    meta.disabled
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default'
+                      : meta.style === 'upgrade' || plan.highlight
+                      ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                      : plan.key === 'enterprise'
+                      ? 'bg-gray-900 hover:bg-gray-800 text-white'
+                      : isDowngrade
+                      ? 'bg-gray-100 hover:bg-gray-200 text-gray-500'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                  }`}
+                >
+                  {loading === plan.key ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <i className="fa-solid fa-circle-notch fa-spin text-xs"></i>
+                      Redirecting…
+                    </span>
+                  ) : (
+                    meta.label
+                  )}
+                </button>
+              </div>
+            );
+          })}
         </div>
 
         {/* Trust line */}
