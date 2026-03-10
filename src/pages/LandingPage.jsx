@@ -55,6 +55,7 @@ const LandingPage = () => {
   const [newsletterDone, setNewsletterDone] = useState(false);
   const [newsletterError, setNewsletterError] = useState('');
   const [featurePage, setFeaturePage] = useState(0);
+  const [mobileIdx, setMobileIdx] = useState(0);
   const PER_PAGE = 3;
   const totalPages = Math.ceil(FEATURES.length / PER_PAGE);
 
@@ -318,14 +319,65 @@ const LandingPage = () => {
             <p className="text-gray-600 text-lg">Everything you need to track, analyze, and improve your organization's sustainability performance in one unified platform.</p>
           </div>
 
-          {/* Feature slider — CSS translateX so the transition is smooth */}
-          <div className="overflow-hidden">
+          {/* Mobile: 1 card at a time */}
+          <div className="md:hidden overflow-hidden">
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${mobileIdx * 100}%)` }}
+            >
+              {FEATURES.map((f) => {
+                const c = COLOR_MAP[f.color];
+                return (
+                  <div key={f.title} className="w-full flex-shrink-0 p-8 rounded-2xl bg-gray-50 border border-gray-100">
+                    <div className={`w-14 h-14 ${c.bg} rounded-xl flex items-center justify-center mb-6`}>
+                      <i className={`fa-solid ${f.icon} ${c.text} text-2xl`}></i>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{f.title}</h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">{f.desc}</p>
+                    <ul className="space-y-3">
+                      {f.bullets.map(b => (
+                        <li key={b} className="flex items-center gap-3 text-sm text-gray-700">
+                          <i className="fa-solid fa-check text-emerald-500 text-xs"></i> {b}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex items-center justify-center gap-4 mt-8">
+              <button
+                onClick={() => setMobileIdx(i => Math.max(0, i - 1))}
+                disabled={mobileIdx === 0}
+                className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-emerald-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <i className="fa-solid fa-chevron-left text-xs"></i>
+              </button>
+              {FEATURES.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setMobileIdx(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${mobileIdx === i ? 'bg-emerald-500 scale-125' : 'bg-gray-200 hover:bg-gray-300'}`}
+                />
+              ))}
+              <button
+                onClick={() => setMobileIdx(i => Math.min(FEATURES.length - 1, i + 1))}
+                disabled={mobileIdx === FEATURES.length - 1}
+                className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-emerald-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <i className="fa-solid fa-chevron-right text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          {/* Desktop: 3 cards at a time */}
+          <div className="hidden md:block overflow-hidden">
             <div
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${featurePage * 100}%)` }}
             >
               {Array.from({ length: totalPages }).map((_, pageIdx) => (
-                <div key={pageIdx} className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div key={pageIdx} className="w-full flex-shrink-0 grid grid-cols-3 gap-8">
                   {FEATURES.slice(pageIdx * PER_PAGE, pageIdx * PER_PAGE + PER_PAGE).map((f) => {
                     const c = COLOR_MAP[f.color];
                     return (
@@ -348,31 +400,29 @@ const LandingPage = () => {
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Pagination dots + arrows */}
-          <div className="flex items-center justify-center gap-4 mt-10">
-            <button
-              onClick={() => setFeaturePage(p => Math.max(0, p - 1))}
-              disabled={featurePage === 0}
-              className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-emerald-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-            >
-              <i className="fa-solid fa-chevron-left text-xs"></i>
-            </button>
-            {Array.from({ length: totalPages }).map((_, i) => (
+            <div className="flex items-center justify-center gap-4 mt-10">
               <button
-                key={i}
-                onClick={() => setFeaturePage(i)}
-                className={`w-2.5 h-2.5 rounded-full transition-all ${featurePage === i ? 'bg-emerald-500 scale-125' : 'bg-gray-200 hover:bg-gray-300'}`}
-              />
-            ))}
-            <button
-              onClick={() => setFeaturePage(p => Math.min(totalPages - 1, p + 1))}
-              disabled={featurePage === totalPages - 1}
-              className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-emerald-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-            >
-              <i className="fa-solid fa-chevron-right text-xs"></i>
-            </button>
+                onClick={() => setFeaturePage(p => Math.max(0, p - 1))}
+                disabled={featurePage === 0}
+                className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-emerald-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <i className="fa-solid fa-chevron-left text-xs"></i>
+              </button>
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setFeaturePage(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${featurePage === i ? 'bg-emerald-500 scale-125' : 'bg-gray-200 hover:bg-gray-300'}`}
+                />
+              ))}
+              <button
+                onClick={() => setFeaturePage(p => Math.min(totalPages - 1, p + 1))}
+                disabled={featurePage === totalPages - 1}
+                className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-emerald-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <i className="fa-solid fa-chevron-right text-xs"></i>
+              </button>
+            </div>
           </div>
         </div>
       </section>
