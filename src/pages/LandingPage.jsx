@@ -557,11 +557,11 @@ const LandingPage = () => {
             <div>
               <h4 className="font-bold text-gray-900 mb-6">Product</h4>
               <ul className="space-y-4 text-sm text-gray-600">
-                <li><a href="/energy" className="hover:text-emerald-600 transition-all duration-200">Energy Monitor</a></li>
-                <li><a href="/waste" className="hover:text-emerald-600 transition-all duration-200">Waste Management</a></li>
-                <li><a href="/insights" className="hover:text-emerald-600 transition-all duration-200">AI Insights</a></li>
-                <li><a href="/reports" className="hover:text-emerald-600 transition-all duration-200">Reporting</a></li>
-                <li><a href="/carbon" className="hover:text-emerald-600 transition-all duration-200">Carbon Footprint</a></li>
+                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">Energy Monitor</Link></li>
+                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">Waste Management</Link></li>
+                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">AI Insights</Link></li>
+                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">Reporting</Link></li>
+                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">Carbon Footprint</Link></li>
               </ul>
             </div>
 
