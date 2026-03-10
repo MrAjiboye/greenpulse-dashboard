@@ -332,4 +332,8 @@ export const octopusAPI = {
   disconnect:  async () => (await api.delete('/octopus/disconnect')).data,
 };
 
+export const demoAPI = {
+  request: async (data) => (await api.post('/demo/request', data)).data,
+};
+
 export default api;

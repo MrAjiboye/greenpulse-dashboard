@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { demoAPI } from '../services/api';
 
 const TIME_SLOTS = [
   '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM',
@@ -61,13 +62,18 @@ export default function BookDemoPage() {
     setSubmitting(true);
 
     try {
-      // Send via mailto as the primary mechanism — backend email optional later
-      const subject = encodeURIComponent(`Demo request - ${form.business_name}`);
-      const body = encodeURIComponent(
-        `Name: ${form.full_name}\nBusiness: ${form.business_name}\nEmail: ${form.email}\nPhone: ${form.phone}\nPreferred date: ${form.preferred_date}\nPreferred time: ${form.preferred_time}\nMessage: ${form.message || 'N/A'}`
-      );
-      window.open(`mailto:info@greenpulseanalytics.com?subject=${subject}&body=${body}`, '_blank');
+      await demoAPI.request({
+        full_name: form.full_name,
+        business_name: form.business_name,
+        email: form.email,
+        phone: form.phone,
+        preferred_date: form.preferred_date,
+        preferred_time: form.preferred_time,
+        message: form.message,
+      });
       setSubmitted(true);
+    } catch {
+      setErrors({ submit: 'Something went wrong. Please email us directly at info@greenpulseanalytics.com' });
     } finally {
       setSubmitting(false);
     }
@@ -281,6 +287,10 @@ export default function BookDemoPage() {
                     className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none"
                   />
                 </div>
+
+                {errors.submit && (
+                  <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5">{errors.submit}</p>
+                )}
 
                 <button
                   type="submit"
