@@ -320,4 +320,9 @@ export const importAPI = {
   },
 };
 
+export const billingAPI = {
+  createCheckoutSession: async (plan) => (await api.post('/billing/create-checkout-session', { plan })).data,
+  getStatus: async () => (await api.get('/billing/status')).data,
+};
+
 export default api;

@@ -296,7 +296,7 @@ const AboutPage = () => {
           </div>
 
           <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-400">© 2026 GreenPulse Analytics. All rights reserved.</p>
+            <p className="text-xs text-gray-400">© 2026 GreenPulse Analytics. All rights reserved. · ICO reg. ZC103204</p>
             <div className="flex items-center gap-4">
               <a href="https://linkedin.com/greenpulse-analytics-uk" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="LinkedIn">
                 <i className="fa-brands fa-linkedin-in text-sm"></i>

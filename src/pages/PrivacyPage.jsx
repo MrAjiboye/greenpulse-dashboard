@@ -38,6 +38,7 @@ const sections = [
         subtitle: 'ICO registration',
         content:
           'We are registered with the Information Commissioner\'s Office (ICO) as required under UK data protection law. ' +
+          'Our ICO registration number is ZC103204. ' +
           'If you have a complaint about our handling of your personal data you have the right to contact the ICO at ico.org.uk or on 0303 123 1113.',
       },
     ],

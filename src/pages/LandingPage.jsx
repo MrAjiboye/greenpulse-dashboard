@@ -525,17 +525,17 @@ const LandingPage = () => {
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Ready to optimize your environmental impact?</h2>
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-            Join forward-thinking organizations using GreenPulse to reduce waste, save energy, and cut costs.
+            Start your 30-day free trial using your existing billing data — no IoT hardware needed on day one.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
             <button onClick={() => navigate('/register')} className="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5 w-full sm:w-auto">
-              Get Started for Free
+              Start Free Trial
             </button>
             <button onClick={() => navigate('/register')} className="px-8 py-3.5 bg-white border border-gray-300 hover:border-gray-400 text-gray-800 font-bold rounded-lg shadow-sm transition-all w-full sm:w-auto">
               Schedule a Demo
             </button>
           </div>
-          <p className="text-xs text-gray-500">No credit card required for 14-day trial.</p>
+          <p className="text-xs text-gray-500">Free to get started · No credit card required · IoT available on paid plans</p>
         </div>
       </section>
 
@@ -601,7 +601,7 @@ const LandingPage = () => {
           </div>
 
           <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-400">© 2026 GreenPulse Inc. All rights reserved.</p>
+            <p className="text-xs text-gray-400">© 2026 GreenPulse Inc. All rights reserved. · ICO reg. ZC103204</p>
             <div className="flex items-center gap-4">
               <a href="https://linkedin.com/greenpulse-analytics-uk" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="LinkedIn">
                 <i className="fa-brands fa-linkedin-in text-sm"></i>
