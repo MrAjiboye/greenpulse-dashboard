@@ -260,7 +260,7 @@ export default function GlossaryPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 mb-1">Glossary</h1>
-              <p className="text-sm text-gray-500">{totalTerms} terms across energy, waste, carbon, and platform concepts — plain English, no jargon.</p>
+              <p className="text-sm text-gray-500">{totalTerms} terms across energy, waste, carbon, and platform concepts - plain English, no jargon.</p>
             </div>
           </div>
 

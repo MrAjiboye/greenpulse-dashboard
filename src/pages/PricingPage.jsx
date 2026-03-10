@@ -35,7 +35,7 @@ const PLANS = [
     features: [
       'Everything in Core',
       'IoT device data ingestion (real-time)',
-      'Physical sensor support — kitchens, floors, zones',
+      'Physical sensor support - kitchens, floors, zones',
       'Unlimited team members',
       'Spike anomaly alerts',
       'AI forecasting & anomaly detection',
@@ -71,15 +71,15 @@ const PLANS = [
 const FAQ = [
   {
     q: 'Is there a free trial?',
-    a: 'Yes — all new accounts get a 30-day free trial with full Core-level access. No credit card required. Upload your data via CSV and explore the complete dashboard from day one.',
+    a: 'Yes - all new accounts get a 30-day free trial with full Core-level access. No credit card required. Upload your data via CSV and explore the complete dashboard from day one.',
   },
   {
     q: 'What\'s the difference between Core and Pro?',
-    a: 'Core gives you automated data via CSV and energy provider APIs (Octopus Energy, n3rgy) — no hardware needed. Pro adds real-time IoT sensor ingestion for zone-level monitoring inside your premises, plus unlimited team members.',
+    a: 'Core gives you automated data via CSV and energy provider APIs (Octopus Energy, n3rgy) - no hardware needed. Pro adds real-time IoT sensor ingestion for zone-level monitoring inside your premises, plus unlimited team members.',
   },
   {
     q: 'Who is Enterprise for?',
-    a: 'Enterprise is built for businesses managing multiple sites — hotel groups, restaurant chains, retail portfolios. You get a single dashboard across all properties, cross-site benchmarking, a dedicated account manager, and invoiced billing.',
+    a: 'Enterprise is built for businesses managing multiple sites - hotel groups, restaurant chains, retail portfolios. You get a single dashboard across all properties, cross-site benchmarking, a dedicated account manager, and invoiced billing.',
   },
   {
     q: 'Can I upgrade or downgrade at any time?',
@@ -159,7 +159,7 @@ export default function PricingPage() {
           Plans for every business
         </h1>
         <p className="text-lg text-gray-500 max-w-xl mx-auto">
-          Start your 30-day free trial — no credit card required. Upgrade when you're ready.
+          Start your 30-day free trial - no credit card required. Upgrade when you're ready.
         </p>
       </div>
 

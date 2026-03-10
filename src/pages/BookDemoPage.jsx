@@ -62,7 +62,7 @@ export default function BookDemoPage() {
 
     try {
       // Send via mailto as the primary mechanism — backend email optional later
-      const subject = encodeURIComponent(`Demo request — ${form.business_name}`);
+      const subject = encodeURIComponent(`Demo request - ${form.business_name}`);
       const body = encodeURIComponent(
         `Name: ${form.full_name}\nBusiness: ${form.business_name}\nEmail: ${form.email}\nPhone: ${form.phone}\nPreferred date: ${form.preferred_date}\nPreferred time: ${form.preferred_time}\nMessage: ${form.message || 'N/A'}`
       );
@@ -112,7 +112,7 @@ export default function BookDemoPage() {
             <div className="space-y-4">
               {[
                 { icon: 'fa-bolt', title: 'Live AI insights demo', desc: 'See how GreenPulse automatically spots energy anomalies and generates ranked savings recommendations.' },
-                { icon: 'fa-chart-line', title: 'Your data, your numbers', desc: 'Upload a CSV of your existing bills — we\'ll show you your carbon footprint and waste breakdown instantly.' },
+                { icon: 'fa-chart-line', title: 'Your data, your numbers', desc: 'Upload a CSV of your existing bills - we\'ll show you your carbon footprint and waste breakdown instantly.' },
                 { icon: 'fa-users', title: 'No pressure', desc: '30 minutes. No sales scripts. Cancel or reschedule any time.' },
               ].map((item) => (
                 <div key={item.title} className="flex gap-3">

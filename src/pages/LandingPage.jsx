@@ -17,19 +17,19 @@ const FEATURES = [
   {
     icon: 'fa-brain', color: 'blue',
     title: 'AI Insights',
-    desc: 'GreenPulse automatically analyses your usage patterns and surfaces the top actions to cut costs — ranked by estimated £ savings.',
+    desc: 'GreenPulse automatically analyses your usage patterns and surfaces the top actions to cut costs - ranked by estimated £ savings.',
     bullets: ['Estimated £ savings per action', 'Trained on your own data, not averages'],
   },
   {
     icon: 'fa-chart-line', color: 'purple',
     title: '7-Day Forecasts',
-    desc: 'Know what your energy bill will be before it arrives. Powered by AI — learns from your historical usage to predict the week ahead.',
+    desc: 'Know what your energy bill will be before it arrives. Powered by AI - learns from your historical usage to predict the week ahead.',
     bullets: ['7-day ahead energy predictions', 'Catches unusual patterns before they cost you'],
   },
   {
     icon: 'fa-bell', color: 'rose',
     title: 'Anomaly Alerts',
-    desc: 'Instant alerts when consumption spikes beyond normal — fridge left open, HVAC running overnight, or equipment fault.',
+    desc: 'Instant alerts when consumption spikes beyond normal - fridge left open, HVAC running overnight, or equipment fault.',
     bullets: ['Automatic spike detection', 'Email alerts straight to managers'],
   },
   {
@@ -525,7 +525,7 @@ const LandingPage = () => {
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Ready to optimize your environmental impact?</h2>
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-            Start your 30-day free trial using your existing billing data — no IoT hardware needed on day one.
+            Start your 30-day free trial using your existing billing data - no IoT hardware needed on day one.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
             <button onClick={() => navigate('/register')} className="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5 w-full sm:w-auto">

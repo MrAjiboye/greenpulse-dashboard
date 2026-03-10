@@ -234,7 +234,7 @@ const Dashboard = () => {
                   Complete your {pendingPlan === 'pro' ? 'Pro' : 'Core'} upgrade
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  You selected the {pendingPlan === 'pro' ? 'Pro (£99/mo)' : 'Core (£49/mo)'} plan — click below to finish checkout via Stripe.
+                  You selected the {pendingPlan === 'pro' ? 'Pro (£99/mo)' : 'Core (£49/mo)'} plan - click below to finish checkout via Stripe.
                 </p>
               </div>
             </div>
