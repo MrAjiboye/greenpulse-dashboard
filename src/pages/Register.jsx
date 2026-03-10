@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -74,6 +74,7 @@ function PasswordChecklist({ password }) {
 
 export default function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { setUser } = useAuth();
 
   const [form, setForm]             = useState({ fullName: '', orgName: '', email: '', password: '', confirm: '' });
@@ -93,6 +94,11 @@ export default function Register() {
     setError('');
     try {
       await authAPI.register({ email: form.email, password: form.password, full_name: form.fullName, organization_name: form.orgName });
+      // Preserve chosen plan so dashboard can prompt upgrade after email verification
+      const plan = searchParams.get('plan');
+      if (plan === 'core' || plan === 'pro') {
+        localStorage.setItem('pending_plan', plan);
+      }
       navigate(`/verify-email-sent?email=${encodeURIComponent(form.email)}`);
     } catch (err) {
       const data = err.response?.data;

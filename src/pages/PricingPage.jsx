@@ -38,7 +38,7 @@ const PLANS = [
       'Physical sensor support — kitchens, floors, zones',
       'Unlimited team members',
       'Spike anomaly alerts',
-      'ML forecasting & anomaly detection',
+      'AI forecasting & anomaly detection',
       'Comparison mode',
       'Priority email support',
       'Early access to new features',
@@ -107,7 +107,7 @@ export default function PricingPage() {
       return;
     }
     if (!user) {
-      navigate('/register');
+      navigate(`/register?plan=${plan}`);
       return;
     }
     setLoading(plan);

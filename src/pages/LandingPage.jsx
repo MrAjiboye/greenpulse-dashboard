@@ -17,13 +17,13 @@ const FEATURES = [
   {
     icon: 'fa-brain', color: 'blue',
     title: 'AI Insights',
-    desc: 'Our ML engine analyses your usage patterns and surfaces the top actions to cut costs — ranked by estimated £ savings.',
+    desc: 'GreenPulse automatically analyses your usage patterns and surfaces the top actions to cut costs — ranked by estimated £ savings.',
     bullets: ['Estimated £ savings per action', 'Trained on your own data, not averages'],
   },
   {
     icon: 'fa-chart-line', color: 'purple',
     title: '7-Day Forecasts',
-    desc: 'Know what your energy bill will be before it arrives. ML-powered forecasting with confidence intervals so you can plan ahead.',
+    desc: 'Know what your energy bill will be before it arrives. Powered by AI — learns from your historical usage to predict the week ahead.',
     bullets: ['7-day ahead energy predictions', 'Catches unusual patterns before they cost you'],
   },
   {

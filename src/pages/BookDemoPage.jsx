@@ -111,7 +111,7 @@ export default function BookDemoPage() {
 
             <div className="space-y-4">
               {[
-                { icon: 'fa-bolt', title: 'Live AI insights demo', desc: 'See how our ML engine spots energy anomalies and generates savings recommendations.' },
+                { icon: 'fa-bolt', title: 'Live AI insights demo', desc: 'See how GreenPulse automatically spots energy anomalies and generates ranked savings recommendations.' },
                 { icon: 'fa-chart-line', title: 'Your data, your numbers', desc: 'Upload a CSV of your existing bills — we\'ll show you your carbon footprint and waste breakdown instantly.' },
                 { icon: 'fa-users', title: 'No pressure', desc: '30 minutes. No sales scripts. Cancel or reschedule any time.' },
               ].map((item) => (

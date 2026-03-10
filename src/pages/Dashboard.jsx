@@ -5,7 +5,7 @@ import {
   ReferenceLine, ResponsiveContainer,
   PieChart, Pie, Cell, Label, Legend,
 } from 'recharts';
-import { dashboardAPI, insightsAPI, notificationsAPI, energyAPI, goalsAPI } from '../services/api';
+import { dashboardAPI, insightsAPI, notificationsAPI, energyAPI, goalsAPI, billingAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import NavBar from '../components/NavBar';
 import { Skeleton } from '../components/Skeleton';
@@ -63,6 +63,20 @@ const Dashboard = () => {
   const [energyStats, setEnergyStats] = useState(null);
   const [wasteStats, setWasteStats]   = useState(null);
   const [zones, setZones]             = useState([]);
+  const [pendingPlan, setPendingPlan]   = useState(() => localStorage.getItem('pending_plan'));
+  const [planLoading, setPlanLoading]   = useState(false);
+
+  const handlePendingUpgrade = async () => {
+    if (!pendingPlan) return;
+    setPlanLoading(true);
+    try {
+      const { url } = await billingAPI.createCheckoutSession(pendingPlan);
+      localStorage.removeItem('pending_plan');
+      window.location.href = url;
+    } catch {
+      setPlanLoading(false);
+    }
+  };
 
   useEffect(() => { fetchDashboardData(); }, []);
 
@@ -207,6 +221,42 @@ const Dashboard = () => {
       <NavBar />
 
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* Pending plan upgrade banner — shown after signing up from pricing page */}
+        {pendingPlan && (
+          <div className="mb-6 flex items-center justify-between gap-4 bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-4">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                <i className="fa-solid fa-crown text-emerald-600 text-sm"></i>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">
+                  Complete your {pendingPlan === 'pro' ? 'Pro' : 'Core'} upgrade
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  You selected the {pendingPlan === 'pro' ? 'Pro (£99/mo)' : 'Core (£49/mo)'} plan — click below to finish checkout via Stripe.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={handlePendingUpgrade}
+                disabled={planLoading}
+                className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60 flex items-center gap-1.5"
+              >
+                {planLoading ? <><i className="fa-solid fa-circle-notch fa-spin text-xs"></i> Redirecting…</> : 'Upgrade now'}
+              </button>
+              <button
+                onClick={() => { localStorage.removeItem('pending_plan'); setPendingPlan(null); }}
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                title="Dismiss"
+              >
+                <i className="fa-solid fa-xmark text-xs"></i>
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Dashboard Overview</h1>
           <p className="text-gray-500">Your energy, costs and waste, updated live</p>
