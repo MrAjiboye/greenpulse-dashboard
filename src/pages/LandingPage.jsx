@@ -445,7 +445,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="bg-gray-900 py-16 border-t border-gray-800">
+      <section className="bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900 py-16 border-t border-emerald-900/30">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-800">
             <div className="px-4">
