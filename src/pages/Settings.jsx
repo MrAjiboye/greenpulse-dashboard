@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useTheme } from '../context/ThemeContext';
-import { authAPI } from '../services/api';
+import { authAPI, octopusAPI } from '../services/api';
 import NavBar from '../components/NavBar';
 
 const PREFS_KEY = 'greenpulse_preferences';
@@ -65,6 +65,16 @@ const Settings = () => {
   const [weightUnit, setWeightUnit] = useState('Metric Tons (t)');
   const [dateFormat, setDateFormat] = useState('DD/MM/YYYY');
 
+  // Octopus Energy integration state
+  const [octopusStatus, setOctopusStatus] = useState(null); // null = loading, {connected, mpan, ...}
+  const [octopusApiKey, setOctopusApiKey] = useState('');
+  const [octopusMpan, setOctopusMpan] = useState('');
+  const [octopusSerial, setOctopusSerial] = useState('');
+  const [octopusConnecting, setOctopusConnecting] = useState(false);
+  const [octopusSyncing, setOctopusSyncing] = useState(false);
+  const [showOctopusForm, setShowOctopusForm] = useState(false);
+  const [showOctopusKey, setShowOctopusKey] = useState(false);
+
   // Populate from user context and saved preferences on mount
   useEffect(() => {
     if (user) {
@@ -89,6 +99,59 @@ const Settings = () => {
     if (prefs.weightUnit) setWeightUnit(prefs.weightUnit);
     if (prefs.dateFormat) setDateFormat(prefs.dateFormat);
   }, [user]);
+
+  // Load Octopus connection status on mount
+  useEffect(() => {
+    octopusAPI.getStatus()
+      .then(setOctopusStatus)
+      .catch(() => setOctopusStatus({ connected: false }));
+  }, []);
+
+  const handleOctopusConnect = async (e) => {
+    e.preventDefault();
+    if (!octopusApiKey || !octopusMpan || !octopusSerial) {
+      showToast('Please fill in all Octopus fields.', 'error');
+      return;
+    }
+    setOctopusConnecting(true);
+    try {
+      await octopusAPI.connect({ api_key: octopusApiKey, mpan: octopusMpan, meter_serial: octopusSerial });
+      const status = await octopusAPI.getStatus();
+      setOctopusStatus(status);
+      setShowOctopusForm(false);
+      setOctopusApiKey('');
+      showToast('Octopus Energy connected successfully.', 'success');
+    } catch (err) {
+      showToast(err?.response?.data?.detail || 'Connection failed. Check your credentials.', 'error');
+    } finally {
+      setOctopusConnecting(false);
+    }
+  };
+
+  const handleOctopusSync = async () => {
+    setOctopusSyncing(true);
+    try {
+      const result = await octopusAPI.sync();
+      const status = await octopusAPI.getStatus();
+      setOctopusStatus(status);
+      showToast(`Synced ${result.imported} reading${result.imported !== 1 ? 's' : ''} from Octopus Energy.`, 'success');
+    } catch (err) {
+      showToast(err?.response?.data?.detail || 'Sync failed. Please try again.', 'error');
+    } finally {
+      setOctopusSyncing(false);
+    }
+  };
+
+  const handleOctopusDisconnect = async () => {
+    if (!window.confirm('Disconnect Octopus Energy? Your existing data will be kept.')) return;
+    try {
+      await octopusAPI.disconnect();
+      setOctopusStatus({ connected: false });
+      showToast('Octopus Energy disconnected.', 'success');
+    } catch {
+      showToast('Failed to disconnect. Please try again.', 'error');
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -684,42 +747,167 @@ const Settings = () => {
 
             {/* Data Connections */}
             <div id="section-data" className="bg-white rounded-xl border border-gray-300 shadow-sm overflow-hidden scroll-mt-24">
-              <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">Data Connections</h3>
-                  <p className="text-sm text-gray-500 mt-1">Connect your energy meter accounts or upload consumption data files.</p>
-                </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 bg-amber-50 text-amber-600 border border-amber-200 rounded-full">Coming Soon</span>
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-lg font-bold text-gray-900">Data Connections</h3>
+                <p className="text-sm text-gray-500 mt-1">Connect your energy provider for automatic data import.</p>
               </div>
-              <div className="p-6 space-y-4">
-                <div className="text-center py-8 text-gray-400">
-                  <i className="fa-solid fa-plug text-3xl mb-3 block"></i>
-                  <p className="text-sm font-medium text-gray-500">No connections yet</p>
-                  <p className="text-xs text-gray-400 mt-1">Direct meter integration and CSV upload are coming soon.</p>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-                  <label className="cursor-pointer">
-                    <input type="file" accept=".csv,.xlsx,.xls" className="hidden" id="file-upload" />
-                    <div className="py-3 border-2 border-dashed border-gray-200 rounded-lg text-sm font-medium text-gray-500 hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50 transition-all flex items-center justify-center gap-2">
-                      <i className="fa-solid fa-file-arrow-up"></i> Upload CSV/Excel File
+              {/* Octopus Energy card */}
+              <div className="p-6">
+                <div className="border border-gray-200 rounded-xl overflow-hidden">
+                  {/* Header row */}
+                  <div className="flex items-center justify-between px-5 py-4 bg-gray-50 border-b border-gray-200">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-[#f15a2b] flex items-center justify-center flex-shrink-0">
+                        <i className="fa-solid fa-bolt text-white text-sm"></i>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">Octopus Energy</p>
+                        <p className="text-xs text-gray-500">Half-hourly electricity import · Core plan</p>
+                      </div>
                     </div>
-                  </label>
-                  <button className="py-3 border-2 border-dashed border-gray-200 rounded-lg text-sm font-medium text-gray-500 hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50 transition-all flex items-center justify-center gap-2">
-                    <i className="fa-solid fa-plug"></i> Connect Meter Account
-                  </button>
-                </div>
-
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-100">
-                  <div className="flex gap-2">
-                    <i className="fa-solid fa-circle-info text-blue-500 text-sm mt-0.5"></i>
-                    <div>
-                      <p className="text-xs font-medium text-gray-700">Supported formats:</p>
-                      <p className="text-xs text-gray-500 mt-1">• CSV/Excel files with timestamp and consumption columns</p>
-                      <p className="text-xs text-gray-500">• Meter account credentials (account number and access code)</p>
-                    </div>
+                    {octopusStatus === null ? (
+                      <span className="text-xs text-gray-400"><i className="fa-solid fa-circle-notch fa-spin mr-1"></i>Loading…</span>
+                    ) : octopusStatus.connected ? (
+                      <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>Connected
+                      </span>
+                    ) : (
+                      <span className="text-xs font-medium text-gray-400 bg-gray-100 border border-gray-200 px-2.5 py-1 rounded-full">Not connected</span>
+                    )}
                   </div>
+
+                  {/* Connected state */}
+                  {octopusStatus?.connected && (
+                    <div className="px-5 py-4 space-y-3">
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                          <p className="text-gray-400 mb-0.5">MPAN</p>
+                          <p className="font-mono font-medium text-gray-700">{octopusStatus.mpan || '—'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400 mb-0.5">Meter Serial</p>
+                          <p className="font-mono font-medium text-gray-700">{octopusStatus.meter_serial || '—'}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <p className="text-gray-400 mb-0.5">Last synced</p>
+                          <p className="font-medium text-gray-700">
+                            {octopusStatus.last_sync
+                              ? new Date(octopusStatus.last_sync).toLocaleString('en-GB')
+                              : 'Never — click Sync Now'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 pt-1">
+                        <button
+                          onClick={handleOctopusSync}
+                          disabled={octopusSyncing}
+                          className="flex items-center gap-1.5 px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-60"
+                        >
+                          <i className={`fa-solid fa-rotate${octopusSyncing ? ' fa-spin' : ''} text-xs`}></i>
+                          {octopusSyncing ? 'Syncing…' : 'Sync Now'}
+                        </button>
+                        <button
+                          onClick={handleOctopusDisconnect}
+                          className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 hover:border-red-300 hover:text-red-600 text-gray-600 text-xs font-medium rounded-lg transition-colors"
+                        >
+                          <i className="fa-solid fa-link-slash text-xs"></i>
+                          Disconnect
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Not connected — show connect button or form */}
+                  {octopusStatus !== null && !octopusStatus.connected && (
+                    <div className="px-5 py-4">
+                      {!showOctopusForm ? (
+                        <button
+                          onClick={() => setShowOctopusForm(true)}
+                          className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg transition-colors"
+                        >
+                          <i className="fa-solid fa-plug text-xs"></i>
+                          Connect Octopus Energy
+                        </button>
+                      ) : (
+                        <form onSubmit={handleOctopusConnect} className="space-y-3">
+                          <p className="text-xs text-gray-500 mb-3">
+                            Find your API key in your{' '}
+                            <a href="https://octopus.energy/dashboard/developer/" target="_blank" rel="noreferrer" className="text-emerald-600 underline">Octopus account dashboard</a>.
+                            Your MPAN and meter serial are on your bill or in the same developer section.
+                          </p>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">API Key</label>
+                            <div className="relative">
+                              <input
+                                type={showOctopusKey ? 'text' : 'password'}
+                                value={octopusApiKey}
+                                onChange={(e) => setOctopusApiKey(e.target.value)}
+                                placeholder="sk_live_…"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 pr-10 font-mono"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowOctopusKey(!showOctopusKey)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                              >
+                                <i className={`fa-solid ${showOctopusKey ? 'fa-eye-slash' : 'fa-eye'} text-xs`}></i>
+                              </button>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs font-medium text-gray-700 mb-1">MPAN</label>
+                              <input
+                                type="text"
+                                value={octopusMpan}
+                                onChange={(e) => setOctopusMpan(e.target.value)}
+                                placeholder="1012345678901"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 font-mono"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-700 mb-1">Meter Serial</label>
+                              <input
+                                type="text"
+                                value={octopusSerial}
+                                onChange={(e) => setOctopusSerial(e.target.value)}
+                                placeholder="19L1234567"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 font-mono"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex gap-2 pt-1">
+                            <button
+                              type="submit"
+                              disabled={octopusConnecting}
+                              className="flex items-center gap-1.5 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60"
+                            >
+                              {octopusConnecting ? (
+                                <><i className="fa-solid fa-circle-notch fa-spin text-xs"></i> Connecting…</>
+                              ) : (
+                                <><i className="fa-solid fa-plug text-xs"></i> Connect</>
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setShowOctopusForm(false)}
+                              className="px-4 py-2 bg-white border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      )}
+                    </div>
+                  )}
                 </div>
+
+                {/* More providers coming soon */}
+                <p className="text-xs text-gray-400 mt-4 text-center">
+                  <i className="fa-solid fa-circle-info mr-1"></i>
+                  More providers (n3rgy, EDF, British Gas) coming soon
+                </p>
               </div>
             </div>
 

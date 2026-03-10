@@ -325,4 +325,11 @@ export const billingAPI = {
   getStatus: async () => (await api.get('/billing/status')).data,
 };
 
+export const octopusAPI = {
+  getStatus:   async () => (await api.get('/octopus/status')).data,
+  connect:     async (data) => (await api.post('/octopus/connect', data)).data,
+  sync:        async () => (await api.post('/octopus/sync')).data,
+  disconnect:  async () => (await api.delete('/octopus/disconnect')).data,
+};
+
 export default api;

@@ -17,7 +17,7 @@ const PLANS = [
       'Carbon footprint tracking',
       'Goal setting & tracking',
       'CSV data import',
-      'Energy provider API (Octopus, n3rgy) — coming soon',
+      'Energy provider API (Octopus Energy)',
       'Automated PDF reports',
       'Up to 3 team members',
       'Email support',
