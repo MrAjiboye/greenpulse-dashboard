@@ -169,7 +169,7 @@ const LandingPage = () => {
         </div>
       </header>
 
-      <section className="pt-32 pb-20 relative overflow-hidden bg-gradient-to-b from-emerald-50/50 to-white">
+      <section className="pt-28 pb-12 md:pt-32 md:pb-20 relative overflow-hidden bg-gradient-to-b from-emerald-50/50 to-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none"></div>
         <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-emerald-50 to-transparent -z-10"></div>
         
@@ -199,7 +199,7 @@ const LandingPage = () => {
             Track energy consumption, manage waste streams, and receive AI driven insights to reduce your carbon footprint and operational costs.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 md:mb-20">
             <button onClick={() => navigate('/signin')} className="px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 min-w-[200px]">
               Sign In to Dashboard
               <i className="fa-solid fa-arrow-right text-sm"></i>
@@ -312,9 +312,9 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section id="features" className="py-24 bg-white">
+      <section id="features" className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
+          <div className="text-center mb-10 md:mb-14 max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Comprehensive Environmental Monitoring</h2>
             <p className="text-gray-600 text-lg">Everything you need to track, analyze, and improve your organization's sustainability performance in one unified platform.</p>
           </div>
@@ -427,7 +427,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-white overflow-hidden">
+      <section className="py-12 md:py-20 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="w-full lg:w-1/2 relative">
@@ -495,7 +495,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900 py-16 border-t border-emerald-900/30">
+      <section className="bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900 py-10 md:py-16 border-t border-emerald-900/30">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-800">
             <div className="px-4">
@@ -518,7 +518,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-emerald-50 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-emerald-50 relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-20 pointer-events-none"></div>
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-emerald-100/50 to-transparent"></div>
         
