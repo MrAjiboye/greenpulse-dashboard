@@ -57,7 +57,6 @@ const LandingPage = () => {
   const [featurePage, setFeaturePage] = useState(0);
   const PER_PAGE = 3;
   const totalPages = Math.ceil(FEATURES.length / PER_PAGE);
-  const visibleFeatures = FEATURES.slice(featurePage * PER_PAGE, featurePage * PER_PAGE + PER_PAGE);
 
   const handleNewsletter = (e) => {
     e.preventDefault();
@@ -319,27 +318,36 @@ const LandingPage = () => {
             <p className="text-gray-600 text-lg">Everything you need to track, analyze, and improve your organization's sustainability performance in one unified platform.</p>
           </div>
 
-          {/* Feature slider */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {visibleFeatures.map((f) => {
-              const c = COLOR_MAP[f.color];
-              return (
-                <div key={f.title} className="p-8 rounded-2xl bg-gray-50 hover:bg-white border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                  <div className={`w-14 h-14 ${c.bg} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                    <i className={`fa-solid ${f.icon} ${c.text} text-2xl`}></i>
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{f.title}</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">{f.desc}</p>
-                  <ul className="space-y-3">
-                    {f.bullets.map(b => (
-                      <li key={b} className="flex items-center gap-3 text-sm text-gray-700">
-                        <i className="fa-solid fa-check text-emerald-500 text-xs"></i> {b}
-                      </li>
-                    ))}
-                  </ul>
+          {/* Feature slider — CSS translateX so the transition is smooth */}
+          <div className="overflow-hidden">
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${featurePage * 100}%)` }}
+            >
+              {Array.from({ length: totalPages }).map((_, pageIdx) => (
+                <div key={pageIdx} className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {FEATURES.slice(pageIdx * PER_PAGE, pageIdx * PER_PAGE + PER_PAGE).map((f) => {
+                    const c = COLOR_MAP[f.color];
+                    return (
+                      <div key={f.title} className="p-8 rounded-2xl bg-gray-50 hover:bg-white border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                        <div className={`w-14 h-14 ${c.bg} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                          <i className={`fa-solid ${f.icon} ${c.text} text-2xl`}></i>
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-3">{f.title}</h3>
+                        <p className="text-gray-600 mb-6 leading-relaxed">{f.desc}</p>
+                        <ul className="space-y-3">
+                          {f.bullets.map(b => (
+                            <li key={b} className="flex items-center gap-3 text-sm text-gray-700">
+                              <i className="fa-solid fa-check text-emerald-500 text-xs"></i> {b}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
 
           {/* Pagination dots + arrows */}
