@@ -49,6 +49,7 @@ import IoTDocs from './pages/IoTDocs';
 import IoTFeed from './pages/IoTFeed';
 import GlossaryPage from './pages/GlossaryPage';
 import PricingPage from './pages/PricingPage';
+import BookDemoPage from './pages/BookDemoPage';
 
 function TopProgressBar() {
   const location = useLocation();
@@ -107,6 +108,7 @@ function AnimatedRoutes() {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/cookies" element={<CookiesPage />} />
         <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/demo" element={<BookDemoPage />} />
 
         {/* Protected routes */}
         <Route path="/dashboard" element={

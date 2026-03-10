@@ -17,20 +17,20 @@ const FEATURES = [
   {
     icon: 'fa-brain', color: 'blue',
     title: 'AI Insights',
-    desc: 'Smart recommendations tailored to your facility. Identify savings opportunities and act on them with one click.',
-    bullets: ['Potential savings ranking', 'Automated anomaly detection'],
+    desc: 'Our ML engine analyses your usage patterns and surfaces the top actions to cut costs — ranked by estimated £ savings.',
+    bullets: ['Estimated £ savings per action', 'Trained on your own data, not averages'],
   },
   {
     icon: 'fa-chart-line', color: 'purple',
-    title: 'Cost Predictions',
-    desc: 'Know what your bill will be before it arrives. Plan ahead and avoid surprises with ML-powered forecasting.',
-    bullets: ['7-day ahead forecasts', 'Confidence intervals included'],
+    title: '7-Day Forecasts',
+    desc: 'Know what your energy bill will be before it arrives. ML-powered forecasting with confidence intervals so you can plan ahead.',
+    bullets: ['7-day ahead energy predictions', 'Catches unusual patterns before they cost you'],
   },
   {
     icon: 'fa-bell', color: 'rose',
-    title: 'Smart Alerts',
-    desc: 'Get notified the moment equipment runs inefficiently or usage spikes unexpectedly — straight to your inbox.',
-    bullets: ['Real-time spike detection', 'Email alerts to managers'],
+    title: 'Anomaly Alerts',
+    desc: 'Instant alerts when consumption spikes beyond normal — fridge left open, HVAC running overnight, or equipment fault.',
+    bullets: ['Automatic spike detection', 'Email alerts straight to managers'],
   },
   {
     icon: 'fa-plug', color: 'amber',
@@ -531,7 +531,7 @@ const LandingPage = () => {
             <button onClick={() => navigate('/register')} className="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5 w-full sm:w-auto">
               Start Free Trial
             </button>
-            <button onClick={() => navigate('/register')} className="px-8 py-3.5 bg-white border border-gray-300 hover:border-gray-400 text-gray-800 font-bold rounded-lg shadow-sm transition-all w-full sm:w-auto">
+            <button onClick={() => navigate('/demo')} className="px-8 py-3.5 bg-white border border-gray-300 hover:border-gray-400 text-gray-800 font-bold rounded-lg shadow-sm transition-all w-full sm:w-auto">
               Schedule a Demo
             </button>
           </div>
