@@ -50,8 +50,6 @@ const PieCenterLabel = ({ viewBox, totalKg }) => {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, hasRole } = useAuth();
-  useScrollReveal(undefined, undefined, !loading);
-
   const [showOnboarding, setShowOnboarding] = useState(
     () => !localStorage.getItem('greenpulse_onboarded') && hasRole?.('MANAGER', 'ADMIN')
   );
@@ -62,6 +60,7 @@ const Dashboard = () => {
   const [recentAlerts, setRecentAlerts] = useState([]);
   const [goalsSummary, setGoalsSummary] = useState([]);
   const [loading, setLoading]         = useState(true);
+  useScrollReveal(undefined, undefined, !loading);
   const [energyStats, setEnergyStats] = useState(null);
   const [wasteStats, setWasteStats]   = useState(null);
   const [zones, setZones]             = useState([]);
