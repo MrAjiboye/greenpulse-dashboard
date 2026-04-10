@@ -336,6 +336,17 @@ export const octopusAPI = {
   disconnect:  async () => (await api.delete('/octopus/disconnect')).data,
 };
 
+export const n3rgyAPI = {
+  getStatus:   async () => (await api.get('/n3rgy/status')).data,
+  connect:     async (data) => (await api.post('/n3rgy/connect', data)).data,
+  sync:        async () => (await api.post('/n3rgy/sync')).data,
+  disconnect:  async () => (await api.delete('/n3rgy/disconnect')).data,
+};
+
+export const notificationPrefsAPI = {
+  update: async (prefs) => (await api.patch('/auth/notification-preferences', prefs)).data,
+};
+
 export const demoAPI = {
   request: async (data) => (await api.post('/demo/request', data)).data,
 };

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useTheme } from '../context/ThemeContext';
-import { authAPI, octopusAPI } from '../services/api';
+import { authAPI, octopusAPI, n3rgyAPI, notificationPrefsAPI } from '../services/api';
 import NavBar from '../components/NavBar';
 
 const PREFS_KEY = 'greenpulse_preferences';
@@ -75,6 +75,14 @@ const Settings = () => {
   const [showOctopusForm, setShowOctopusForm] = useState(false);
   const [showOctopusKey, setShowOctopusKey] = useState(false);
 
+  // n3rgy integration state
+  const [n3rgyStatus, setN3rgyStatus] = useState(null);
+  const [n3rgyMpan, setN3rgyMpan] = useState('');
+  const [n3rgyMprn, setN3rgyMprn] = useState('');
+  const [n3rgyConnecting, setN3rgyConnecting] = useState(false);
+  const [n3rgySyncing, setN3rgySyncing] = useState(false);
+  const [showN3rgyForm, setShowN3rgyForm] = useState(false);
+
   // Populate from user context and saved preferences on mount
   useEffect(() => {
     if (user) {
@@ -85,26 +93,36 @@ const Settings = () => {
       setCompanyName(user.company_name || '');
     }
 
+    // Notification preferences come from the backend user object (DB-backed)
+    if (user) {
+      if (user.notify_anomaly_alerts !== undefined) setCriticalAlerts(user.notify_anomaly_alerts);
+      if (user.notify_new_insights !== undefined) setNewInsights(user.notify_new_insights);
+      if (user.email_digest_freq) {
+        const freq = user.email_digest_freq;
+        setInsightsFreq(freq.charAt(0).toUpperCase() + freq.slice(1)); // "daily" → "Daily"
+      }
+    }
+
     const prefs = loadPrefs();
     if (prefs.confidence !== undefined) setConfidence(prefs.confidence);
     if (prefs.aiEnergy !== undefined) setAiEnergy(prefs.aiEnergy);
     if (prefs.aiWaste !== undefined) setAiWaste(prefs.aiWaste);
     if (prefs.aiOps !== undefined) setAiOps(prefs.aiOps);
     if (prefs.emailDigest !== undefined) setEmailDigest(prefs.emailDigest);
-    if (prefs.criticalAlerts !== undefined) setCriticalAlerts(prefs.criticalAlerts);
-    if (prefs.newInsights !== undefined) setNewInsights(prefs.newInsights);
-    if (prefs.insightsFreq) setInsightsFreq(prefs.insightsFreq);
     if (prefs.currency) setCurrency(prefs.currency);
     if (prefs.energyUnit) setEnergyUnit(prefs.energyUnit);
     if (prefs.weightUnit) setWeightUnit(prefs.weightUnit);
     if (prefs.dateFormat) setDateFormat(prefs.dateFormat);
   }, [user]);
 
-  // Load Octopus connection status on mount
+  // Load Octopus + n3rgy connection status on mount
   useEffect(() => {
     octopusAPI.getStatus()
       .then(setOctopusStatus)
       .catch(() => setOctopusStatus({ connected: false }));
+    n3rgyAPI.getStatus()
+      .then(setN3rgyStatus)
+      .catch(() => setN3rgyStatus({ connected: false }));
   }, []);
 
   const handleOctopusConnect = async (e) => {
@@ -153,19 +171,74 @@ const Settings = () => {
     }
   };
 
+  const handleN3rgyConnect = async (e) => {
+    e.preventDefault();
+    if (!n3rgyMpan) { showToast('Please enter your MPAN.', 'error'); return; }
+    setN3rgyConnecting(true);
+    try {
+      await n3rgyAPI.connect({ mpan: n3rgyMpan, mprn: n3rgyMprn || null });
+      const status = await n3rgyAPI.getStatus();
+      setN3rgyStatus(status);
+      setShowN3rgyForm(false);
+      setN3rgyMpan('');
+      setN3rgyMprn('');
+      showToast('MPAN saved. Check your email for the n3rgy consent link.', 'success');
+    } catch (err) {
+      showToast(err?.response?.data?.error?.message || 'Connection failed. Check your MPAN and try again.', 'error');
+    } finally {
+      setN3rgyConnecting(false);
+    }
+  };
+
+  const handleN3rgySync = async () => {
+    setN3rgySyncing(true);
+    try {
+      const result = await n3rgyAPI.sync();
+      const status = await n3rgyAPI.getStatus();
+      setN3rgyStatus(status);
+      showToast(`Synced ${result.imported} reading${result.imported !== 1 ? 's' : ''} from n3rgy.`, 'success');
+    } catch (err) {
+      showToast(err?.response?.data?.error?.message || 'Sync failed. Consent may not be granted yet.', 'error');
+    } finally {
+      setN3rgySyncing(false);
+    }
+  };
+
+  const handleN3rgyDisconnect = async () => {
+    if (!window.confirm('Disconnect n3rgy? Your existing data will be kept.')) return;
+    try {
+      await n3rgyAPI.disconnect();
+      setN3rgyStatus({ connected: false });
+      showToast('n3rgy disconnected.', 'success');
+    } catch {
+      showToast('Failed to disconnect. Please try again.', 'error');
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
       const full_name = [firstName, lastName].filter(Boolean).join(' ');
-      const updated = await authAPI.updateProfile({ full_name, job_title: jobTitle, department, company_name: companyName });
-      const newUser = { ...user, ...updated, full_name };
+      const [updated] = await Promise.all([
+        authAPI.updateProfile({ full_name, job_title: jobTitle, department, company_name: companyName }),
+        notificationPrefsAPI.update({
+          notify_anomaly_alerts: criticalAlerts,
+          notify_new_insights: newInsights,
+          email_digest_freq: insightsFreq.toLowerCase(),
+        }),
+      ]);
+      const newUser = {
+        ...user, ...updated, full_name,
+        notify_anomaly_alerts: criticalAlerts,
+        notify_new_insights: newInsights,
+        email_digest_freq: insightsFreq.toLowerCase(),
+      };
       localStorage.setItem('user', JSON.stringify(newUser));
       setUser(newUser);
 
       localStorage.setItem(PREFS_KEY, JSON.stringify({
         confidence, aiEnergy, aiWaste, aiOps,
-        emailDigest, criticalAlerts, newInsights, insightsFreq,
-        currency, energyUnit, weightUnit, dateFormat,
+        emailDigest, currency, energyUnit, weightUnit, dateFormat,
       }));
 
       showToast('Settings saved successfully', 'success');
@@ -173,8 +246,7 @@ const Settings = () => {
       // Profile update failed — still save local preferences
       localStorage.setItem(PREFS_KEY, JSON.stringify({
         confidence, aiEnergy, aiWaste, aiOps,
-        emailDigest, criticalAlerts, newInsights, insightsFreq,
-        currency, energyUnit, weightUnit, dateFormat,
+        emailDigest, currency, energyUnit, weightUnit, dateFormat,
       }));
       showToast('Preferences saved. Profile update failed. Please try again.', 'warning');
     } finally {
@@ -662,7 +734,7 @@ const Settings = () => {
             <div id="section-notifications" className="bg-white rounded-xl border border-gray-300 shadow-sm overflow-hidden scroll-mt-24">
               <div className="p-6 border-b border-gray-100">
                 <h3 className="text-lg font-bold text-gray-900">Notification Preferences</h3>
-                <p className="text-sm text-gray-500 mt-1">Manage how you receive updates and alerts. <span className="text-gray-400">(Saved locally on this device)</span></p>
+                <p className="text-sm text-gray-500 mt-1">Manage how GreenPulse emails you updates and alerts.</p>
               </div>
 
               <div className="p-6 space-y-6">
@@ -903,10 +975,148 @@ const Settings = () => {
                   )}
                 </div>
 
+                {/* n3rgy card */}
+                <div className="border border-gray-200 rounded-xl p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center">
+                        <i className="fa-solid fa-bolt text-blue-600 text-sm"></i>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">n3rgy (Any UK Supplier)</p>
+                        <p className="text-xs text-gray-400">Works with British Gas, EDF, E.ON, SSE and all others</p>
+                      </div>
+                    </div>
+                    {n3rgyStatus === null ? (
+                      <span className="text-xs text-gray-400">Loading…</span>
+                    ) : n3rgyStatus.connected ? (
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                        <i className="fa-solid fa-circle text-[6px]"></i>
+                        {n3rgyStatus.consent_granted ? 'Connected' : 'Pending consent'}
+                      </span>
+                    ) : null}
+                  </div>
+
+                  {n3rgyStatus?.connected && (
+                    <div className="mb-4 space-y-3">
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-xs text-gray-400 mb-0.5">MPAN</p>
+                          <p className="font-mono font-medium text-gray-700">{n3rgyStatus.mpan || '—'}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400 mb-0.5">Last Sync</p>
+                          <p className="font-medium text-gray-700">
+                            {n3rgyStatus.last_sync ? new Date(n3rgyStatus.last_sync).toLocaleString('en-GB') : 'Never'}
+                          </p>
+                        </div>
+                      </div>
+                      {!n3rgyStatus.consent_granted && (
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 text-xs text-amber-700">
+                          <i className="fa-solid fa-envelope mr-1.5"></i>
+                          Check your email for the consent link from n3rgy. Once approved, click Sync Now.
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleN3rgySync}
+                          disabled={n3rgySyncing}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-60"
+                        >
+                          <i className={`fa-solid fa-rotate${n3rgySyncing ? ' fa-spin' : ''} text-xs`}></i>
+                          {n3rgySyncing ? 'Syncing…' : 'Sync Now'}
+                        </button>
+                        <button
+                          onClick={handleN3rgyDisconnect}
+                          className="px-3 py-1.5 bg-white border border-gray-200 text-red-500 text-xs font-medium rounded-lg hover:bg-red-50 transition-colors"
+                        >
+                          Disconnect
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {n3rgyStatus !== null && !n3rgyStatus.connected && (
+                    <div>
+                      {!showN3rgyForm ? (
+                        <button
+                          onClick={() => setShowN3rgyForm(true)}
+                          className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors"
+                        >
+                          <i className="fa-solid fa-plug text-xs"></i>
+                          Connect via n3rgy
+                        </button>
+                      ) : (
+                        <form onSubmit={handleN3rgyConnect} className="space-y-3">
+                          {/* Walkthrough */}
+                          <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 space-y-2.5">
+                            <p className="text-xs font-semibold text-blue-800 flex items-center gap-1.5">
+                              <i className="fa-solid fa-circle-info"></i> Where to find your details
+                            </p>
+                            <div className="space-y-2 text-xs text-blue-700">
+                              <p><span className="font-semibold">MPAN</span> (electricity) — a 13-digit number on your electricity bill, usually labelled "Supply Number" or "MPAN". Also printed on your smart meter's in-home display under "meter info".</p>
+                              <p><span className="font-semibold">MPRN</span> (gas, optional) — a 10-digit number on your gas bill, labelled "Meter Point Reference" or "MPRN".</p>
+                              <p><span className="font-semibold">Smart meter required</span> — you need a second-generation (SMETS2) smart meter. If you're unsure, contact your energy supplier — most UK commercial premises had one installed by 2024.</p>
+                              <p><span className="font-semibold">After saving</span> — n3rgy will send a consent email to the address on your meter account. Click the link in that email, then return here and click Sync Now.</p>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                              Electricity MPAN <span className="text-red-400">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={n3rgyMpan}
+                              onChange={(e) => setN3rgyMpan(e.target.value.replace(/\s/g, ''))}
+                              placeholder="1234567890123"
+                              maxLength={13}
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 font-mono"
+                            />
+                            <p className="text-[11px] text-gray-400 mt-1">13 digits — found on your electricity bill under "Supply Number" or "MPAN"</p>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                              Gas MPRN <span className="text-gray-400">(optional)</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={n3rgyMprn}
+                              onChange={(e) => setN3rgyMprn(e.target.value.replace(/\s/g, ''))}
+                              placeholder="1234567890"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 font-mono"
+                            />
+                            <p className="text-[11px] text-gray-400 mt-1">10 digits — found on your gas bill under "Meter Point Reference" or "MPRN"</p>
+                          </div>
+                          <div className="flex gap-2 pt-1">
+                            <button
+                              type="submit"
+                              disabled={n3rgyConnecting}
+                              className="flex items-center gap-1.5 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60"
+                            >
+                              {n3rgyConnecting ? (
+                                <><i className="fa-solid fa-circle-notch fa-spin text-xs"></i> Saving…</>
+                              ) : (
+                                <><i className="fa-solid fa-plug text-xs"></i> Save & Request Consent</>
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setShowN3rgyForm(false)}
+                              className="px-4 py-2 bg-white border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 {/* More providers coming soon */}
                 <p className="text-xs text-gray-400 mt-4 text-center">
                   <i className="fa-solid fa-circle-info mr-1"></i>
-                  More providers (n3rgy, EDF, British Gas) coming soon
+                  More providers (EDF, British Gas direct) coming soon
                 </p>
               </div>
             </div>

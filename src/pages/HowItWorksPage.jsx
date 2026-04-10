@@ -8,12 +8,12 @@ const steps = [
     number: '01',
     icon: 'fa-plug',
     title: 'Connect your data',
-    desc: 'Sign up and connect GreenPulse to your energy meters, point-of-sale system, or manually import your billing data. We work with what you have. No specialist hardware required to get started.',
+    desc: 'Sign up and connect GreenPulse to your smart meter via n3rgy — works with any UK energy supplier, including British Gas, EDF, E.ON, and SSE. Or import a CSV from your bill. No specialist hardware needed.',
     details: [
-      'Works with standard smart meters',
-      'Manual CSV import for any billing format',
-      'Connect to existing POS for foot traffic data',
-      'Setup takes under 30 minutes',
+      'n3rgy integration — any UK supplier',
+      'Octopus Energy direct API',
+      'CSV import for any billing format',
+      'Setup takes under 15 minutes',
     ],
     color: 'emerald',
   },
@@ -21,11 +21,11 @@ const steps = [
     number: '02',
     icon: 'fa-chart-line',
     title: 'Monitor in real time',
-    desc: 'Your dashboard shows live energy usage by zone, time of day, and equipment. See exactly what\'s consuming power at any given moment, not just the monthly total on your bill.',
+    desc: 'Your dashboard shows energy usage by zone, time of day, and period. See exactly where money is going — not just the monthly total on your bill — and spot waste before it compounds.',
     details: [
-      'Real time consumption by zone and equipment',
-      'Automatic peak vs off peak rate tracking',
-      'Foot traffic overlay for efficiency scoring',
+      'Consumption broken down by zone',
+      'Peak vs off-peak rate tracking',
+      'Half-hourly smart meter data',
       'Weekly and monthly trend reports',
     ],
     color: 'blue',
@@ -33,12 +33,12 @@ const steps = [
   {
     number: '03',
     icon: 'fa-brain',
-    title: 'Get AI powered insights',
-    desc: 'GreenPulse analyses your usage patterns and surfaces specific, actionable problems, not generic tips. It finds the three to five things actually costing you money and tells you exactly what to do.',
+    title: 'Get AI-powered insights',
+    desc: 'GreenPulse analyses your usage patterns and surfaces the specific things costing you money — not generic tips. Ghost load detection, anomaly alerts, and prioritised recommendations with real £ figures attached.',
     details: [
       'Automatic anomaly detection',
-      'Equipment-level cost breakdown',
-      'Waste identified with estimated savings',
+      'Ghost load identification',
+      'Savings estimated in £ per month',
       'Prioritised by financial impact',
     ],
     color: 'purple',
@@ -47,12 +47,12 @@ const steps = [
     number: '04',
     icon: 'fa-circle-check',
     title: 'Act and track your savings',
-    desc: 'Apply the recommendations. Most require no new equipment. Track the savings over time in real money. Build a record of your sustainability improvements for grants, guests, and compliance.',
+    desc: 'Apply the recommendations — most require no new equipment. Track savings in real money over time. Build a carbon reduction record for grants, guests, and Scotland\'s 2030 compliance requirements.',
     details: [
       'Step-by-step implementation guides',
-      'Before/after cost comparison',
-      'Carbon reduction tracking for compliance',
-      'Shareable reports for stakeholders',
+      'Before and after cost comparison',
+      'Carbon footprint tracking',
+      'Exportable reports for stakeholders',
     ],
     color: 'orange',
   },
@@ -61,23 +61,31 @@ const steps = [
 const faqs = [
   {
     q: 'Do I need to install any hardware?',
-    a: 'Not to get started. GreenPulse works with your existing energy bills and smart meter data. For real time monitoring, a standard smart meter is all you need. Most UK commercial properties already have one.',
+    a: 'No. GreenPulse connects to your existing smart meter via n3rgy — the national smart meter data network used by all UK energy suppliers. If you have a second-generation (SMETS2) smart meter, you can connect in minutes. Most UK commercial premises had one installed by 2024. If you\'re unsure, ask your energy supplier.',
+  },
+  {
+    q: 'My business is on British Gas / EDF / SSE — does it work for me?',
+    a: 'Yes. GreenPulse uses n3rgy, which connects via the national DCC (Data Communications Company) network. This means it works regardless of which energy supplier you\'re on — British Gas, EDF, E.ON, SSE, or any other UK supplier. You don\'t need to switch.',
+  },
+  {
+    q: 'Does it work in Scotland?',
+    a: 'Yes. n3rgy covers England, Scotland, and Wales. If you\'re running a hotel in the Highlands, a restaurant in Edinburgh, or a café in Glasgow, GreenPulse works for you. The only area not currently covered is Northern Ireland, which runs on a separate energy network.',
   },
   {
     q: 'How quickly will I see results?',
-    a: 'Most customers identify their first meaningful insight within two weeks of connecting data. Significant savings typically appear within 30-60 days of applying the first set of recommendations.',
+    a: 'Most customers identify their first meaningful insight within two weeks of connecting smart meter data. Significant savings typically appear within 30 to 60 days of applying the first set of recommendations.',
   },
   {
     q: 'Do I need a technical background to use GreenPulse?',
-    a: 'No. GreenPulse is designed for hospitality operators, not engineers. If you can read a spreadsheet, you can use GreenPulse. The platform tells you what the data means and what to do about it.',
+    a: 'No. GreenPulse is designed for hospitality operators, not engineers. The platform connects to your meter, processes the data, and tells you in plain English what\'s costing you money and what to do about it.',
   },
   {
     q: 'What size businesses does GreenPulse work for?',
-    a: 'GreenPulse is built specifically for independent and small chain hospitality businesses: restaurants, cafés, pubs, and hotels with 1 to 30 locations. We\'re not designed for large enterprise operations.',
+    a: 'GreenPulse is built for independent and small chain hospitality businesses — restaurants, cafés, pubs, and hotels with 1 to 30 locations. We\'re not designed for large enterprise operations.',
   },
   {
     q: 'How does pricing work?',
-    a: 'GreenPulse offers flexible plans to suit businesses of all sizes. Register today and our team will be in touch to discuss the right plan for your needs.',
+    a: 'GreenPulse starts with a free 30-day trial — no credit card required. The Core plan (£49/month) includes smart meter integration and CSV import. The Pro plan (£99/month) adds real-time IoT monitoring. See the full breakdown on our pricing page.',
   },
 ];
 
@@ -225,7 +233,7 @@ const HowItWorksPage = () => {
       <section className="bg-gradient-to-br from-emerald-600 to-emerald-500 py-20 px-6 text-center">
         <h2 className="reveal text-3xl md:text-4xl font-bold text-white mb-4">Ready to see where your money goes?</h2>
         <p className="text-emerald-100 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          GreenPulse launches in Scotland in Spring 2026. Sign up for early access and founding member pricing.
+          Connect your smart meter, import your data, and find your first saving in under 30 minutes.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a

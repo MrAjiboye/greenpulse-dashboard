@@ -62,7 +62,7 @@ const BlogPost1 = () => {
         <div className="flex flex-wrap items-center gap-4 mb-5 text-sm text-gray-500">
           <span className="bg-emerald-50 text-emerald-600 text-xs font-semibold px-3 py-1 rounded-full">Energy Savings</span>
           <span>5 min read</span>
-          <span>January 8, 2026</span>
+          <span>8 January 2026</span>
         </div>
 
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
@@ -167,7 +167,7 @@ const BlogPost1 = () => {
 
         <p className="text-lg text-gray-700 mb-5 leading-relaxed">That's why GreenPulse exists. We show you exactly where your money goes. Which equipment costs what. When you're paying peak rates. What's running when it shouldn't be.</p>
 
-        <p className="text-lg text-gray-700 mb-10 leading-relaxed">Spring 2026, we're launching in Scotland. If you're tired of guessing why your energy bills are high, sign up.</p>
+        <p className="text-lg text-gray-700 mb-10 leading-relaxed">GreenPulse connects directly to your smart meter — any UK supplier, no new hardware — and gives you exactly this visibility. Most businesses find their first quick win within two weeks.</p>
 
         <div className="text-center mt-12 mb-6">
           <a

@@ -208,7 +208,7 @@ const StoriesPage = () => {
       <section className="bg-gradient-to-br from-emerald-600 to-emerald-500 py-20 px-6 text-center">
         <h2 className="reveal text-3xl md:text-4xl font-bold text-white mb-4">Your business could be next</h2>
         <p className="text-emerald-100 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          GreenPulse launches in Scotland in Spring 2026. Sign up and be first to know when we go live.
+          Connect your smart meter and start finding savings today. Free 30-day trial, no credit card required.
         </p>
         <a
           href="/register"

@@ -304,7 +304,7 @@ function PredictiveForecast({ forecastData, trendsData }) {
   }
 
   // Merge actuals and forecast into one dataset
-  const actuals = (trendsData ?? []).map(t => ({
+  const actuals = (Array.isArray(trendsData) ? trendsData : []).map(t => ({
     ts:        t.timestamp ?? t.time ?? t.recorded_at,
     actual:    t.consumption_kwh ?? t.power_kw ?? null,
     projected: null,
@@ -468,7 +468,7 @@ export default function EnergySignatures() {
       if (ghost.status    === 'fulfilled') setGhostData(ghost.value);
       if (health.status   === 'fulfilled') setHealthData(health.value);
       if (forecast.status === 'fulfilled') setForecastData(forecast.value);
-      if (trends.status   === 'fulfilled') setTrendsData(trends.value);
+      if (trends.status   === 'fulfilled') setTrendsData(trends.value?.trends ?? trends.value ?? []);
       if (carbon.status   === 'fulfilled') setCarbonData(carbon.value);
       if (goalsRes.status === 'fulfilled') setGoals(goalsRes.value ?? []);
       if (ghost.status === 'rejected' && health.status === 'rejected') {

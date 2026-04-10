@@ -213,7 +213,7 @@ const BlogPost3 = () => {
 
         <p className="text-lg text-gray-700 mb-5 leading-relaxed">GreenPulse makes this simple for hospitality businesses. We show you exactly where your energy goes, what it costs, and how to cut waste without complicated analysis.</p>
 
-        <p className="text-lg text-gray-700 mb-10 leading-relaxed">Spring 2026, we're launching in Scotland. If you want to prepare for 2030 without breaking your budget, sign up.</p>
+        <p className="text-lg text-gray-700 mb-10 leading-relaxed">GreenPulse connects to your smart meter and gives you exactly this visibility — energy per guest night, waste identification, and a carbon record ready for grant applications. Start with a free 30-day trial.</p>
 
         <div className="text-center mt-12 mb-6">
           <a

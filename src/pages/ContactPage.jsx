@@ -119,7 +119,7 @@ const ContactPage = () => {
         <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-8 text-center">
           <h2 className="text-xl font-bold text-gray-900 mb-3">Ready to reduce your energy bills?</h2>
           <p className="text-gray-500 text-sm leading-relaxed mb-6 max-w-lg mx-auto">
-            GreenPulse launches in Scotland in Spring 2026. Sign up and be first to know when we go live.
+            Connect your smart meter, import your data, and find your first energy saving in under 30 minutes. No credit card required for your first 30 days.
           </p>
           <a
             href="/register"
