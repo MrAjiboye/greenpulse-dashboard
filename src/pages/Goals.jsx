@@ -34,7 +34,7 @@ export default function Goals() {
 
   const [goals, setGoals]         = useState([]);
   const [loading, setLoading]     = useState(true);
-  useScrollReveal(undefined, undefined, [loading]);
+  useScrollReveal(undefined, undefined, !loading);
   const [showForm, setShowForm]   = useState(false);
   const [editId, setEditId]       = useState(null);
   const [form, setForm]           = useState(BLANK);

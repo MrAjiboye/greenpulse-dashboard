@@ -25,7 +25,7 @@ function timeAgo(dateStr) {
 const EnergyMonitor = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  useScrollReveal(undefined, undefined, [loading]);
+  useScrollReveal(undefined, undefined, !loading);
   const [current, setCurrent] = useState(null);
   const [trends, setTrends] = useState([]);
   const [anomalies, setAnomalies] = useState([]);

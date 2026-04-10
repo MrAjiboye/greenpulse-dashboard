@@ -47,7 +47,7 @@ export default function CarbonFootprint() {
   const [trends, setTrends]       = useState([]);
   const [breakdown, setBreakdown] = useState([]);
   const [loading, setLoading]     = useState(true);
-  useScrollReveal(undefined, undefined, [loading]);
+  useScrollReveal(undefined, undefined, !loading);
 
   useEffect(() => {
     Promise.allSettled([

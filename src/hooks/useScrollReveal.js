@@ -5,18 +5,22 @@ import { useEffect } from 'react';
  * enter the viewport. Works with the `.reveal`, `.reveal-fade`, `.reveal-left`,
  * `.reveal-right`, and `.reveal-scale` CSS classes in index.css.
  *
- * Usage:
- *   import useScrollReveal from '../hooks/useScrollReveal';
- *   useScrollReveal();   // inside a page component
+ * Usage (static pages):
+ *   useScrollReveal();
+ *
+ * Usage (pages with async data — pass ready=true once data has loaded):
+ *   useScrollReveal(undefined, undefined, !loading);
  *
  *   <div className="reveal stagger-1"> ... </div>
  */
 export default function useScrollReveal(
   selector = '.reveal, .reveal-fade, .reveal-left, .reveal-right, .reveal-scale',
   threshold = 0.12,
-  deps = [],
+  ready = true,
 ) {
   useEffect(() => {
+    if (!ready) return;
+
     const els = document.querySelectorAll(selector);
     if (!els.length) return;
 
@@ -34,6 +38,5 @@ export default function useScrollReveal(
 
     els.forEach(el => observer.observe(el));
     return () => observer.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selector, threshold, ...deps]);
+  }, [selector, threshold, ready]);
 }

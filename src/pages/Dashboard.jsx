@@ -50,7 +50,7 @@ const PieCenterLabel = ({ viewBox, totalKg }) => {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, hasRole } = useAuth();
-  useScrollReveal(undefined, undefined, [loading]);
+  useScrollReveal(undefined, undefined, !loading);
 
   const [showOnboarding, setShowOnboarding] = useState(
     () => !localStorage.getItem('greenpulse_onboarded') && hasRole?.('MANAGER', 'ADMIN')

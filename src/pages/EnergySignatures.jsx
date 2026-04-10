@@ -97,11 +97,12 @@ function ChartCard({ title, subtitle, children, badge }) {
   );
 }
 
-function EmptyState({ icon, message }) {
+function EmptyState({ icon, message, hint }) {
   return (
     <div className="flex flex-col items-center justify-center py-10 text-center">
       <i className={`fa-solid ${icon} text-2xl text-gray-300 mb-2`} />
       <p className="text-sm text-gray-400">{message}</p>
+      {hint && <p className="text-xs text-gray-300 mt-1 max-w-xs">{hint}</p>}
     </div>
   );
 }
@@ -110,7 +111,7 @@ function EmptyState({ icon, message }) {
 
 function WasteHeatmap({ heatmap }) {
   if (!heatmap?.length) {
-    return <EmptyState icon="fa-table-cells" message="No consumption data available" />;
+    return <EmptyState icon="fa-table-cells" message="No consumption data available" hint="Import energy readings via Data Import or connect your smart meter in Settings → Data Connections." />;
   }
 
   // Build lookup: day_of_week -> hour -> cell
@@ -185,7 +186,7 @@ function WasteHeatmap({ heatmap }) {
 
 function ZoneHealthGauges({ zones }) {
   if (!zones?.length) {
-    return <EmptyState icon="fa-circle-nodes" message="Train the ML model to enable zone health scoring" />;
+    return <EmptyState icon="fa-circle-nodes" message="Train the ML model to enable zone health scoring" hint="Go to Admin Panel → ML Engine, select your organisation, and click Train." />;
   }
 
   const gaugeData = zones.map(z => ({
@@ -299,7 +300,7 @@ function GhostLoadWaterfall({ ghostData }) {
 
 function PredictiveForecast({ forecastData, trendsData }) {
   if (!forecastData?.forecast?.length && !trendsData?.length) {
-    return <EmptyState icon="fa-chart-line" message="Train the ML model to enable forecasting" />;
+    return <EmptyState icon="fa-chart-line" message="Train the ML model to enable forecasting" hint="Go to Admin Panel → ML Engine, select your organisation, and click Train." />;
   }
 
   // Merge actuals and forecast into one dataset
@@ -520,6 +521,19 @@ export default function EnergySignatures() {
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700 mb-6">
             <i className="fa-solid fa-triangle-exclamation mr-2" />
             {error}
+          </div>
+        )}
+
+        {!loading && !error && ghostData?.total_kwh === 0 && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 mb-6 flex items-start gap-3">
+            <i className="fa-solid fa-circle-info mt-0.5 text-amber-500" />
+            <div>
+              <p className="font-semibold mb-0.5">No energy data found for your organisation</p>
+              <p className="text-amber-700">
+                Import readings via <a href="/import" className="underline font-medium">Data Import</a> or connect your smart meter in{' '}
+                <a href="/settings" className="underline font-medium">Settings → Data Connections</a>. Once data is ingested, train the ML model from the Admin Panel.
+              </p>
+            </div>
           </div>
         )}
 
