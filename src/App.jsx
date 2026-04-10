@@ -55,6 +55,14 @@ import PricingPage from './pages/PricingPage';
 import BookDemoPage from './pages/BookDemoPage';
 import EnergySignatures from './pages/EnergySignatures';
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function TopProgressBar() {
   const location = useLocation();
   const [visible, setVisible] = useState(false);
@@ -86,6 +94,7 @@ function AnimatedRoutes() {
 
   return (
     <div className="page-transition">
+      <ScrollToTop />
       <TopProgressBar />
       <CookieBanner />
       <Routes>
