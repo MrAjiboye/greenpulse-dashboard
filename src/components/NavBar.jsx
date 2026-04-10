@@ -4,13 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import { notificationsAPI } from '../services/api';
 
 const navLinks = [
-  { label: 'Dashboard',        path: '/dashboard' },
-  { label: 'Energy Monitor',   path: '/energy'    },
-  { label: 'Waste Management', path: '/waste'     },
-  { label: 'AI Insights',      path: '/insights'  },
-  { label: 'Carbon',           path: '/carbon'    },
-  { label: 'Reports',          path: '/reports'   },
-  { label: 'Settings',         path: '/settings'  },
+  { label: 'Dashboard',        path: '/dashboard'         },
+  { label: 'Energy Monitor',   path: '/energy'            },
+  { label: 'Signatures',       path: '/energy-signatures' },
+  { label: 'Waste Management', path: '/waste'             },
+  { label: 'AI Insights',      path: '/insights'          },
+  { label: 'Carbon',           path: '/carbon'            },
+  { label: 'Reports',          path: '/reports'           },
+  { label: 'Settings',         path: '/settings'          },
 ];
 
 export default function NavBar() {

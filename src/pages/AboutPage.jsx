@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Footer from '../components/Footer';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const AboutPage = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  useScrollReveal();
 
   return (
     <div className="bg-white text-gray-700 antialiased">
@@ -82,10 +85,10 @@ const AboutPage = () => {
           }}
         />
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold border border-emerald-200 mb-6">
+          <span className="reveal inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold border border-emerald-200 mb-6">
             <i className="fa-solid fa-leaf text-[10px]"></i> Our Story
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">
+          <h1 className="reveal stagger-1 text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">
             Built for Hospitality,{' '}
             <span className="text-emerald-500 relative inline-block">
               Focused on Savings
@@ -106,7 +109,7 @@ const AboutPage = () => {
           <div className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-bold mb-5 uppercase tracking-wider">
             <i className="fa-solid fa-book-open mr-1"></i> Our Story
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Where it all started</h2>
+          <h2 className="reveal text-3xl md:text-4xl font-bold text-gray-900 mb-8">Where it all started</h2>
 
           <div className="prose prose-lg text-gray-600 leading-relaxed space-y-6">
             <p>
@@ -128,7 +131,7 @@ const AboutPage = () => {
       <section className="py-20 bg-gray-50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-50/60 to-transparent pointer-events-none" />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <div className="max-w-3xl mx-auto text-center mb-16">
+          <div className="reveal max-w-3xl mx-auto text-center mb-16">
             <div className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-md text-xs font-bold mb-5 uppercase tracking-wider">
               <i className="fa-solid fa-bullseye mr-1"></i> Mission
             </div>
@@ -192,8 +195,8 @@ const AboutPage = () => {
               { value: '10k T',  label: 'CO₂ Reduction Goal' },
               { value: '20%',    label: 'Avg Energy Savings' },
               { value: 'Scotland', label: 'Based in the UK' },
-            ].map(({ value, label }) => (
-              <div key={label} className="px-4">
+            ].map(({ value, label }, i) => (
+              <div key={label} className={`reveal stagger-${i + 1} px-4`}>
                 <p className="text-4xl font-bold text-emerald-500 mb-2">{value}</p>
                 <p className="text-sm text-gray-400">{label}</p>
               </div>
@@ -235,84 +238,7 @@ const AboutPage = () => {
           <p className="text-xs text-gray-500 mt-4">No credit card required for 14-day trial.</p>
         </div>
       </section>
-
-      {/* ── Footer (matches LandingPage exactly) ── */}
-      <footer className="bg-white border-t border-gray-200 pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            <div>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-white">
-                  <i className="fa-solid fa-leaf"></i>
-                </div>
-                <span className="text-xl font-bold text-gray-900">GreenPulse</span>
-              </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-6">
-                Empowering organisations to build a sustainable future through data driven insights and intelligent resource management.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-gray-900 mb-6">Product</h4>
-              <ul className="space-y-4 text-sm text-gray-600">
-                <li><a href="/#features" className="hover:text-emerald-600 transition-colors">Features</a></li>
-                <li><a href="/#features" className="hover:text-emerald-600 transition-colors">Energy Monitor</a></li>
-                <li><a href="/#features" className="hover:text-emerald-600 transition-colors">Waste Management</a></li>
-                <li><a href="/#features" className="hover:text-emerald-600 transition-colors">AI Insights</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-gray-900 mb-6">Company</h4>
-              <ul className="space-y-4 text-sm text-gray-600">
-                <li><Link to="/about" className="hover:text-emerald-600 transition-colors">About Us</Link></li>
-                <li><a href="mailto:info@greenpulseanalytics.com" className="hover:text-emerald-600 transition-colors">Contact</a></li>
-                <li><Link to="/blog" className="hover:text-emerald-600 transition-colors">Blog</Link></li>
-                <li><Link to="/careers" className="hover:text-emerald-600 transition-colors">Careers</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-gray-900 mb-6">Contact</h4>
-              <ul className="space-y-3 text-sm text-gray-600">
-                <li>
-                  <a href="mailto:info@greenpulseanalytics.com" className="hover:text-emerald-600 transition-colors flex items-center gap-2">
-                    <i className="fa-solid fa-envelope text-gray-400 text-xs"></i>
-                    info@greenpulseanalytics.com
-                  </a>
-                </li>
-                <li>
-                  <a href="tel:+447961790837" className="hover:text-emerald-600 transition-colors flex items-center gap-2">
-                    <i className="fa-solid fa-phone text-gray-400 text-xs"></i>
-                    07961 790837
-                  </a>
-                </li>
-                <li className="flex items-center gap-2 text-gray-500 mt-2">
-                  <i className="fa-solid fa-location-dot text-gray-400 text-xs"></i>
-                  Based in Scotland, UK
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-400">© 2026 GreenPulse Analytics. All rights reserved. · ICO reg. ZC103204</p>
-            <div className="flex items-center gap-4">
-              <a href="https://linkedin.com/greenpulse-analytics-uk" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="LinkedIn">
-                <i className="fa-brands fa-linkedin-in text-sm"></i>
-              </a>
-              <a href="https://x.com/GreenPulseUK?s=20" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="X (Twitter)">
-                <i className="fa-brands fa-x-twitter text-sm"></i>
-              </a>
-            </div>
-            <div className="flex gap-6">
-              <Link to="/terms" className="text-xs text-gray-400 hover:text-gray-600">Terms</Link>
-              <Link to="/privacy" className="text-xs text-gray-400 hover:text-gray-600">Privacy</Link>
-              <Link to="/cookies" className="text-xs text-gray-400 hover:text-gray-600">Cookies</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

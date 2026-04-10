@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { demoAPI } from '../services/api';
+import Footer from '../components/Footer';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const TIME_SLOTS = [
   '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM',
@@ -25,6 +27,7 @@ function maxDate() {
 
 export default function BookDemoPage() {
   const navigate = useNavigate();
+  useScrollReveal();
   const [form, setForm] = useState({
     full_name: '',
     business_name: '',
@@ -103,7 +106,7 @@ export default function BookDemoPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
 
           {/* Left — pitch */}
-          <div className="lg:col-span-2">
+          <div className="reveal-left lg:col-span-2">
             <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
               <i className="fa-solid fa-calendar-check text-xs"></i>
               Free 30-minute demo
@@ -149,7 +152,7 @@ export default function BookDemoPage() {
           </div>
 
           {/* Right — form */}
-          <div className="lg:col-span-3">
+          <div className="reveal-right lg:col-span-3">
             {submitted ? (
               <div className="rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-10 text-center">
                 <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-5">
@@ -313,17 +316,7 @@ export default function BookDemoPage() {
         </div>
       </div>
 
-      {/* Footer strip */}
-      <div className="border-t border-gray-100 py-8 px-6 mt-8">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-          <span>© 2026 GreenPulse Inc. All rights reserved.</span>
-          <div className="flex gap-6">
-            <Link to="/privacy" className="hover:text-gray-600 transition-colors">Privacy</Link>
-            <Link to="/terms" className="hover:text-gray-600 transition-colors">Terms</Link>
-            <Link to="/contact" className="hover:text-gray-600 transition-colors">Contact</Link>
-          </div>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 }

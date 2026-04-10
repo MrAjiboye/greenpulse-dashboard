@@ -50,6 +50,7 @@ import IoTFeed from './pages/IoTFeed';
 import GlossaryPage from './pages/GlossaryPage';
 import PricingPage from './pages/PricingPage';
 import BookDemoPage from './pages/BookDemoPage';
+import EnergySignatures from './pages/EnergySignatures';
 
 function TopProgressBar() {
   const location = useLocation();
@@ -207,6 +208,12 @@ function AnimatedRoutes() {
         <Route path="/iot-feed" element={
           <ProtectedRoute>
             <IoTFeed />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/energy-signatures" element={
+          <ProtectedRoute>
+            <EnergySignatures />
           </ProtectedRoute>
         } />
 

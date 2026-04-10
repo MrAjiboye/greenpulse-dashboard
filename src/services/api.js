@@ -278,6 +278,10 @@ export const mlAPI = {
   generateInsights: async (orgId)   => (await api.post(`/admin/ml/generate-insights${_qs(orgId)}`)).data,
   getAnomalies:     async (orgId)   => (await api.get(`/admin/ml/anomalies${_qs(orgId)}`)).data,
   getForecast:      async (orgId)   => (await api.get(`/admin/ml/forecast${_qs(orgId)}`)).data,
+  // Public (dashboard-facing) endpoints
+  publicForecast:   async (hours = 336) => (await api.get(`/ml/forecast?hours=${hours}`)).data,
+  ghostLoad:        async (days = 30)   => (await api.get(`/ml/ghost-load?days=${days}`)).data,
+  zoneHealth:       async (days = 14)   => (await api.get(`/ml/zone-health?days=${days}`)).data,
 };
 
 export const carbonAPI = {

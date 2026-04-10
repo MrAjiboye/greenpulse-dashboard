@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NavBar from '../components/NavBar';
+import Footer from '../components/Footer';
 
 const TERMS = [
   {
@@ -342,6 +343,7 @@ export default function GlossaryPage() {
           </p>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

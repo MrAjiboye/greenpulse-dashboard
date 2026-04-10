@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Footer from '../components/Footer';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const FEATURES = [
   {
@@ -56,6 +58,7 @@ const LandingPage = () => {
   const [newsletterError, setNewsletterError] = useState('');
   const [featurePage, setFeaturePage] = useState(0);
   const [mobileIdx, setMobileIdx] = useState(0);
+  useScrollReveal();
   const PER_PAGE = 3;
   const totalPages = Math.ceil(FEATURES.length / PER_PAGE);
 
@@ -175,7 +178,7 @@ const LandingPage = () => {
         
         <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
           
-          <div className="flex justify-center gap-3 mb-8">
+          <div className="reveal flex justify-center gap-3 mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold border border-emerald-200">
               <i className="fa-solid fa-bolt text-[10px]"></i> Energy
             </span>
@@ -187,7 +190,7 @@ const LandingPage = () => {
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-[1.1] mb-6 tracking-tight max-w-5xl mx-auto">
+          <h1 className="reveal stagger-1 text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-[1.1] mb-6 tracking-tight max-w-5xl mx-auto">
             Sustainability Intelligence for <br/>
             <span className="text-emerald-500 inline-block relative">
               Modern Enterprises
@@ -195,11 +198,11 @@ const LandingPage = () => {
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="reveal stagger-2 text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
             Track energy consumption, manage waste streams, and receive AI driven insights to reduce your carbon footprint and operational costs.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 md:mb-20">
+          <div className="reveal stagger-3 flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 md:mb-20">
             <button onClick={() => navigate('/signin')} className="px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 min-w-[200px]">
               Sign In to Dashboard
               <i className="fa-solid fa-arrow-right text-sm"></i>
@@ -210,7 +213,7 @@ const LandingPage = () => {
             </button>
           </div>
 
-          <div className="relative max-w-5xl mx-auto">
+          <div className="reveal stagger-4 relative max-w-5xl mx-auto">
             <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden relative z-10">
               <div className="h-8 bg-gray-50 border-b border-gray-100 flex items-center px-4 gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
@@ -314,7 +317,7 @@ const LandingPage = () => {
 
       <section id="features" className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-10 md:mb-14 max-w-3xl mx-auto">
+          <div className="reveal text-center mb-10 md:mb-14 max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Comprehensive Environmental Monitoring</h2>
             <p className="text-gray-600 text-lg">Everything you need to track, analyze, and improve your organization's sustainability performance in one unified platform.</p>
           </div>
@@ -430,7 +433,7 @@ const LandingPage = () => {
       <section className="py-12 md:py-20 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="w-full lg:w-1/2 relative">
+            <div className="reveal-left w-full lg:w-1/2 relative">
               <div className="absolute -top-10 -left-10 w-72 h-72 bg-emerald-100 rounded-full blur-3xl opacity-30"></div>
               <div className="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 relative z-10">
                 <div className="flex justify-between items-center mb-8">
@@ -456,7 +459,7 @@ const LandingPage = () => {
               <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-grid-pattern opacity-50"></div>
             </div>
 
-            <div className="w-full lg:w-1/2">
+            <div className="reveal-right w-full lg:w-1/2">
               <div className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-md text-xs font-bold mb-4 uppercase tracking-wider">
                 <i className="fa-solid fa-file-alt mr-1"></i> Reporting
               </div>
@@ -498,20 +501,20 @@ const LandingPage = () => {
       <section className="bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900 py-10 md:py-16 border-t border-emerald-900/30">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-800">
-            <div className="px-4">
-              <p className="text-4xl font-bold text-emerald-500 mb-2">500+</p>
+            <div className="reveal stagger-1 px-4">
+              <p className="text-4xl font-bold text-emerald-500 mb-2 kpi-number">500+</p>
               <p className="text-sm text-gray-400">Facilities Monitored</p>
             </div>
-            <div className="px-4">
-              <p className="text-4xl font-bold text-emerald-500 mb-2">12k</p>
+            <div className="reveal stagger-2 px-4">
+              <p className="text-4xl font-bold text-emerald-500 mb-2 kpi-number">12k</p>
               <p className="text-sm text-gray-400">Tons CO2 Saved</p>
             </div>
-            <div className="px-4">
-              <p className="text-4xl font-bold text-emerald-500 mb-2">24/7</p>
+            <div className="reveal stagger-3 px-4">
+              <p className="text-4xl font-bold text-emerald-500 mb-2 kpi-number">24/7</p>
               <p className="text-sm text-gray-400">Real time Monitoring</p>
             </div>
-            <div className="px-4">
-              <p className="text-4xl font-bold text-emerald-500 mb-2">£2M+</p>
+            <div className="reveal stagger-4 px-4">
+              <p className="text-4xl font-bold text-emerald-500 mb-2 kpi-number">£2M+</p>
               <p className="text-sm text-gray-400">Client Savings</p>
             </div>
           </div>
@@ -522,7 +525,7 @@ const LandingPage = () => {
         <div className="absolute inset-0 bg-grid-pattern opacity-20 pointer-events-none"></div>
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-emerald-100/50 to-transparent"></div>
         
-        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+        <div className="reveal max-w-4xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Ready to optimize your environmental impact?</h2>
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
             Start your 30-day free trial using your existing billing data - no IoT hardware needed on day one.
@@ -539,85 +542,35 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <footer className="bg-white border-t border-gray-200 pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            <div>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-white">
-                  <i className="fa-solid fa-leaf"></i>
-                </div>
-                <span className="text-xl font-bold text-gray-900">GreenPulse</span>
-              </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-6">
-                Empowering organizations to build a sustainable future through data driven insights and intelligent resource management.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-gray-900 mb-6">Product</h4>
-              <ul className="space-y-4 text-sm text-gray-600">
-                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">Energy Monitor</Link></li>
-                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">Waste Management</Link></li>
-                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">AI Insights</Link></li>
-                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">Reporting</Link></li>
-                <li><Link to="/register" className="hover:text-emerald-600 transition-all duration-200">Carbon Footprint</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-gray-900 mb-6">Company</h4>
-              <ul className="space-y-4 text-sm text-gray-600">
-                <li><a href="/about" className="hover:text-emerald-600 transition-all duration-200">About Us</a></li>
-                <li><a href="/careers" className="hover:text-emerald-600 transition-all duration-200">Careers</a></li>
-                <li><a href="/blog" className="hover:text-emerald-600 transition-all duration-200">Blog</a></li>
-                <li><a href="/contact" className="hover:text-emerald-600 transition-all duration-200">Contact</a></li>
-                <li><a href="/privacy" className="hover:text-emerald-600 transition-all duration-200">Privacy Policy</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-gray-900 mb-6">Stay Updated</h4>
-              <p className="text-sm text-gray-500 mb-4">Subscribe to our newsletter for the latest sustainability tips.</p>
-              {newsletterDone ? (
-                <p className="text-sm text-emerald-600 font-medium"><i className="fa-solid fa-circle-check mr-1.5"></i>Thanks! You're subscribed.</p>
-              ) : (
-                <>
-                  <form onSubmit={handleNewsletter} className="flex gap-2">
-                    <input
-                      type="email"
-                      required
-                      placeholder="Enter your email"
-                      value={newsletterEmail}
-                      onChange={e => { setNewsletterEmail(e.target.value); setNewsletterError(''); }}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                    />
-                    <button type="submit" className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors text-sm font-semibold">Subscribe</button>
-                  </form>
-                  {newsletterError && <p className="text-xs text-red-500 mt-2">{newsletterError}</p>}
-                </>
-              )}
-            </div>
-          </div>
-
-          <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-400">© 2026 GreenPulse Inc. All rights reserved. · ICO reg. ZC103204</p>
-            <div className="flex items-center gap-4">
-              <a href="https://linkedin.com/greenpulse-analytics-uk" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="LinkedIn">
-                <i className="fa-brands fa-linkedin-in text-sm"></i>
-              </a>
-              <a href="https://x.com/GreenPulseUK?s=20" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-600 transition-colors" aria-label="X (Twitter)">
-                <i className="fa-brands fa-x-twitter text-sm"></i>
-              </a>
-            </div>
-            <div className="flex gap-6">
-              <a href="/terms" className="text-xs text-gray-400 hover:text-gray-600">Terms</a>
-              <a href="/privacy" className="text-xs text-gray-400 hover:text-gray-600">Privacy</a>
-              <a href="/cookies" className="text-xs text-gray-400 hover:text-gray-600">Cookies</a>
-            </div>
-          </div>
+      {/* Newsletter strip — above the main footer */}
+      <section className="bg-gray-900 border-t border-gray-800 py-12">
+        <div className="max-w-xl mx-auto px-6 text-center">
+          <h3 className="text-lg font-bold text-white mb-1">Stay in the loop</h3>
+          <p className="text-sm text-gray-400 mb-5">Sustainability tips and product updates, straight to your inbox.</p>
+          {newsletterDone ? (
+            <p className="text-sm text-emerald-400 font-medium">
+              <i className="fa-solid fa-circle-check mr-1.5" />Thanks — you're subscribed.
+            </p>
+          ) : (
+            <form onSubmit={handleNewsletter} className="flex gap-2 max-w-sm mx-auto">
+              <input
+                type="email"
+                required
+                placeholder="Enter your email"
+                value={newsletterEmail}
+                onChange={e => { setNewsletterEmail(e.target.value); setNewsletterError(''); }}
+                className="flex-1 px-4 py-2.5 text-sm bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+              />
+              <button type="submit" className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg transition-colors text-sm font-semibold whitespace-nowrap">
+                Subscribe
+              </button>
+            </form>
+          )}
+          {newsletterError && <p className="text-xs text-red-400 mt-2">{newsletterError}</p>}
         </div>
-      </footer>
+      </section>
+
+      <Footer />
     </div>
   );
 };

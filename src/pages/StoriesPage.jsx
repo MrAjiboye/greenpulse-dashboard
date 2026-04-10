@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const stories = [
   {
@@ -62,6 +64,7 @@ const stats = [
 const StoriesPage = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  useScrollReveal();
 
   const colorMap = {
     emerald: { bg: 'bg-emerald-50', icon: 'text-emerald-500', tag: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-100' },
@@ -122,11 +125,11 @@ const StoriesPage = () => {
 
       {/* ── Hero ── */}
       <section className="pt-32 pb-16 bg-gradient-to-br from-gray-50 via-emerald-50/30 to-gray-50 text-center px-6">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold border border-emerald-200 mb-5">
+        <span className="reveal inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold border border-emerald-200 mb-5">
           <i className="fa-solid fa-star text-[10px]"></i> Real results from real businesses
         </span>
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Stories</h1>
-        <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+        <h1 className="reveal stagger-1 text-4xl md:text-5xl font-bold text-gray-900 mb-4">Stories</h1>
+        <p className="reveal stagger-2 text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
           Independent restaurants, cafés, and hotels across Scotland that found out where their energy money was actually going, and stopped the waste.
         </p>
       </section>
@@ -134,8 +137,8 @@ const StoriesPage = () => {
       {/* ── Stats bar ── */}
       <section className="bg-gray-900 py-12 px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {stats.map(({ value, label }) => (
-            <div key={label}>
+          {stats.map(({ value, label }, i) => (
+            <div key={label} className={`reveal stagger-${i + 1}`}>
               <p className="text-3xl font-bold text-emerald-400 mb-1">{value}</p>
               <p className="text-gray-400 text-sm leading-snug">{label}</p>
             </div>
@@ -148,7 +151,7 @@ const StoriesPage = () => {
         {stories.map((s, idx) => {
           const c = colorMap[s.color];
           return (
-            <div key={s.business} className={`rounded-3xl border ${c.border} overflow-hidden shadow-sm hover:shadow-lg transition-all`}>
+            <div key={s.business} className={`reveal rounded-3xl border ${c.border} overflow-hidden shadow-sm hover:shadow-lg transition-all`}>
 
               {/* Top bar */}
               <div className={`${c.bg} px-8 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4`}>
@@ -203,7 +206,7 @@ const StoriesPage = () => {
 
       {/* ── CTA ── */}
       <section className="bg-gradient-to-br from-emerald-600 to-emerald-500 py-20 px-6 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Your business could be next</h2>
+        <h2 className="reveal text-3xl md:text-4xl font-bold text-white mb-4">Your business could be next</h2>
         <p className="text-emerald-100 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
           GreenPulse launches in Scotland in Spring 2026. Sign up and be first to know when we go live.
         </p>
@@ -214,56 +217,7 @@ const StoriesPage = () => {
           Get Started
         </a>
       </section>
-
-      {/* ── Footer ── */}
-      <footer className="bg-gray-900 text-white pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-            <div className="md:col-span-1">
-              <Link to="/" className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
-                  <i className="fa-solid fa-leaf text-white text-xs"></i>
-                </div>
-                <span className="text-lg font-bold text-white">GreenPulse</span>
-              </Link>
-              <p className="text-gray-400 text-sm leading-relaxed">Sustainability analytics for modern hospitality businesses.</p>
-            </div>
-            <div>
-              <h4 className="text-emerald-400 font-semibold mb-4">Product</h4>
-              <ul className="space-y-3">
-                <li><a href="/#features" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Features</a></li>
-                <li><Link to="/how-it-works" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">How it works</Link></li>
-                <li><a href="/register" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Sign Up</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-emerald-400 font-semibold mb-4">Company</h4>
-              <ul className="space-y-3">
-                <li><Link to="/about" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">About</Link></li>
-                <li><Link to="/stories" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Stories</Link></li>
-                <li><Link to="/blog" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Blog</Link></li>
-                <li><Link to="/careers" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Careers</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-emerald-400 font-semibold mb-4">Contact</h4>
-              <ul className="space-y-3">
-                <li><a href="mailto:info@greenpulseanalytics.com" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">info@greenpulseanalytics.com</a></li>
-                <li><a href="tel:+447961790837" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">07961 790837</a></li>
-                <li><p className="text-gray-500 text-sm">Based in Scotland, UK</p></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">&copy; 2025 GreenPulse Analytics. All rights reserved.</p>
-            <div className="flex gap-6">
-              <Link to="/terms" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Terms</Link>
-              <Link to="/privacy" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Privacy</Link>
-              <Link to="/cookies" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Cookies</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
     </div>
   );

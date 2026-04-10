@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const steps = [
   {
@@ -90,6 +92,7 @@ const HowItWorksPage = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
+  useScrollReveal();
 
   return (
     <div className="bg-white text-gray-700 antialiased">
@@ -144,11 +147,11 @@ const HowItWorksPage = () => {
 
       {/* ── Hero ── */}
       <section className="pt-32 pb-16 bg-gradient-to-br from-gray-50 via-emerald-50/30 to-gray-50 text-center px-6">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold border border-emerald-200 mb-5">
+        <span className="reveal inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold border border-emerald-200 mb-5">
           <i className="fa-solid fa-bolt text-[10px]"></i> Simple. Fast. No jargon.
         </span>
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">How GreenPulse Works</h1>
-        <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+        <h1 className="reveal stagger-1 text-4xl md:text-5xl font-bold text-gray-900 mb-4">How GreenPulse Works</h1>
+        <p className="reveal stagger-2 text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
           From messy energy bills to clear, actionable insights, in four steps. No engineering degree required.
         </p>
       </section>
@@ -162,7 +165,7 @@ const HowItWorksPage = () => {
             return (
               <div
                 key={step.number}
-                className={`flex flex-col ${isEven ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-stretch`}
+                className={`reveal flex flex-col ${isEven ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-stretch`}
               >
                 {/* Icon panel */}
                 <div className={`md:w-64 flex-shrink-0 ${c.bg} border ${c.border} rounded-3xl p-8 flex flex-col items-center justify-center text-center gap-4`}>
@@ -194,8 +197,8 @@ const HowItWorksPage = () => {
       {/* ── FAQ ── */}
       <section className="bg-gray-50 py-20 px-6">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-3">Common questions</h2>
-          <p className="text-gray-500 text-center mb-12">Everything you need to know before you get started.</p>
+          <h2 className="reveal text-3xl font-bold text-gray-900 text-center mb-3">Common questions</h2>
+          <p className="reveal stagger-1 text-gray-500 text-center mb-12">Everything you need to know before you get started.</p>
 
           <div className="space-y-3">
             {faqs.map((faq, i) => (
@@ -220,7 +223,7 @@ const HowItWorksPage = () => {
 
       {/* ── CTA ── */}
       <section className="bg-gradient-to-br from-emerald-600 to-emerald-500 py-20 px-6 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to see where your money goes?</h2>
+        <h2 className="reveal text-3xl md:text-4xl font-bold text-white mb-4">Ready to see where your money goes?</h2>
         <p className="text-emerald-100 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
           GreenPulse launches in Scotland in Spring 2026. Sign up for early access and founding member pricing.
         </p>
@@ -241,54 +244,7 @@ const HowItWorksPage = () => {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="bg-gray-900 text-white pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-            <div className="md:col-span-1">
-              <Link to="/" className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
-                  <i className="fa-solid fa-leaf text-white text-xs"></i>
-                </div>
-                <span className="text-lg font-bold text-white">GreenPulse</span>
-              </Link>
-              <p className="text-gray-400 text-sm leading-relaxed">Sustainability analytics for modern hospitality businesses.</p>
-            </div>
-            <div>
-              <h4 className="text-emerald-400 font-semibold mb-4">Product</h4>
-              <ul className="space-y-3">
-                <li><a href="/#features" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Features</a></li>
-                <li><Link to="/how-it-works" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">How it works</Link></li>
-                <li><a href="/register" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Sign Up</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-emerald-400 font-semibold mb-4">Company</h4>
-              <ul className="space-y-3">
-                <li><Link to="/about" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">About</Link></li>
-                <li><Link to="/stories" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Stories</Link></li>
-                <li><Link to="/blog" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Blog</Link></li>
-                <li><Link to="/careers" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Careers</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-emerald-400 font-semibold mb-4">Contact</h4>
-              <ul className="space-y-3">
-                <li><a href="mailto:info@greenpulseanalytics.com" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">info@greenpulseanalytics.com</a></li>
-                <li><a href="tel:+447961790837" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">07961 790837</a></li>
-                <li><p className="text-gray-500 text-sm">Based in Scotland, UK</p></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">&copy; 2025 GreenPulse Analytics. All rights reserved.</p>
-            <div className="flex gap-6">
-              <Link to="/terms" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Terms</Link>
-              <Link to="/privacy" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Privacy</Link>
-              <Link to="/cookies" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Cookies</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
     </div>
   );

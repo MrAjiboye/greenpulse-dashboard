@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const ContactPage = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  useScrollReveal();
 
   const channels = [
     {
@@ -85,8 +88,8 @@ const ContactPage = () => {
 
       {/* ── Hero ── */}
       <section className="pt-32 pb-16 bg-gradient-to-br from-gray-50 via-emerald-50/30 to-gray-50 text-center px-6">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Get in Touch</h1>
-        <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed">
+        <h1 className="reveal text-4xl md:text-5xl font-bold text-gray-900 mb-4">Get in Touch</h1>
+        <p className="reveal stagger-1 text-lg text-gray-500 max-w-xl mx-auto leading-relaxed">
           Whether you have a question about the product, want to sign up, or just want to say hello, we are happy to hear from you.
         </p>
       </section>
@@ -94,8 +97,8 @@ const ContactPage = () => {
       {/* ── Contact cards ── */}
       <section className="max-w-4xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          {channels.map(({ icon, label, value, href, note }) => (
-            <div key={label} className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-emerald-100 transition-all text-center">
+          {channels.map(({ icon, label, value, href, note }, i) => (
+            <div key={label} className={`reveal stagger-${i + 1} bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-emerald-100 transition-all text-center`}>
               <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center mx-auto mb-5">
                 <i className={`fa-solid ${icon} text-emerald-500 text-lg`}></i>
               </div>
@@ -126,55 +129,7 @@ const ContactPage = () => {
           </a>
         </div>
       </section>
-
-      {/* ── Footer ── */}
-      <footer className="bg-gray-900 text-white pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-            <div className="md:col-span-1">
-              <Link to="/" className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
-                  <i className="fa-solid fa-leaf text-white text-xs"></i>
-                </div>
-                <span className="text-lg font-bold text-white">GreenPulse</span>
-              </Link>
-              <p className="text-gray-400 text-sm leading-relaxed">Sustainability analytics for modern hospitality businesses.</p>
-            </div>
-            <div>
-              <h4 className="text-emerald-400 font-semibold mb-4">Product</h4>
-              <ul className="space-y-3">
-                <li><a href="/#features" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Features</a></li>
-                <li><a href="/register" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Pricing</a></li>
-                <li><a href="/register" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Sign Up</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-emerald-400 font-semibold mb-4">Company</h4>
-              <ul className="space-y-3">
-                <li><Link to="/about" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">About</Link></li>
-                <li><Link to="/blog" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Blog</Link></li>
-                <li><Link to="/careers" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">Careers</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-emerald-400 font-semibold mb-4">Contact</h4>
-              <ul className="space-y-3">
-                <li><a href="mailto:support@greenpulseanalytics.com" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">support@greenpulseanalytics.com</a></li>
-                <li><a href="mailto:info@greenpulseanalytics.com" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">info@greenpulseanalytics.com</a></li>
-                <li><a href="tel:+447961790837" className="text-gray-400 hover:text-emerald-400 text-sm transition-all duration-200">07961 790837</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">&copy; 2026 GreenPulse Analytics. All rights reserved.</p>
-            <div className="flex gap-6">
-              <Link to="/terms" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Terms</Link>
-              <Link to="/privacy" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Privacy</Link>
-              <Link to="/cookies" className="text-xs text-gray-500 hover:text-emerald-400 transition-all duration-200">Cookies</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
     </div>
   );

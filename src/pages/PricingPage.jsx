@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { billingAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import Footer from '../components/Footer';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const PLANS = [
   {
@@ -16,8 +18,9 @@ const PLANS = [
       'AI-generated insights',
       'Carbon footprint tracking',
       'Goal setting & tracking',
-      'CSV data import',
-      'Energy provider API (Octopus Energy)',
+      'Smart meter data via N3RGY - works with any UK supplier',
+      'Automated half-hourly consumption data (no switching required)',
+      'CSV import as fallback',
       'Automated PDF reports',
       'Up to 3 team members',
       'Email support',
@@ -30,14 +33,14 @@ const PLANS = [
     name: 'Pro',
     price: '£99',
     period: '/month',
-    tagline: 'Real-time monitoring with IoT sensors',
+    tagline: 'Zone-level monitoring with real-time IoT sensors',
     color: 'emerald',
     features: [
       'Everything in Core',
       'IoT device data ingestion (real-time)',
-      'Physical sensor support - kitchens, floors, zones',
+      'Zone-level monitoring - kitchens, floors, equipment',
+      'Equipment-level anomaly alerts (pre-failure detection)',
       'Unlimited team members',
-      'Spike anomaly alerts',
       'AI forecasting & anomaly detection',
       'Comparison mode',
       'Priority email support',
@@ -71,11 +74,11 @@ const PLANS = [
 const FAQ = [
   {
     q: 'Is there a free trial?',
-    a: 'Yes - all new accounts get a 30-day free trial with full Core-level access. No credit card required. Upload your data via CSV and explore the complete dashboard from day one.',
+    a: 'Yes - all new accounts get a 30-day free trial with full Core-level access. No credit card required. Connect your smart meter in minutes or upload data via CSV and explore the complete dashboard from day one.',
   },
   {
     q: 'What\'s the difference between Core and Pro?',
-    a: 'Core gives you automated data via CSV and energy provider APIs (Octopus Energy, n3rgy) - no hardware needed. Pro adds real-time IoT sensor ingestion for zone-level monitoring inside your premises, plus unlimited team members.',
+    a: 'Core connects directly to your existing smart meter via N3RGY - it works with any UK energy supplier, no hardware needed and no switching required. You authorise access once and we pull half-hourly consumption data automatically. Pro adds real-time IoT sensors for zone-level monitoring inside your premises (kitchens, equipment, floors), plus unlimited team members.',
   },
   {
     q: 'Who is Enterprise for?',
@@ -103,6 +106,7 @@ export default function PricingPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
+  useScrollReveal();
 
   const currentPlan = user?.organization_plan ?? null; // "free"|"core"|"pro"|"enterprise"|null
 
@@ -179,7 +183,7 @@ export default function PricingPage() {
       </nav>
 
       {/* Hero */}
-      <div className="text-center pt-16 pb-12 px-6">
+      <div className="reveal text-center pt-16 pb-12 px-6">
         <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
           <i className="fa-solid fa-tag text-xs"></i>
           Simple, transparent pricing
@@ -205,7 +209,7 @@ export default function PricingPage() {
             return (
               <div
                 key={plan.key}
-                className={`relative rounded-2xl border-2 p-8 flex flex-col ${
+                className={`reveal card-hover relative rounded-2xl border-2 p-8 flex flex-col ${
                   isCurrent
                     ? 'border-emerald-500 shadow-xl shadow-emerald-100'
                     : plan.highlight && !isCurrent
@@ -310,17 +314,7 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* Footer strip */}
-      <div className="border-t border-gray-100 py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-          <span>© 2026 GreenPulse Inc. All rights reserved.</span>
-          <div className="flex gap-6">
-            <Link to="/privacy" className="hover:text-gray-600 transition-colors">Privacy</Link>
-            <Link to="/terms" className="hover:text-gray-600 transition-colors">Terms</Link>
-            <Link to="/contact" className="hover:text-gray-600 transition-colors">Contact</Link>
-          </div>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 }
