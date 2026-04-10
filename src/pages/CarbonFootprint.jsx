@@ -43,11 +43,11 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function CarbonFootprint() {
-  useScrollReveal();
   const [summary, setSummary]     = useState(null);
   const [trends, setTrends]       = useState([]);
   const [breakdown, setBreakdown] = useState([]);
   const [loading, setLoading]     = useState(true);
+  useScrollReveal(undefined, undefined, [loading]);
 
   useEffect(() => {
     Promise.allSettled([

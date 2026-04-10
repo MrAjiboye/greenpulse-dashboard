@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 export default function useScrollReveal(
   selector = '.reveal, .reveal-fade, .reveal-left, .reveal-right, .reveal-scale',
   threshold = 0.12,
+  deps = [],
 ) {
   useEffect(() => {
     const els = document.querySelectorAll(selector);
@@ -33,5 +34,6 @@ export default function useScrollReveal(
 
     els.forEach(el => observer.observe(el));
     return () => observer.disconnect();
-  }, [selector, threshold]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selector, threshold, ...deps]);
 }

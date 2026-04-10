@@ -181,11 +181,11 @@ const FILTERS = [
 ];
 
 const AIInsights = () => {
-  useScrollReveal();
   const { hasRole } = useAuth();
   const canAct = hasRole?.('manager', 'admin') ?? true;
 
   const [loading, setLoading] = useState(true);
+  useScrollReveal(undefined, undefined, [loading]);
   const [insights, setInsights] = useState([]);
   const [activeFilter, setActiveFilter] = useState('all');
   const [dismissingIds, setDismissingIds] = useState(new Set());

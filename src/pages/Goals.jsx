@@ -27,7 +27,6 @@ function formatDate(dt) {
 const BLANK = { name: '', category: 'ENERGY', target_value: '', unit: 'kWh', period_start: '', period_end: '' };
 
 export default function Goals() {
-  useScrollReveal();
   const { hasRole } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -35,6 +34,7 @@ export default function Goals() {
 
   const [goals, setGoals]         = useState([]);
   const [loading, setLoading]     = useState(true);
+  useScrollReveal(undefined, undefined, [loading]);
   const [showForm, setShowForm]   = useState(false);
   const [editId, setEditId]       = useState(null);
   const [form, setForm]           = useState(BLANK);
