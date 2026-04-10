@@ -37,6 +37,9 @@ import BlogPage from './pages/BlogPage';
 import BlogPost1 from './pages/BlogPost1';
 import BlogPost2 from './pages/BlogPost2';
 import BlogPost3 from './pages/BlogPost3';
+import BlogPost4 from './pages/BlogPost4';
+import BlogPost5 from './pages/BlogPost5';
+import BlogPost6 from './pages/BlogPost6';
 import StoriesPage from './pages/StoriesPage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import CareersPage from './pages/CareersPage';
@@ -103,6 +106,9 @@ function AnimatedRoutes() {
         <Route path="/blog/1" element={<BlogPost1 />} />
         <Route path="/blog/2" element={<BlogPost2 />} />
         <Route path="/blog/3" element={<BlogPost3 />} />
+        <Route path="/blog/4" element={<BlogPost4 />} />
+        <Route path="/blog/5" element={<BlogPost5 />} />
+        <Route path="/blog/6" element={<BlogPost6 />} />
         <Route path="/careers" element={<CareersPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />

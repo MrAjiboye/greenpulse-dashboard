@@ -62,7 +62,7 @@ const BlogPost2 = () => {
         <div className="flex flex-wrap items-center gap-4 mb-5 text-sm text-gray-500">
           <span className="bg-emerald-50 text-emerald-600 text-xs font-semibold px-3 py-1 rounded-full">Analytics</span>
           <span>6 min read</span>
-          <span>November 12, 2025</span>
+          <span>February 3, 2026</span>
         </div>
 
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">

@@ -4,6 +4,7 @@ import NavBar from '../components/NavBar';
 import { Skeleton } from '../components/Skeleton';
 import { useAuth } from '../context/AuthContext';
 import { insightsAPI } from '../services/api';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const CATEGORY_CONFIG = {
   energy:      { icon: 'fa-bolt',               color: 'blue',    label: 'Energy',      tabIcon: 'fa-bolt'    },
@@ -58,7 +59,7 @@ function InsightCard({ insight, canAct, onDismiss, dismissing }) {
   };
 
   return (
-    <div className={`bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden hover:border-emerald-300 transition-all ${dismissing ? 'opacity-50 pointer-events-none' : ''}`}>
+    <div className={`reveal card-hover bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden hover:border-emerald-300 transition-all ${dismissing ? 'opacity-50 pointer-events-none' : ''}`}>
       <div className={`absolute top-0 left-0 w-1.5 h-full ${COLOR_BAR[cat.color] ?? 'bg-gray-400'}`}></div>
 
       <div className="flex flex-col md:flex-row gap-6">
@@ -180,6 +181,7 @@ const FILTERS = [
 ];
 
 const AIInsights = () => {
+  useScrollReveal();
   const { hasRole } = useAuth();
   const canAct = hasRole?.('manager', 'admin') ?? true;
 
@@ -381,7 +383,7 @@ const AIInsights = () => {
           {/* Sidebar */}
           <div className="lg:col-span-4 space-y-6">
             {/* Savings Projection — static chart for now */}
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+            <div className="reveal bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-sm font-bold text-gray-900">Savings Projection</h3>
               </div>
@@ -391,7 +393,7 @@ const AIInsights = () => {
             </div>
 
             {/* Category Breakdown */}
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+            <div className="reveal stagger-2 bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
               <h3 className="text-sm font-bold text-gray-900 mb-4">Insight Categories</h3>
               {Object.keys(categoryCounts).length === 0 ? (
                 <p className="text-sm text-gray-400 text-center py-4">No insights available</p>

@@ -5,13 +5,14 @@ import {
 } from 'recharts';
 import NavBar from '../components/NavBar';
 import { carbonAPI } from '../services/api';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const FLIGHT_TCO2  = 0.255;  // tCO2 per London–NY flight
 const TREE_TCO2_YR = 0.021;  // tCO2 absorbed per tree per year
 
 function KpiCard({ label, value, unit, sub, subColor = 'text-gray-500', icon, iconBg }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+    <div className="reveal card-hover bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
       <div className="flex items-start justify-between mb-3">
         <p className="text-sm font-medium text-gray-500">{label}</p>
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${iconBg}`}>
@@ -42,6 +43,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function CarbonFootprint() {
+  useScrollReveal();
   const [summary, setSummary]     = useState(null);
   const [trends, setTrends]       = useState([]);
   const [breakdown, setBreakdown] = useState([]);
@@ -143,7 +145,7 @@ export default function CarbonFootprint() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
 
           {/* Trend chart */}
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+          <div className="reveal lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <h2 className="font-semibold text-gray-800 mb-4">Monthly Carbon Trend</h2>
             {trends.length === 0 ? (
               <div className="flex items-center justify-center h-52 text-gray-400 text-sm">No trend data yet</div>
@@ -173,7 +175,7 @@ export default function CarbonFootprint() {
           </div>
 
           {/* Equivalents card */}
-          <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-6 text-white shadow-sm flex flex-col justify-between">
+          <div className="reveal stagger-2 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-6 text-white shadow-sm flex flex-col justify-between">
             <div>
               <h2 className="font-semibold mb-1">What does this mean?</h2>
               <p className="text-emerald-100 text-sm mb-6">Your net YTD carbon footprint is equivalent to:</p>
@@ -205,7 +207,7 @@ export default function CarbonFootprint() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
           {/* Emissions by zone */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+          <div className="reveal bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <h2 className="font-semibold text-gray-800 mb-4">Emissions by Zone (YTD)</h2>
             {energyBreakdown.length === 0 ? (
               <div className="flex items-center justify-center h-44 text-gray-400 text-sm">No data yet</div>

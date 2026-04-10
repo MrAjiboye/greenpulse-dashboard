@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import { Skeleton } from '../components/Skeleton';
 import { energyAPI } from '../services/api';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const severityConfig = {
   high:   { bg: 'bg-red-50',    border: 'border-red-100',    text: 'text-red-500',    badge: 'bg-red-50 text-red-600 border border-red-100',     label: 'Needs attention now',  icon: 'fa-arrow-trend-up' },
@@ -23,6 +24,7 @@ function timeAgo(dateStr) {
 
 const EnergyMonitor = () => {
   const navigate = useNavigate();
+  useScrollReveal();
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(null);
   const [trends, setTrends] = useState([]);
@@ -218,7 +220,7 @@ const EnergyMonitor = () => {
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+          <div className="reveal stagger-1 card-hover bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
             <div className="flex justify-between items-start mb-2">
               <span className="text-sm font-medium text-gray-500">Current Usage</span>
               <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold border border-blue-100">LIVE</span>
@@ -243,7 +245,7 @@ const EnergyMonitor = () => {
             )}
           </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+          <div className="reveal stagger-2 card-hover bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
             <div className="flex justify-between items-start mb-2">
               <span className="text-sm font-medium text-gray-500">Today's Highest Usage</span>
             </div>
@@ -264,7 +266,7 @@ const EnergyMonitor = () => {
             )}
           </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+          <div className="reveal stagger-3 card-hover bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
             <div className="flex justify-between items-start mb-2">
               <span className="text-sm font-medium text-gray-500">Estimated Cost / hr</span>
             </div>
@@ -278,7 +280,7 @@ const EnergyMonitor = () => {
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+          <div className="reveal stagger-4 card-hover bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
             <div className="flex justify-between items-start mb-2">
               <span className="text-sm font-medium text-gray-500">Projected Bill</span>
               <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-[10px] font-bold border border-gray-200">THIS MONTH</span>
@@ -304,7 +306,7 @@ const EnergyMonitor = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 space-y-6">
             {/* Trend Chart */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="reveal bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">

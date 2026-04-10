@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import NavBar from '../components/NavBar';
 import { Skeleton } from '../components/Skeleton';
 import OnboardingWizard from '../components/OnboardingWizard';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 const streamColor = (name) => {
@@ -49,6 +50,7 @@ const PieCenterLabel = ({ viewBox, totalKg }) => {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, hasRole } = useAuth();
+  useScrollReveal();
 
   const [showOnboarding, setShowOnboarding] = useState(
     () => !localStorage.getItem('greenpulse_onboarded') && hasRole?.('MANAGER', 'ADMIN')
@@ -274,8 +276,8 @@ const Dashboard = () => {
             { label: 'Total Savings', value: `£${stats?.total_savings?.toLocaleString() ?? 0}`, subtext: 'vs unoptimised baseline', icon: 'fa-piggy-bank', color: 'emerald', badge: '↑ 12%' },
             { label: 'Actions Taken', value: stats?.insights_applied ?? 0, subtext: 'recommendations applied', icon: 'fa-lightbulb', color: 'purple', badge: null },
             { label: 'CO₂ Saved', value: `${stats?.carbon_reduced_tons?.toFixed(1) ?? 0} T`, subtext: 'tonnes avoided this period', icon: 'fa-leaf', color: 'green', badge: null },
-          ].map(({ label, value, subtext, icon, color, badge }) => (
-            <div key={label} className={`bg-white rounded-xl border border-gray-200 shadow-sm p-6 relative overflow-hidden hover:border-${color}-300 transition-all`}>
+          ].map(({ label, value, subtext, icon, color, badge }, i) => (
+            <div key={label} className={`reveal stagger-${i + 1} card-hover bg-white rounded-xl border border-gray-200 shadow-sm p-6 relative overflow-hidden`}>
               <div className={`absolute top-0 right-0 w-24 h-24 bg-${color}-50 rounded-bl-full -mr-4 -mt-4`} />
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-4">
@@ -298,7 +300,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
 
           {/* Energy Chart */}
-          <div className="lg:col-span-8 bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <div className="reveal lg:col-span-8 bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Energy Consumption</h3>
@@ -361,7 +363,7 @@ const Dashboard = () => {
           </div>
 
           {/* Waste Breakdown */}
-          <div className="lg:col-span-4 bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <div className="reveal stagger-2 lg:col-span-4 bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <div className="flex items-start justify-between mb-1">
               <h3 className="text-lg font-bold text-gray-900">Waste Breakdown</h3>
               {wasteStats && (
@@ -434,7 +436,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
 
           {/* Equipment / Zone Status */}
-          <div className="lg:col-span-7 bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <div className="reveal lg:col-span-7 bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-bold text-gray-900">Equipment Status</h3>
               <button onClick={() => navigate('/energy')} className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">View All →</button>
@@ -477,7 +479,7 @@ const Dashboard = () => {
           </div>
 
           {/* AI Recommendations */}
-          <div className="lg:col-span-5 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-xl shadow-lg p-6 text-white relative overflow-hidden">
+          <div className="reveal stagger-2 lg:col-span-5 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-xl shadow-lg p-6 text-white relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10" />
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4">
@@ -514,7 +516,7 @@ const Dashboard = () => {
 
         {/* ── Goals Progress ── */}
         {goalsSummary.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-8">
+          <div className="reveal bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-8">
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-lg font-bold text-gray-900">Goals Progress</h3>
               <button onClick={() => navigate('/goals')} className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">View all goals →</button>
@@ -542,7 +544,7 @@ const Dashboard = () => {
         )}
 
         {/* ── Recent Alerts ── */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-8">
+        <div className="reveal bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-gray-900">Recent Alerts</h3>
             <button onClick={() => navigate('/notifications')} className="text-sm text-gray-500 hover:text-gray-900">View All</button>

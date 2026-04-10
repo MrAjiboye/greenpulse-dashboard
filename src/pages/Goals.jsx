@@ -4,6 +4,7 @@ import NavBar from '../components/NavBar';
 import { goalsAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const CATEGORY_META = {
   ENERGY: { label: 'Energy',  icon: 'fa-solid fa-bolt',    color: 'bg-yellow-100 text-yellow-700' },
@@ -26,6 +27,7 @@ function formatDate(dt) {
 const BLANK = { name: '', category: 'ENERGY', target_value: '', unit: 'kWh', period_start: '', period_end: '' };
 
 export default function Goals() {
+  useScrollReveal();
   const { hasRole } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -253,7 +255,7 @@ export default function Goals() {
               const pct    = Math.min(g.progress_pct, 100);
 
               return (
-                <div key={g.id} className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col gap-4">
+                <div key={g.id} className="reveal card-hover bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col gap-4">
                   {/* Top row */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 flex-wrap">
