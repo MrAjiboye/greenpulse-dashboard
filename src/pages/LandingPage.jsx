@@ -58,6 +58,7 @@ const LandingPage = () => {
   const [newsletterError, setNewsletterError] = useState('');
   const [featurePage, setFeaturePage] = useState(0);
   const [mobileIdx, setMobileIdx] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
   useScrollReveal();
   const PER_PAGE = 3;
   const totalPages = Math.ceil(FEATURES.length / PER_PAGE);
@@ -157,19 +158,41 @@ const LandingPage = () => {
           
           <nav className="hidden md:flex items-center gap-10">
             <a href="#features" className="text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg transition-all duration-200">Features</a>
-            <a href="/how-it-works" className="text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg transition-all duration-200">How it works</a>
-            <a href="/stories" className="text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg transition-all duration-200">Stories</a>
+            <Link to="/how-it-works" className="text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg transition-all duration-200">How it works</Link>
+            <Link to="/stories" className="text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg transition-all duration-200">Stories</Link>
             <Link to="/about" className="text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg transition-all duration-200">About</Link>
+            <Link to="/blog" className="text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg transition-all duration-200">Blog</Link>
           </nav>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
             <div className="hidden md:block h-4 w-px bg-gray-200"></div>
-            <button onClick={() => navigate('/signin')} className="text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-all duration-200">Sign In</button>
-            <button onClick={() => navigate('/register')} className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg shadow-lg shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5">
+            <button onClick={() => navigate('/signin')} className="hidden md:block text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-all duration-200">Sign In</button>
+            <button onClick={() => navigate('/register')} className="hidden md:block px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg shadow-lg shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5">
               Create Account
+            </button>
+            <button onClick={() => setMenuOpen(o => !o)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Toggle menu">
+              <div className="w-5 h-4 flex flex-col justify-between">
+                <span className={`block h-0.5 bg-gray-700 transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
+                <span className={`block h-0.5 bg-gray-700 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+                <span className={`block h-0.5 bg-gray-700 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-[9px]' : ''}`} />
+              </div>
             </button>
           </div>
         </div>
+
+        {menuOpen && (
+          <div className="md:hidden absolute top-20 left-0 right-0 bg-white border-b border-gray-100 shadow-lg px-6 py-4 flex flex-col gap-1 z-50">
+            <a href="#features" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 px-2 py-2.5 rounded-lg transition-all duration-200">Features</a>
+            <Link to="/how-it-works" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 px-2 py-2.5 rounded-lg transition-all duration-200">How it works</Link>
+            <Link to="/stories" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 px-2 py-2.5 rounded-lg transition-all duration-200">Stories</Link>
+            <Link to="/about" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 px-2 py-2.5 rounded-lg transition-all duration-200">About</Link>
+            <Link to="/blog" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 px-2 py-2.5 rounded-lg transition-all duration-200">Blog</Link>
+            <div className="pt-3 border-t border-gray-100 flex flex-col gap-2 mt-1">
+              <button onClick={() => { setMenuOpen(false); navigate('/signin'); }} className="text-sm font-medium text-gray-700 hover:text-emerald-600 py-2 text-left rounded-lg transition-all duration-200">Sign In</button>
+              <button onClick={() => { setMenuOpen(false); navigate('/register'); }} className="w-full text-sm font-semibold bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-lg transition-all duration-200">Create Account</button>
+            </div>
+          </div>
+        )}
       </header>
 
       <section className="pt-28 pb-12 md:pt-32 md:pb-20 relative overflow-hidden bg-gradient-to-b from-emerald-50/50 to-white">
@@ -207,7 +230,7 @@ const LandingPage = () => {
               Sign In to Dashboard
               <i className="fa-solid fa-arrow-right text-sm"></i>
             </button>
-            <button className="px-8 py-4 bg-white border border-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2 min-w-[200px]">
+            <button onClick={() => navigate('/register')} className="px-8 py-4 bg-white border border-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2 min-w-[200px]">
               <i className="fa-solid fa-user-plus text-emerald-500"></i>
               Create Free Account
             </button>
