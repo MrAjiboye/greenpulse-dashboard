@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import { Skeleton } from '../components/Skeleton';
-import { reportsAPI, dashboardAPI, wasteAPI } from '../services/api';
+import { reportsAPI, dashboardAPI, wasteAPI, insightsAPI } from '../services/api';
 import { generateReport } from '../utils/generateReport';
 import { useAuth } from '../context/AuthContext';
 
@@ -37,32 +37,38 @@ const Reports = () => {
   const navigate = useNavigate();
   const { user }  = useAuth();
 
-  const [loading, setLoading]         = useState(true);
-  const [performance, setPerformance] = useState(null);
-  const [insightsLog, setInsightsLog] = useState([]);
-  const [dashStats, setDashStats]     = useState(null);
+  const [loading, setLoading]               = useState(true);
+  const [performance, setPerformance]       = useState(null);
+  const [insightsLog, setInsightsLog]       = useState([]);
+  const [pendingInsights, setPendingInsights] = useState([]);
+  const [dashStats, setDashStats]           = useState(null);
   const [wasteBreakdown, setWasteBreakdown] = useState([]);
-  const [search, setSearch]           = useState('');
-  const [page, setPage]               = useState(0);
-  const [downloading, setDownloading] = useState(false);
+  const [search, setSearch]                 = useState('');
+  const [page, setPage]                     = useState(0);
+  const [downloading, setDownloading]       = useState(false);
   const PAGE_SIZE = 10;
 
   const fetchData = useCallback(async () => {
-    const [perfRes, logRes, statsRes, wasteRes] = await Promise.allSettled([
+    const [perfRes, logRes, statsRes, wasteRes, pendingRes] = await Promise.allSettled([
       reportsAPI.getPerformance(6),
       reportsAPI.getInsightsLog(50, 0),
       dashboardAPI.getStats(),
       wasteAPI.getBreakdown(30),
+      insightsAPI.getList('PENDING'),
     ]);
-    if (perfRes.status === 'fulfilled')  setPerformance(perfRes.value);
+    if (perfRes.status === 'fulfilled')    setPerformance(perfRes.value);
     else console.error('Reports /performance failed:', perfRes.reason);
-    if (logRes.status === 'fulfilled')   setInsightsLog(Array.isArray(logRes.value) ? logRes.value : (logRes.value?.items ?? []));
+    if (logRes.status === 'fulfilled')     setInsightsLog(Array.isArray(logRes.value) ? logRes.value : (logRes.value?.items ?? []));
     else console.error('Reports /insights-log failed:', logRes.reason);
-    if (statsRes.status === 'fulfilled') setDashStats(statsRes.value);
+    if (statsRes.status === 'fulfilled')   setDashStats(statsRes.value);
     else console.error('Reports /dashboard/stats failed:', statsRes.reason);
     if (wasteRes.status === 'fulfilled') {
       const raw = wasteRes.value;
       setWasteBreakdown(Array.isArray(raw) ? raw : (raw?.breakdown ?? raw?.data ?? []));
+    }
+    if (pendingRes.status === 'fulfilled') {
+      const raw = pendingRes.value;
+      setPendingInsights(Array.isArray(raw) ? raw : (raw?.items ?? raw?.insights ?? []));
     }
     setLoading(false);
   }, []);
@@ -72,7 +78,7 @@ const Reports = () => {
   const handleDownloadPDF = () => {
     setDownloading(true);
     try {
-      generateReport({ performance, insightsLog, dashStats, wasteBreakdown, user });
+      generateReport({ performance, insightsLog, pendingInsights, dashStats, wasteBreakdown, user });
     } finally {
       setDownloading(false);
     }

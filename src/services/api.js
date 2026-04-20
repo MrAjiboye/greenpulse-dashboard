@@ -272,7 +272,7 @@ export const adminAPI = {
 const _qs = (orgId) => orgId ? `?organization_id=${orgId}` : '';
 
 export const mlAPI = {
-  getStatus:        async ()        => (await api.get('/admin/ml/status')).data,
+  getStatus:        async (orgId)   => (await api.get(`/admin/ml/status${_qs(orgId)}`)).data,
   train:            async (orgId)   => (await api.post(`/admin/ml/train${_qs(orgId)}`)).data,
   trainAndInsights: async (orgId)   => (await api.post(`/admin/ml/train-and-insights${_qs(orgId)}`)).data,
   generateInsights: async (orgId)   => (await api.post(`/admin/ml/generate-insights${_qs(orgId)}`)).data,

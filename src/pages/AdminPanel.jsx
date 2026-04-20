@@ -54,18 +54,18 @@ function MLEnginePanel({ showToast }) {
   const [orgs, setOrgs]               = useState([]);
   const [selectedOrg, setSelectedOrg] = useState('');   // '' = all orgs
 
+  const orgId = selectedOrg || null;
+
   // Load orgs for the selector
   useEffect(() => {
     adminAPI.getOrganizations().then(d => setOrgs(d.items ?? [])).catch(() => {});
   }, []);
 
   const loadStatus = useCallback(async () => {
-    try { setMlStatus(await mlAPI.getStatus()); } catch { /* ignore */ }
-  }, []);
+    try { setMlStatus(await mlAPI.getStatus(orgId)); } catch { /* ignore */ }
+  }, [orgId]);
 
   useEffect(() => { loadStatus(); }, [loadStatus]);
-
-  const orgId = selectedOrg || null;
   const orgLabel = selectedOrg
     ? orgs.find(o => String(o.id) === selectedOrg)?.name ?? 'Selected org'
     : 'all organisations';
