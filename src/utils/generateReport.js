@@ -1,708 +1,817 @@
 /**
- * GreenPulse PDF Report Generator
- *
- * Sections:
- *   1  Cover / Header
- *   2  Executive Summary
- *   3  Performance KPIs
- *   4  Energy Consumption Summary
- *   5  Waste Management Summary
- *   6  Net Zero Progress
- *   7  Savings Trend (6 months)
- *   8  Recommended Cost-Saving Ideas (pending)
- *   9  Applied Recommendations Log
- *   10 Impact by Category
- *   11 Carbon Equivalences
- *   12 ROI Projection
- *   -- Page footers
+ * GreenPulse PDF Report Generator — v2
+ * Professional multi-page sustainability report
  */
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// ── Constants ────────────────────────────────────────────────────────────────
-const RATE_GBP  = 0.28;    // UK average electricity rate £/kWh
-const CARBON_KG = 0.233;   // UK grid average kg CO2/kWh
-const WASTE_KG_TO_CO2 = 0.5; // rough kg CO2 per kg landfill waste avoided
+const RATE_GBP       = 0.28;
+const CARBON_KG      = 0.233;
+const WASTE_KG_CO2   = 0.5;
 
-// ── Colour palette ───────────────────────────────────────────────────────────
 const C = {
-  green:    [16, 185, 129],
-  teal:     [13, 148, 136],
-  darkGray: [31, 41, 55],
-  midGray:  [107, 114, 128],
-  lightGray:[156, 163, 175],
-  lightBg:  [249, 250, 251],
-  border:   [229, 231, 235],
-  white:    [255, 255, 255],
-  red:      [239, 68, 68],
-  amber:    [217, 119, 6],
-  blue:     [59, 130, 246],
+  green:      [5,   150, 105],
+  teal:       [13,  148, 136],
+  greenLight: [240, 253, 244],
+  greenDim:   [167, 243, 208],
+  charcoal:   [17,  24,  39],
+  darkGray:   [31,  41,  55],
+  midGray:    [107, 114, 128],
+  lightGray:  [156, 163, 175],
+  border:     [229, 231, 235],
+  bgGray:     [249, 250, 251],
+  white:      [255, 255, 255],
+  red:        [220, 38,  38],
+  amber:      [245, 158, 11],
+  blue:       [59,  130, 246],
+  indigo:     [99,  102, 241],
+  orange:     [249, 115, 22],
 };
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-function fmtDate(dateStr) {
-  if (!dateStr) return '—';
-  return new Date(dateStr).toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'short', year: 'numeric',
-  });
+const CAT_COLOR = {
+  energy:     C.blue,
+  waste:      C.green,
+  operations: C.orange,
+  carbon:     C.teal,
+};
+
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function fmtGBP(v) {
+  if (v == null || isNaN(v)) return '—';
+  if (v >= 1000000) return `£${(v / 1000000).toFixed(1)}M`;
+  if (v >= 1000)    return `£${(v / 1000).toFixed(1)}k`;
+  return `£${Number(v).toLocaleString('en-GB')}`;
+}
+function fmtNum(v, dp = 0) {
+  if (v == null || isNaN(v)) return '—';
+  return Number(v).toLocaleString('en-GB', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+}
+function truncate(str, n) {
+  if (!str) return '';
+  return str.length > n ? str.slice(0, n - 1) + '…' : str;
 }
 
-function fmtGBP(val) {
-  if (val == null || isNaN(val)) return '—';
-  if (val >= 1000000) return `£${(val / 1000000).toFixed(1)}M`;
-  if (val >= 1000)    return `£${(val / 1000).toFixed(1)}k`;
-  return `£${Number(val).toLocaleString('en-GB')}`;
-}
-
-function fmtNum(val, dp = 0) {
-  if (val == null || isNaN(val)) return '—';
-  return Number(val).toLocaleString('en-GB', { minimumFractionDigits: dp, maximumFractionDigits: dp });
-}
-
-/**
- * @param {object} params
- * @param {object}  params.performance    reportsAPI.getPerformance()
- * @param {Array}   params.insightsLog    reportsAPI.getInsightsLog()
- * @param {object}  params.dashStats      dashboardAPI.getStats()
- * @param {Array}   params.wasteBreakdown wasteAPI.getBreakdown()
- * @param {object}  params.user           logged-in user from AuthContext
- */
 export function generateReport({ performance, insightsLog = [], dashStats, wasteBreakdown = [], user }) {
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const PAGE_W  = 210;
-  const M       = 14;
-  const CONT_W  = PAGE_W - M * 2;
+  const doc    = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const PAGE_W = 210;
+  const M      = 14;
+  const CW     = PAGE_W - M * 2;
   let y = 0;
 
-  // ── Extract performance fields ─────────────────────────────────────────────
-  const totalRealized  = performance?.total_realized_savings ?? performance?.realized_savings;
-  const totalPotential = performance?.potential_savings ?? performance?.pending_savings;
-  const appliedCount   = performance?.insights_applied ?? performance?.applied_count;
-  const totalCount     = performance?.insights_total ?? performance?.total_count;
-  const co2Reduced     = performance?.co2e_reduced_tons ?? performance?.co2_reduced;
+  // ── Data extraction ──────────────────────────────────────────────────────────
+  const totalRealized  = performance?.total_realized_savings ?? performance?.realized_savings ?? 0;
+  const totalPotential = performance?.total_potential_savings ?? performance?.potential_savings ?? performance?.pending_savings ?? 0;
+  const appliedCount   = performance?.insights_applied ?? performance?.applied_count ?? 0;
+  const totalCount     = performance?.insights_total   ?? performance?.total_count;
+  const co2Reduced     = performance?.co2e_reduced_tons ?? performance?.co2_reduced ?? 0;
   const trend          = performance?.savings_trend ?? [];
   const cats           = performance?.category_breakdown ?? [];
 
-  // ── Company / site identity ────────────────────────────────────────────────
   const companyName = user?.company_name?.trim()
-    || user?.department?.trim()
+    || user?.organization_name?.trim()
     || `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim()
     || 'Your Organisation';
   const reportedBy  = user ? `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim() : '';
   const userTitle   = user?.job_title ?? '';
   const reportDate  = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-  const periodStart = trend.length > 0 ? (trend[0].month ?? trend[0].period ?? '') : '';
-  const periodEnd   = trend.length > 0 ? (trend[trend.length - 1].month ?? trend[trend.length - 1].period ?? '') : '';
+  const periodStart = trend.length > 0 ? (trend[0].month ?? '') : '';
+  const periodEnd   = trend.length > 0 ? (trend[trend.length - 1].month ?? '') : '';
   const period      = periodStart && periodEnd ? `${periodStart} – ${periodEnd}` : 'Last 6 months';
 
-  // ── Net Zero calculation ───────────────────────────────────────────────────
-  const co2SavedKg     = co2Reduced != null ? Math.round(co2Reduced * 1000) : null;
-  const co2PotentialKg = totalPotential != null ? Math.round(totalPotential / RATE_GBP * CARBON_KG) : null;
-  const totalOpKg      = (co2SavedKg ?? 0) + (co2PotentialKg ?? 0);
-  const netZeroPct     = totalOpKg > 0 && co2SavedKg != null
-    ? Math.min(100, Math.round((co2SavedKg / totalOpKg) * 100))
-    : null;
+  const co2SavedKg     = co2Reduced ? Math.round(co2Reduced * 1000) : 0;
+  const co2PotentialKg = totalPotential ? Math.round(totalPotential / RATE_GBP * CARBON_KG) : 0;
+  const totalOpKg      = co2SavedKg + co2PotentialKg;
+  const netZeroPct     = totalOpKg > 0 ? Math.min(100, Math.round(co2SavedKg / totalOpKg * 100)) : null;
 
-  // ── Insight splits ─────────────────────────────────────────────────────────
-  const pending  = insightsLog.filter(r => (r.status ?? '').toLowerCase() === 'pending');
-  const applied  = insightsLog.filter(r => (r.status ?? '').toLowerCase() === 'applied');
+  const pending = insightsLog.filter(r => (r.status ?? '').toLowerCase() === 'pending');
+  const applied = insightsLog.filter(r => (r.status ?? '').toLowerCase() === 'applied');
 
-  // ── Energy stats from dashStats ────────────────────────────────────────────
-  const currentKwh   = dashStats?.current_energy_kwh;
-  const totalSavings = dashStats?.total_savings ?? totalRealized;
-  const carbonSaved  = dashStats?.carbon_reduced_tons ?? co2Reduced;
+  const currentKwh  = dashStats?.current_energy_kwh;
+  const carbonSaved = dashStats?.carbon_reduced_tons ?? co2Reduced;
 
-  // ── Waste stats ────────────────────────────────────────────────────────────
-  const totalWasteKg  = wasteBreakdown.reduce((s, b) => s + (parseFloat(b.weight_kg ?? b.weight ?? b.amount_kg ?? 0) || 0), 0);
-  const landfillKg    = wasteBreakdown
-    .filter(b => { const n = (b.stream ?? b.category ?? b.type ?? b.name ?? '').toLowerCase(); return n.includes('general') || n.includes('landfill') || n.includes('residual'); })
-    .reduce((s, b) => s + (parseFloat(b.weight_kg ?? b.weight ?? b.amount_kg ?? 0) || 0), 0);
-  const diversionRate = totalWasteKg > 0 ? Math.round(((totalWasteKg - landfillKg) / totalWasteKg) * 100) : null;
-  const wasteKgDiverted = totalWasteKg - landfillKg;
+  const totalWasteKg = wasteBreakdown.reduce((s, b) => s + (parseFloat(b.weight_kg ?? b.weight ?? 0) || 0), 0);
+  const landfillKg   = wasteBreakdown
+    .filter(b => { const n = (b.stream ?? b.name ?? '').toLowerCase(); return n.includes('landfill') || n.includes('general'); })
+    .reduce((s, b) => s + (parseFloat(b.weight_kg ?? b.weight ?? 0) || 0), 0);
+  const diversionRate    = totalWasteKg > 0 ? Math.round((totalWasteKg - landfillKg) / totalWasteKg * 100) : null;
+  const wasteKgDiverted  = totalWasteKg - landfillKg;
 
-  // ── ROI projection ─────────────────────────────────────────────────────────
-  const pendingSavingsMonthly = pending.reduce((s, r) => s + (r.potential_savings_monthly ?? r.savings_monthly ?? 0), 0);
-  const annualROI = pendingSavingsMonthly * 12;
+  const pendingSavingsMonthly = pending.reduce((s, r) => s + (r.potential_savings_monthly ?? r.savings_monthly ?? r.savings ?? r.estimated_savings ?? 0), 0);
+  const annualROI    = pendingSavingsMonthly * 12;
   const threeYearROI = annualROI * 3;
 
-  // ── Carbon equivalences (from co2SavedKg) ─────────────────────────────────
-  const treesEquiv      = co2SavedKg != null ? Math.round(co2SavedKg / 21.77) : null; // 1 tree absorbs ~21.77 kg CO2/yr
-  const carMilesEquiv   = co2SavedKg != null ? Math.round(co2SavedKg / 0.404) : null; // 0.404 kg CO2 per car mile (UK avg)
-  const flightsEquiv    = co2SavedKg != null ? Math.round(co2SavedKg / 255)   : null; // ~255 kg CO2 per London-NY flight
+  const treesEquiv    = co2SavedKg ? Math.round(co2SavedKg / 21.77) : null;
+  const carMilesEquiv = co2SavedKg ? Math.round(co2SavedKg / 0.404) : null;
+  const flightsEquiv  = co2SavedKg ? Math.round(co2SavedKg / 255)   : null;
 
-  // ── Page / layout helpers ──────────────────────────────────────────────────
-  const checkPageBreak = (needed = 30) => {
-    if (y + needed > 272) { doc.addPage(); y = 14; }
+  // ── Layout helpers ────────────────────────────────────────────────────────────
+  const newPage = () => { doc.addPage(); y = M; };
+
+  const checkBreak = (needed = 30) => {
+    if (y + needed > 275) newPage();
   };
 
-  const sectionHeader = (title, subtitle) => {
-    checkPageBreak(14);
-    doc.setFillColor(...C.lightBg);
-    doc.rect(M, y, CONT_W, 8, 'F');
+  // Dark charcoal section header with green left accent
+  const sectionHeader = (title, subtitle = '') => {
+    checkBreak(14);
+    doc.setFillColor(...C.darkGray);
+    doc.rect(M, y, CW, 10, 'F');
     doc.setFillColor(...C.green);
-    doc.rect(M, y, 2.5, 8, 'F');
-    doc.setTextColor(...C.green);
+    doc.rect(M, y, 3, 10, 'F');
+    doc.setTextColor(...C.white);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text(title.toUpperCase(), M + 5, y + 5.3);
+    doc.text(title.toUpperCase(), M + 7, y + 6.5);
     if (subtitle) {
-      doc.setTextColor(...C.midGray);
+      doc.setTextColor(...C.greenDim);
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'normal');
-      doc.text(subtitle, PAGE_W - M, y + 5.3, { align: 'right' });
+      doc.text(subtitle, PAGE_W - M, y + 6.5, { align: 'right' });
     }
-    y += 11;
+    y += 14;
   };
 
-  const kv = (label, value, valColor, indent = 0) => {
-    checkPageBreak(7);
-    doc.setTextColor(...C.midGray);
+  // Inline key → value row
+  const kv = (label, value, valColor) => {
+    checkBreak(7);
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'normal');
-    doc.text(label, M + 3 + indent, y);
-    doc.setTextColor(...(valColor ?? C.darkGray));
+    doc.setTextColor(...C.midGray);
+    doc.text(label, M + 4, y);
     doc.setFont('helvetica', 'bold');
-    doc.text(String(value ?? '—'), M + 80, y);
+    doc.setTextColor(...(valColor ?? C.darkGray));
+    doc.text(String(value ?? '—'), M + 88, y);
     doc.setFont('helvetica', 'normal');
     y += 6;
   };
 
   const smallNote = (text) => {
-    checkPageBreak(8);
+    checkBreak(8);
     doc.setTextColor(...C.lightGray);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'italic');
-    const lines = doc.splitTextToSize(text, CONT_W - 6);
-    doc.text(lines, M + 3, y);
+    const lines = doc.splitTextToSize(text, CW - 8);
+    doc.text(lines, M + 4, y);
     y += lines.length * 3.8 + 2;
   };
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 0 — COVER HEADER
-  // ═══════════════════════════════════════════════════════════════════════════
-  // Green header bar
+  // 4-column KPI scorecard row
+  const kpiRow = (cards, startY) => {
+    const cardW = (CW - 9) / 4;
+    cards.forEach((card, i) => {
+      const cx = M + i * (cardW + 3);
+      const cy = startY;
+      doc.setFillColor(...C.white);
+      doc.roundedRect(cx, cy, cardW, 34, 2, 2, 'F');
+      doc.setDrawColor(...C.border);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(cx, cy, cardW, 34, 2, 2, 'S');
+      // Coloured top bar
+      doc.setFillColor(...card.accent);
+      doc.roundedRect(cx, cy, cardW, 3.5, 1, 1, 'F');
+      // Big value
+      doc.setTextColor(...C.darkGray);
+      doc.setFontSize(15);
+      doc.setFont('helvetica', 'bold');
+      doc.text(String(card.value ?? '—'), cx + cardW / 2, cy + 18, { align: 'center' });
+      // Label (two lines if needed)
+      doc.setTextColor(...C.midGray);
+      doc.setFontSize(6.5);
+      doc.setFont('helvetica', 'normal');
+      const labelLines = card.label.split('\n');
+      labelLines.forEach((ln, li) => {
+        doc.text(ln, cx + cardW / 2, cy + 26 + li * 4, { align: 'center' });
+      });
+    });
+  };
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // COVER PAGE
+  // ════════════════════════════════════════════════════════════════════════════
+  // Top green band
   doc.setFillColor(...C.green);
-  doc.rect(0, 0, PAGE_W, 28, 'F');
-
-  // Subtle teal gradient band
+  doc.rect(0, 0, PAGE_W, 88, 'F');
   doc.setFillColor(...C.teal);
-  doc.rect(0, 22, PAGE_W, 6, 'F');
+  doc.rect(0, 82, PAGE_W, 6, 'F');
 
-  // Logo box
-  doc.setFillColor(255, 255, 255);
-  doc.roundedRect(M, 6, 14, 14, 2.5, 2.5, 'F');
+  // GP logo
+  doc.setFillColor(...C.white);
+  doc.roundedRect(M, 14, 22, 22, 3, 3, 'F');
   doc.setTextColor(...C.green);
-  doc.setFontSize(9.5);
+  doc.setFontSize(13);
   doc.setFont('helvetica', 'bold');
-  doc.text('GP', M + 3.5, 15);
+  doc.text('GP', M + 5.5, 27.5);
 
   // Brand name
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(16);
+  doc.setTextColor(...C.white);
+  doc.setFontSize(22);
   doc.setFont('helvetica', 'bold');
-  doc.text('GreenPulse Analytics', M + 20, 13);
+  doc.text('GreenPulse Analytics', M + 29, 24);
 
-  // Report subtitle
+  // Report title
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
   doc.setTextColor(200, 245, 225);
+  doc.text('Site Performance & Net Zero Report', M + 29, 33);
+
+  // Separator line
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.4);
+  doc.line(M, 46, PAGE_W - M, 46);
+  doc.setLineWidth(0.2);
+
+  // Report meta
+  doc.setTextColor(...C.white);
   doc.setFontSize(8.5);
   doc.setFont('helvetica', 'normal');
-  doc.text('Site Performance & Net Zero Report', M + 20, 20);
+  doc.text(`Reporting Period:`, M, 56);
+  doc.setFont('helvetica', 'bold');
+  doc.text(period, M + 34, 56);
+  doc.setFont('helvetica', 'normal');
 
-  // Date + confidential on right
-  doc.setTextColor(200, 245, 225);
-  doc.setFontSize(8);
-  doc.text(`Generated: ${reportDate}`, PAGE_W - M, 13, { align: 'right' });
-  doc.text('Confidential', PAGE_W - M, 20, { align: 'right' });
+  if (reportedBy) {
+    doc.text('Prepared by:', M, 64);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${reportedBy}${userTitle ? `  ·  ${userTitle}` : ''}`, M + 34, 64);
+    doc.setFont('helvetica', 'normal');
+  }
 
-  y = 32;
+  doc.text('Generated:', M, 72);
+  doc.setFont('helvetica', 'bold');
+  doc.text(reportDate, M + 34, 72);
 
-  // ── Company / site banner ─────────────────────────────────────────────────
-  doc.setFillColor(240, 253, 244); // very light green
-  doc.rect(M, y, CONT_W, 18, 'F');
-  doc.setDrawColor(...C.green);
-  doc.setLineWidth(0.3);
-  doc.rect(M, y, CONT_W, 18, 'S');
+  // CONFIDENTIAL badge
+  doc.setDrawColor(...C.white);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(PAGE_W - M - 38, 54, 38, 10, 2, 2, 'S');
+  doc.setTextColor(...C.white);
+  doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'bold');
+  doc.text('CONFIDENTIAL', PAGE_W - M - 19, 60.5, { align: 'center' });
+  doc.setLineWidth(0.2);
+
+  // Company name block
+  let cy = 100;
+  doc.setFillColor(...C.greenLight);
+  doc.roundedRect(M, cy, CW, 28, 3, 3, 'F');
+  doc.setFillColor(...C.green);
+  doc.rect(M, cy, 4, 28, 'F');
+  doc.roundedRect(M, cy, 4, 28, 2, 2, 'F');
 
   doc.setTextColor(...C.darkGray);
-  doc.setFontSize(14);
+  doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.text(companyName, M + 5, y + 7);
+  doc.text(truncate(companyName, 40), M + 9, cy + 12);
 
   doc.setTextColor(...C.midGray);
   doc.setFontSize(8.5);
   doc.setFont('helvetica', 'normal');
-  const subLine = [
-    period ? `Reporting period: ${period}` : null,
-    reportedBy ? `Prepared by: ${reportedBy}${userTitle ? `, ${userTitle}` : ''}` : null,
-  ].filter(Boolean).join('   ·   ');
-  doc.text(subLine, M + 5, y + 14);
+  doc.text(`Sustainability performance report  ·  ${period}`, M + 9, cy + 22);
 
-  y += 22;
+  cy += 36;
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // 4 KPI cards on cover
+  kpiRow([
+    {
+      label: 'Total Savings\nRealised',
+      value: totalRealized ? `£${Number(totalRealized).toLocaleString('en-GB')}` : '—',
+      accent: C.green,
+    },
+    {
+      label: 'Further\nPotential',
+      value: totalPotential ? `£${Number(totalPotential).toLocaleString('en-GB')}` : '—',
+      accent: C.teal,
+    },
+    {
+      label: 'Ideas\nApplied',
+      value: appliedCount != null ? `${appliedCount}${totalCount ? ` / ${totalCount}` : ''}` : '—',
+      accent: C.indigo,
+    },
+    {
+      label: 'CO₂\nReduced',
+      value: co2Reduced ? `${co2Reduced.toFixed(2)} T` : '—',
+      accent: C.amber,
+    },
+  ], cy);
+
+  cy += 42;
+
+  // Net zero progress bar
+  if (netZeroPct != null) {
+    doc.setTextColor(...C.darkGray);
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Net Zero Progress`, M, cy);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...C.midGray);
+    doc.text(`${netZeroPct}% of identified carbon reduction achieved`, M + 38, cy);
+    cy += 5;
+
+    const bw = CW;
+    doc.setFillColor(...C.border);
+    doc.roundedRect(M, cy, bw, 9, 4.5, 4.5, 'F');
+    const fillClr = netZeroPct >= 75 ? C.green : netZeroPct >= 40 ? [251, 191, 36] : C.red;
+    const fillW   = Math.max(9, bw * netZeroPct / 100);
+    doc.setFillColor(...fillClr);
+    doc.roundedRect(M, cy, fillW, 9, 4.5, 4.5, 'F');
+    doc.setTextColor(...C.white);
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${netZeroPct}%`, M + fillW / 2, cy + 5.8, { align: 'center' });
+    cy += 15;
+  }
+
+  // Waste diversion bar (if available)
+  if (diversionRate != null) {
+    doc.setTextColor(...C.darkGray);
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Waste Diversion Rate', M, cy);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...C.midGray);
+    doc.text(`${diversionRate}% diverted from landfill`, M + 44, cy);
+    cy += 5;
+
+    const bw2  = CW;
+    doc.setFillColor(...C.border);
+    doc.roundedRect(M, cy, bw2, 9, 4.5, 4.5, 'F');
+    const dFill = diversionRate >= 70 ? C.green : diversionRate >= 50 ? [251, 191, 36] : C.red;
+    doc.setFillColor(...dFill);
+    doc.roundedRect(M, cy, Math.max(9, bw2 * diversionRate / 100), 9, 4.5, 4.5, 'F');
+    doc.setTextColor(...C.white);
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${diversionRate}%`, M + Math.max(9, bw2 * diversionRate / 100) / 2, cy + 5.8, { align: 'center' });
+    cy += 14;
+  }
+
+  // Disclaimer
+  cy = Math.max(cy + 4, 255);
+  doc.setDrawColor(...C.border);
+  doc.setLineWidth(0.3);
+  doc.line(M, cy, PAGE_W - M, cy);
+  cy += 5;
+  doc.setTextColor(...C.lightGray);
+  doc.setFontSize(7);
+  doc.setFont('helvetica', 'italic');
+  const disclaimer = doc.splitTextToSize(
+    'This report was generated automatically by GreenPulse Analytics using energy, waste and financial data from your connected systems. Figures represent estimates based on available data and should not be used as the sole basis for financial decisions.',
+    CW
+  );
+  doc.text(disclaimer, M, cy);
+
+  // Cover footer
+  doc.setFillColor(...C.darkGray);
+  doc.rect(0, 283, PAGE_W, 14, 'F');
+  doc.setFillColor(...C.green);
+  doc.rect(0, 283, 4, 14, 'F');
+  doc.setTextColor(...C.white);
+  doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'normal');
+  doc.text(
+    'GreenPulse Analytics Ltd  ·  greenpulseanalytics.com  ·  info@greenpulseanalytics.com',
+    PAGE_W / 2, 291.5, { align: 'center' }
+  );
+
+  // ── Start content pages ────────────────────────────────────────────────────
+  doc.addPage();
+  y = M;
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // PAGE 2 HEADER — mini KPI summary bar
+  // ════════════════════════════════════════════════════════════════════════════
+  doc.setFillColor(...C.greenLight);
+  doc.rect(M, y, CW, 10, 'F');
+  doc.setFillColor(...C.green);
+  doc.rect(M, y, 3, 10, 'F');
+  doc.setTextColor(...C.green);
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'bold');
+  doc.text(companyName.toUpperCase(), M + 7, y + 6.5);
+  doc.setTextColor(...C.midGray);
+  doc.setFont('helvetica', 'normal');
+  doc.text(period, PAGE_W - M, y + 6.5, { align: 'right' });
+  y += 16;
+
+  // ════════════════════════════════════════════════════════════════════════════
   // SECTION 1 — EXECUTIVE SUMMARY
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   sectionHeader('Executive Summary');
 
-  const savingsLine  = totalRealized != null ? `£${Number(totalRealized).toLocaleString('en-GB')} in savings realised` : null;
-  const potentialLine= totalPotential != null ? `£${Number(totalPotential).toLocaleString('en-GB')} in further savings identified` : null;
-  const co2Line      = co2Reduced != null ? `${co2Reduced.toFixed(2)} tonnes of CO\u2082 reduced` : null;
-  const insightLine  = appliedCount != null ? `${appliedCount} recommendation${appliedCount !== 1 ? 's' : ''} applied` : null;
-  const progressLine = netZeroPct != null ? `${netZeroPct}% progress toward full identified carbon reduction` : null;
-  const wasteLines   = diversionRate != null ? `${diversionRate}% waste diversion rate (last 30 days)` : null;
+  const bullets = [
+    totalRealized  ? `£${Number(totalRealized).toLocaleString('en-GB')} in cost savings realised from applied recommendations` : null,
+    totalPotential ? `£${Number(totalPotential).toLocaleString('en-GB')} in further savings identified from pending recommendations` : null,
+    co2Reduced     ? `${co2Reduced.toFixed(2)} tonnes of CO₂ reduced to date` : null,
+    appliedCount   ? `${appliedCount} recommendation${appliedCount !== 1 ? 's' : ''} actioned${totalCount ? ` out of ${totalCount} identified` : ''}` : null,
+    netZeroPct     != null ? `${netZeroPct}% progress toward full identified carbon reduction opportunity` : null,
+    diversionRate  != null ? `${diversionRate}% waste diversion rate — ${diversionRate >= 70 ? 'exceeding' : diversionRate >= 50 ? 'approaching' : 'below'} industry benchmark of 70%` : null,
+  ].filter(Boolean);
 
-  const summaryBullets = [savingsLine, potentialLine, co2Line, insightLine, progressLine, wasteLines].filter(Boolean);
-
-  doc.setTextColor(...C.darkGray);
   doc.setFontSize(8.5);
   doc.setFont('helvetica', 'normal');
 
-  if (summaryBullets.length > 0) {
-    summaryBullets.forEach(bullet => {
-      checkPageBreak(6);
+  if (bullets.length > 0) {
+    bullets.forEach(b => {
+      checkBreak(7);
       doc.setFillColor(...C.green);
-      doc.circle(M + 4, y - 1.2, 1, 'F');
+      doc.circle(M + 4.5, y - 1.5, 1.2, 'F');
       doc.setTextColor(...C.darkGray);
-      doc.text(bullet, M + 7, y);
-      y += 5.5;
+      doc.text(b, M + 8, y);
+      y += 6;
     });
-    y += 3;
   } else {
     doc.setTextColor(...C.midGray);
-    doc.text('No performance data available for this period.', M + 3, y);
+    doc.setFont('helvetica', 'italic');
+    doc.text('No performance data available for this period.', M + 4, y);
     y += 8;
   }
+  y += 4;
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 2 — PERFORMANCE KPIs
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
+  // SECTION 2 — PERFORMANCE KPIs (card row)
+  // ════════════════════════════════════════════════════════════════════════════
+  checkBreak(55);
   sectionHeader('Performance Summary', period);
 
-  autoTable(doc, {
-    startY: y,
-    margin: { left: M, right: M },
-    tableWidth: CONT_W,
-    head: [['Total Savings\nRealised', 'Further\nPotential', 'Ideas\nApplied', 'CO\u2082\nReduced']],
-    body: [[
-      totalRealized  != null ? `£${Number(totalRealized).toLocaleString('en-GB')}` : '—',
-      totalPotential != null ? `£${Number(totalPotential).toLocaleString('en-GB')}` : '—',
-      appliedCount   != null ? `${appliedCount}${totalCount ? ` of ${totalCount}` : ''}` : '—',
-      co2Reduced     != null ? `${co2Reduced.toFixed(2)} T` : '—',
-    ]],
-    headStyles: {
-      fillColor: C.green, textColor: 255, fontSize: 7.5,
-      fontStyle: 'bold', halign: 'center', cellPadding: 2.5,
-    },
-    bodyStyles: {
-      fontSize: 14, fontStyle: 'bold', halign: 'center',
-      textColor: C.darkGray, cellPadding: { top: 5, bottom: 5 },
-    },
-    theme: 'grid',
-    styles: { lineColor: C.border, lineWidth: 0.2 },
-  });
-  y = doc.lastAutoTable.finalY + 9;
+  kpiRow([
+    { label: 'Total Savings\nRealised',  value: fmtGBP(totalRealized),  accent: C.green },
+    { label: 'Further\nPotential',        value: fmtGBP(totalPotential), accent: C.teal },
+    { label: 'Ideas\nApplied',            value: appliedCount != null ? `${appliedCount}${totalCount ? ` / ${totalCount}` : ''}` : '—', accent: C.indigo },
+    { label: 'CO₂\nReduced',             value: co2Reduced ? `${co2Reduced.toFixed(2)} T` : '—', accent: C.amber },
+  ], y);
+  y += 42;
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   // SECTION 3 — ENERGY CONSUMPTION SUMMARY
-  // ═══════════════════════════════════════════════════════════════════════════
-  checkPageBreak(35);
-  sectionHeader('Energy Consumption Summary');
+  // ════════════════════════════════════════════════════════════════════════════
+  checkBreak(40);
+  sectionHeader('Energy Consumption');
 
   if (currentKwh != null) {
-    kv('Current consumption:', `${fmtNum(currentKwh, 1)} kWh   (\u2248 \u00a3${(currentKwh * RATE_GBP).toFixed(2)} / hr at UK rate)`);
+    kv('Live consumption reading:', `${fmtNum(currentKwh, 1)} kWh  (≈ £${(currentKwh * RATE_GBP).toFixed(2)}/hr at UK rate)`);
+    const projMonthly = currentKwh * 24 * 30;
+    kv('Projected monthly energy use:', `≈ ${fmtNum(projMonthly)} kWh  (≈ ${fmtGBP(projMonthly * RATE_GBP)} / month)`);
+    kv('Projected monthly CO₂ output:', `≈ ${fmtNum(projMonthly * CARBON_KG)} kg CO₂`);
   }
-  if (totalSavings != null) {
-    kv('Total cost savings achieved:', fmtGBP(totalSavings));
+  if (carbonSaved) {
+    kv('Carbon emissions reduced to date:', `${Number(carbonSaved).toFixed(2)} tonnes CO₂`, C.green);
   }
-  if (carbonSaved != null) {
-    kv('Carbon emissions reduced:', `${Number(carbonSaved).toFixed(2)} tonnes CO\u2082`);
+  if (totalRealized) {
+    kv('Total cost savings achieved:', fmtGBP(totalRealized), C.green);
   }
-  if (currentKwh != null) {
-    const projMonthlyKwh = currentKwh * 24 * 30;
-    kv('Projected monthly energy use:', `\u2248 ${fmtNum(projMonthlyKwh)} kWh   (\u2248 ${fmtGBP(projMonthlyKwh * RATE_GBP)} / month)`);
-    kv('Projected monthly CO\u2082 output:', `\u2248 ${fmtNum(projMonthlyKwh * CARBON_KG)} kg CO\u2082`);
-  }
-  if (currentKwh == null && totalSavings == null) {
+  if (!currentKwh && !carbonSaved) {
     doc.setTextColor(...C.midGray);
     doc.setFontSize(8.5);
-    doc.text('No live energy data available.', M + 3, y);
+    doc.setFont('helvetica', 'italic');
+    doc.text('No live energy data available for this period.', M + 4, y);
     y += 8;
   }
-  y += 2;
+  y += 4;
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 4 — WASTE MANAGEMENT SUMMARY
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
+  // SECTION 4 — WASTE MANAGEMENT
+  // ════════════════════════════════════════════════════════════════════════════
   if (wasteBreakdown.length > 0) {
-    checkPageBreak(35);
-    sectionHeader('Waste Management Summary', 'Last 30 days');
+    checkBreak(55);
+    sectionHeader('Waste Management', 'Last 30 days');
 
     kv('Total waste generated:', `${fmtNum(totalWasteKg, 1)} kg  (${(totalWasteKg / 1000).toFixed(2)} tonnes)`);
     kv('Landfill / general waste:', `${fmtNum(landfillKg, 1)} kg`);
     kv('Diverted (recycled / composted):', `${fmtNum(wasteKgDiverted, 1)} kg`);
     if (diversionRate != null) {
-      kv('Diversion rate:', `${diversionRate}%`, diversionRate >= 70 ? C.green : diversionRate >= 50 ? C.amber : C.red);
+      kv(
+        'Diversion rate:',
+        `${diversionRate}%  (target: 70%)`,
+        diversionRate >= 70 ? C.green : diversionRate >= 50 ? C.amber : C.red
+      );
     }
+    y += 4;
 
-    y += 3;
     autoTable(doc, {
       startY: y,
       margin: { left: M, right: M },
-      tableWidth: CONT_W,
-      head: [['Waste Stream', 'Weight (kg)', 'Share (%)', 'CO\u2082 Equivalent']],
+      tableWidth: CW,
+      head: [['Waste Stream', 'Weight (kg)', 'Share (%)', 'CO₂ Equivalent']],
       body: wasteBreakdown.map(b => {
-        const name   = b.stream ?? b.category ?? b.type ?? b.name ?? 'Unknown';
-        const kg     = parseFloat(b.weight_kg ?? b.weight ?? b.amount_kg ?? 0) || 0;
-        const pct    = totalWasteKg > 0 ? ((kg / totalWasteKg) * 100).toFixed(1) : '—';
-        const isLandfill = name.toLowerCase().includes('general') || name.toLowerCase().includes('landfill');
-        const co2e   = isLandfill ? `\u2248 ${fmtNum(kg * WASTE_KG_TO_CO2)} kg` : 'Diverted';
-        return [name, fmtNum(kg, 1), `${pct}%`, co2e];
+        const name  = b.stream ?? b.category ?? b.name ?? 'Unknown';
+        const kg    = parseFloat(b.weight_kg ?? b.weight ?? 0) || 0;
+        const pct   = totalWasteKg > 0 ? ((kg / totalWasteKg) * 100).toFixed(1) : '—';
+        const isLF  = name.toLowerCase().includes('landfill') || name.toLowerCase().includes('general');
+        return [name, fmtNum(kg, 1), `${pct}%`, isLF ? `≈ ${fmtNum(kg * WASTE_KG_CO2)} kg` : 'Diverted'];
       }),
-      headStyles: { fillColor: [55, 65, 81], textColor: 255, fontSize: 8, cellPadding: 2.5 },
-      bodyStyles: { fontSize: 8.5, textColor: C.darkGray },
-      alternateRowStyles: { fillColor: C.lightBg },
-      columnStyles: { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' } },
-      styles: { lineColor: C.border, lineWidth: 0.2 },
+      headStyles:         { fillColor: C.charcoal, textColor: C.white, fontSize: 8, cellPadding: 3 },
+      bodyStyles:         { fontSize: 8.5, textColor: C.darkGray, cellPadding: { top: 3, bottom: 3, left: 3, right: 3 } },
+      alternateRowStyles: { fillColor: C.bgGray },
+      columnStyles:       { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' } },
+      styles:             { lineColor: C.border, lineWidth: 0.2 },
       theme: 'grid',
     });
-    y = doc.lastAutoTable.finalY + 9;
+    y = doc.lastAutoTable.finalY + 10;
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   // SECTION 5 — NET ZERO PROGRESS
-  // ═══════════════════════════════════════════════════════════════════════════
-  checkPageBreak(55);
+  // ════════════════════════════════════════════════════════════════════════════
+  checkBreak(50);
   sectionHeader('Net Zero Progress');
 
-  kv('CO\u2082 reduced to date:', co2SavedKg != null ? `${fmtNum(co2SavedKg)} kg  (${co2Reduced.toFixed(2)} tonnes)` : '—');
-  kv('Remaining identified CO\u2082 potential:', co2PotentialKg != null ? `\u2248 ${fmtNum(co2PotentialKg)} kg  (if all pending ideas applied)` : '—');
-  kv('Total identified CO\u2082 opportunity:', totalOpKg > 0 ? `${fmtNum(totalOpKg)} kg` : '—');
+  kv('CO₂ reduced to date:', co2SavedKg ? `${fmtNum(co2SavedKg)} kg  (${co2Reduced.toFixed(2)} tonnes)` : '—', C.green);
+  kv('Remaining CO₂ potential (pending ideas):', co2PotentialKg ? `≈ ${fmtNum(co2PotentialKg)} kg` : '—');
+  kv('Total identified CO₂ opportunity:', totalOpKg ? `${fmtNum(totalOpKg)} kg` : '—');
+
   if (netZeroPct != null) {
-    kv('Progress toward full reduction:', `${netZeroPct}%`, C.green);
+    kv('Progress toward full reduction:', `${netZeroPct}%`, netZeroPct >= 75 ? C.green : netZeroPct >= 40 ? C.amber : C.red);
     y += 2;
-
-    // Progress bar
-    const barW   = CONT_W - 6;
+    const bw = CW - 8;
     doc.setFillColor(...C.border);
-    doc.roundedRect(M + 3, y, barW, 7, 3.5, 3.5, 'F');
-
-    const fillClr = netZeroPct >= 75 ? C.green : netZeroPct >= 40 ? [251, 191, 36] : C.red;
-    const fillW   = Math.max(7, barW * netZeroPct / 100);
-    doc.setFillColor(...fillClr);
-    doc.roundedRect(M + 3, y, fillW, 7, 3.5, 3.5, 'F');
-
-    if (netZeroPct > 10) {
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'bold');
-      doc.text(`${netZeroPct}%`, M + 3 + fillW / 2, y + 4.8, { align: 'center' });
-    }
-    y += 12;
-
+    doc.roundedRect(M + 4, y, bw, 9, 4.5, 4.5, 'F');
+    const fc   = netZeroPct >= 75 ? C.green : netZeroPct >= 40 ? [251, 191, 36] : C.red;
+    const fill = Math.max(9, bw * netZeroPct / 100);
+    doc.setFillColor(...fc);
+    doc.roundedRect(M + 4, y, fill, 9, 4.5, 4.5, 'F');
+    doc.setTextColor(...C.white);
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${netZeroPct}%`, M + 4 + fill / 2, y + 5.8, { align: 'center' });
+    y += 14;
     smallNote(
-      `Methodology: Progress = CO\u2082 already reduced \u00f7 (CO\u2082 reduced + estimated remaining potential). ` +
-      `Remaining potential derived from pending insight savings \u00f7 \u00a3${RATE_GBP}/kWh \u00d7 ${CARBON_KG} kg CO\u2082/kWh (UK grid average). ` +
-      `100% = all identified reduction opportunities unlocked.`
+      `Methodology: Progress = CO₂ already reduced ÷ (CO₂ reduced + estimated remaining potential). ` +
+      `Remaining potential derived from pending insight savings ÷ £${RATE_GBP}/kWh × ${CARBON_KG} kg CO₂/kWh (UK grid, DEFRA 2024).`
     );
-  } else {
-    y += 4;
   }
+  y += 2;
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 6 — SAVINGS TREND
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
+  // SECTION 6 — MONTHLY SAVINGS TREND
+  // ════════════════════════════════════════════════════════════════════════════
   if (trend.length > 0) {
-    checkPageBreak(25);
+    checkBreak(40);
     sectionHeader('Monthly Savings Trend', 'Realised vs. Potential');
 
-    const trendTotals = trend.reduce((acc, t) => {
-      acc.realized  += t.realized  ?? t.realized_savings  ?? 0;
-      acc.potential += t.potential ?? t.potential_savings ?? 0;
-      return acc;
-    }, { realized: 0, potential: 0 });
+    const totals = trend.reduce((a, t) => {
+      a.r += t.realized  ?? 0;
+      a.p += t.potential ?? 0;
+      return a;
+    }, { r: 0, p: 0 });
 
     autoTable(doc, {
       startY: y,
       margin: { left: M, right: M },
-      tableWidth: CONT_W,
-      head: [['Month', 'Realised Savings', 'Potential Savings', 'Untapped']],
+      tableWidth: CW,
+      head: [['Month', 'Realised', 'Potential', 'Untapped Gap']],
       body: [
         ...trend.map(t => {
-          const real = t.realized ?? t.realized_savings ?? 0;
-          const pot  = t.potential ?? t.potential_savings ?? 0;
-          const gap  = pot - real;
-          return [
-            t.month ?? t.period ?? '—',
-            `£${real.toLocaleString('en-GB')}`,
-            `£${pot.toLocaleString('en-GB')}`,
-            gap > 0 ? `£${gap.toLocaleString('en-GB')}` : 'Fully realised',
-          ];
+          const r = t.realized ?? 0;
+          const p = t.potential ?? 0;
+          return [t.month ?? '—', `£${r.toLocaleString('en-GB')}`, `£${p.toLocaleString('en-GB')}`, p > r ? `£${(p - r).toLocaleString('en-GB')}` : '✓ Realised'];
         }),
-        // Totals row
-        [
-          'TOTAL',
-          `£${trendTotals.realized.toLocaleString('en-GB')}`,
-          `£${trendTotals.potential.toLocaleString('en-GB')}`,
-          trendTotals.potential > trendTotals.realized
-            ? `£${(trendTotals.potential - trendTotals.realized).toLocaleString('en-GB')}`
-            : 'Fully realised',
-        ],
+        ['TOTAL', `£${totals.r.toLocaleString('en-GB')}`, `£${totals.p.toLocaleString('en-GB')}`, totals.p > totals.r ? `£${(totals.p - totals.r).toLocaleString('en-GB')}` : '✓ Realised'],
       ],
-      headStyles: { fillColor: [55, 65, 81], textColor: 255, fontSize: 8, cellPadding: 2.5 },
-      bodyStyles: { fontSize: 8.5, textColor: C.darkGray },
-      alternateRowStyles: { fillColor: C.lightBg },
-      columnStyles: { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right', textColor: C.midGray } },
+      headStyles:         { fillColor: C.charcoal, textColor: C.white, fontSize: 8, cellPadding: 3 },
+      bodyStyles:         { fontSize: 8.5, textColor: C.darkGray, cellPadding: { top: 3, bottom: 3, left: 3, right: 3 } },
+      alternateRowStyles: { fillColor: C.bgGray },
+      columnStyles: {
+        1: { halign: 'right' },
+        2: { halign: 'right' },
+        3: { halign: 'right', textColor: C.midGray },
+      },
       styles: { lineColor: C.border, lineWidth: 0.2 },
       theme: 'grid',
-      didParseCell: (data) => {
+      didParseCell: data => {
         if (data.row.index === trend.length) {
-          data.cell.styles.fontStyle = 'bold';
-          data.cell.styles.fillColor = [240, 253, 244];
+          data.cell.styles.fontStyle  = 'bold';
+          data.cell.styles.fillColor  = C.greenLight;
+          data.cell.styles.textColor  = C.darkGray;
         }
       },
     });
-    y = doc.lastAutoTable.finalY + 9;
+    y = doc.lastAutoTable.finalY + 10;
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   // SECTION 7 — RECOMMENDED COST-SAVING IDEAS
-  // ═══════════════════════════════════════════════════════════════════════════
-  checkPageBreak(20);
+  // ════════════════════════════════════════════════════════════════════════════
+  checkBreak(30);
   sectionHeader('Recommended Cost-Saving Ideas', `${pending.length} pending`);
 
   if (pending.length === 0) {
     doc.setTextColor(...C.midGray);
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'italic');
-    doc.text('All identified recommendations have been actioned — no pending ideas.', M + 3, y);
+    doc.text('All identified recommendations have been actioned — no pending ideas.', M + 4, y);
     y += 10;
   } else {
     autoTable(doc, {
       startY: y,
       margin: { left: M, right: M },
-      tableWidth: CONT_W,
-      head: [['#', 'Recommendation', 'Category', 'Saving / month', 'CO\u2082 / month', 'Annual ROI']],
+      tableWidth: CW,
+      head: [['#', 'Recommendation', 'Category', 'Monthly\nSaving', 'Annual\nROI']],
       body: pending.map((r, i) => {
-        const saving  = r.potential_savings_monthly ?? r.savings_monthly ?? r.savings ?? 0;
-        const co2Est  = saving > 0 ? `\u2248 ${Math.round(saving / RATE_GBP * CARBON_KG)} kg` : '—';
-        const annualR = saving > 0 ? `£${(saving * 12).toLocaleString('en-GB')}` : '—';
+        const saving = r.potential_savings_monthly ?? r.savings_monthly ?? r.savings ?? r.estimated_savings ?? 0;
         return [
           i + 1,
           r.title ?? r.name ?? 'Untitled',
-          r.category ?? '—',
-          saving > 0 ? `£${saving.toLocaleString('en-GB')}` : '—',
-          co2Est,
-          annualR,
+          (r.category ?? '—').charAt(0).toUpperCase() + (r.category ?? '').slice(1),
+          saving ? `£${Number(saving).toLocaleString('en-GB')}` : '—',
+          saving ? `£${(saving * 12).toLocaleString('en-GB')}` : '—',
         ];
       }),
-      headStyles: { fillColor: C.green, textColor: 255, fontSize: 7.5, cellPadding: 2.5 },
-      bodyStyles: { fontSize: 8, textColor: C.darkGray },
-      alternateRowStyles: { fillColor: C.lightBg },
+      headStyles:         { fillColor: C.green, textColor: C.white, fontSize: 8, cellPadding: 3 },
+      bodyStyles:         { fontSize: 8.5, textColor: C.darkGray, cellPadding: { top: 3.5, bottom: 3.5, left: 3, right: 3 } },
+      alternateRowStyles: { fillColor: C.bgGray },
       columnStyles: {
-        0: { halign: 'center', cellWidth: 8 },
+        0: { halign: 'center', cellWidth: 8, fontStyle: 'bold' },
         3: { halign: 'right' },
-        4: { halign: 'right', textColor: C.midGray },
-        5: { halign: 'right', fontStyle: 'bold' },
+        4: { halign: 'right', fontStyle: 'bold' },
       },
       styles: { lineColor: C.border, lineWidth: 0.2 },
       theme: 'grid',
     });
-    y = doc.lastAutoTable.finalY + 4;
+    y = doc.lastAutoTable.finalY + 5;
 
-    // Total row
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...C.green);
     doc.text(
-      `Total pending monthly savings: £${pendingSavingsMonthly.toLocaleString('en-GB')}   ·   Annual: £${annualROI.toLocaleString('en-GB')}`,
-      M + 3, y
+      `Total pending monthly savings: ${fmtGBP(pendingSavingsMonthly)}   ·   Annual: ${fmtGBP(annualROI)}`,
+      M + 4, y
     );
-    y += 8;
+    y += 10;
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   // SECTION 8 — APPLIED RECOMMENDATIONS
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   if (applied.length > 0) {
-    checkPageBreak(20);
+    checkBreak(30);
     sectionHeader('Applied Recommendations', `${applied.length} completed`);
 
     autoTable(doc, {
       startY: y,
       margin: { left: M, right: M },
-      tableWidth: CONT_W,
-      head: [['Recommendation', 'Category', 'Saving / month', 'Date Applied']],
+      tableWidth: CW,
+      head: [['Recommendation', 'Category', 'Monthly Saving', 'Date Applied']],
       body: applied.map(r => {
-        const saving = r.potential_savings_monthly ?? r.savings_monthly ?? r.savings;
+        const saving = r.potential_savings_monthly ?? r.savings_monthly ?? r.savings ?? r.estimated_savings;
         return [
           r.title ?? r.name ?? 'Untitled',
-          r.category ?? '—',
+          (r.category ?? '—').charAt(0).toUpperCase() + (r.category ?? '').slice(1),
           saving != null ? `£${Number(saving).toLocaleString('en-GB')}` : '—',
           fmtDate(r.actioned_at ?? r.updated_at),
         ];
       }),
-      headStyles: { fillColor: [55, 65, 81], textColor: 255, fontSize: 8, cellPadding: 2.5 },
-      bodyStyles: { fontSize: 8, textColor: C.darkGray },
-      alternateRowStyles: { fillColor: C.lightBg },
-      columnStyles: { 2: { halign: 'right' } },
-      styles: { lineColor: C.border, lineWidth: 0.2 },
+      headStyles:         { fillColor: C.charcoal, textColor: C.white, fontSize: 8, cellPadding: 3 },
+      bodyStyles:         { fontSize: 8.5, textColor: C.darkGray, cellPadding: { top: 3.5, bottom: 3.5, left: 3, right: 3 } },
+      alternateRowStyles: { fillColor: C.bgGray },
+      columnStyles:       { 2: { halign: 'right', fontStyle: 'bold' } },
+      styles:             { lineColor: C.border, lineWidth: 0.2 },
       theme: 'grid',
     });
-    y = doc.lastAutoTable.finalY + 9;
+    y = doc.lastAutoTable.finalY + 10;
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   // SECTION 9 — IMPACT BY CATEGORY
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   if (cats.length > 0) {
-    checkPageBreak(20);
+    checkBreak(30);
     sectionHeader('Impact by Category');
 
+    const catTotal = cats.reduce((s, c) => s + (c.value ?? 0), 0) || 1;
     autoTable(doc, {
       startY: y,
       margin: { left: M, right: M },
-      tableWidth: CONT_W,
-      head: [['Category', 'Share of Total Impact']],
-      body: cats.map(c => [c.category ?? c.label ?? '—', `${c.percentage ?? c.value ?? 0}%`]),
-      headStyles: { fillColor: [55, 65, 81], textColor: 255, fontSize: 8, cellPadding: 2.5 },
-      bodyStyles: { fontSize: 8.5, textColor: C.darkGray },
-      alternateRowStyles: { fillColor: C.lightBg },
-      columnStyles: { 1: { halign: 'right', fontStyle: 'bold' } },
-      styles: { lineColor: C.border, lineWidth: 0.2 },
+      tableWidth: CW,
+      head: [['Category', 'Total Savings', 'Share of Impact', 'Status']],
+      body: cats.map(c => {
+        const cat  = (c.category ?? c.label ?? '').toLowerCase();
+        const val  = c.value ?? 0;
+        const pct  = c.percentage ?? Math.round(val / catTotal * 100);
+        const bar  = '█'.repeat(Math.round(pct / 5));
+        return [
+          (c.label ?? c.category ?? '—').charAt(0).toUpperCase() + (c.label ?? c.category ?? '').slice(1),
+          fmtGBP(val),
+          `${pct}%  ${bar}`,
+          pct > 40 ? 'High impact' : pct > 20 ? 'Medium impact' : 'Low impact',
+        ];
+      }),
+      headStyles:         { fillColor: C.charcoal, textColor: C.white, fontSize: 8, cellPadding: 3 },
+      bodyStyles:         { fontSize: 8.5, textColor: C.darkGray, cellPadding: { top: 3.5, bottom: 3.5, left: 3, right: 3 } },
+      alternateRowStyles: { fillColor: C.bgGray },
+      columnStyles:       { 1: { halign: 'right', fontStyle: 'bold' }, 3: { textColor: C.midGray } },
+      styles:             { lineColor: C.border, lineWidth: 0.2 },
       theme: 'grid',
     });
-    y = doc.lastAutoTable.finalY + 9;
+    y = doc.lastAutoTable.finalY + 10;
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   // SECTION 10 — CARBON EQUIVALENCES
-  // ═══════════════════════════════════════════════════════════════════════════
-  if (co2SavedKg != null && co2SavedKg > 0) {
-    checkPageBreak(40);
-    sectionHeader('Carbon Equivalences', `Based on ${co2SavedKg.toLocaleString('en-GB')} kg CO\u2082 reduced to date`);
+  // ════════════════════════════════════════════════════════════════════════════
+  if (co2SavedKg > 0) {
+    checkBreak(45);
+    sectionHeader('Carbon Equivalences', `Based on ${co2SavedKg.toLocaleString('en-GB')} kg CO₂ reduced`);
 
     const equivRows = [
-      ['Trees planted (1 year of absorption)',  treesEquiv   != null ? `\u2248 ${fmtNum(treesEquiv)}` : '—',  '1 tree absorbs \u2248 21.77 kg CO\u2082/yr'],
-      ['Car miles avoided',                      carMilesEquiv != null ? `\u2248 ${fmtNum(carMilesEquiv)}` : '—', 'UK average: 0.404 kg CO\u2082/mile'],
-      ['London\u2013New York flights equivalent', flightsEquiv != null ? `\u2248 ${fmtNum(flightsEquiv)}` : '—',  '\u2248 255 kg CO\u2082 per passenger (one way)'],
+      ['Trees planted (1 year absorption)',     treesEquiv    != null ? `≈ ${fmtNum(treesEquiv)}` : '—',    '1 tree absorbs ≈ 21.77 kg CO₂/yr'],
+      ['Car miles of driving avoided',           carMilesEquiv != null ? `≈ ${fmtNum(carMilesEquiv)}` : '—', 'UK average: 0.404 kg CO₂/mile'],
+      ['London–New York flights (one way)',       flightsEquiv  != null ? `≈ ${fmtNum(flightsEquiv)}` : '—',  '≈ 255 kg CO₂ per passenger'],
     ];
-
     if (wasteKgDiverted > 0) {
-      const wasteCarbon = Math.round(wasteKgDiverted * WASTE_KG_TO_CO2);
       equivRows.push([
-        'Waste CO\u2082 avoided (diversion)',
-        `\u2248 ${fmtNum(wasteCarbon)} kg`,
-        `\u2248 0.5 kg CO\u2082 saved per kg diverted from landfill`,
+        'Waste CO₂ avoided via diversion',
+        `≈ ${fmtNum(Math.round(wasteKgDiverted * WASTE_KG_CO2))} kg`,
+        '≈ 0.5 kg CO₂ saved per kg diverted from landfill',
       ]);
     }
 
     autoTable(doc, {
       startY: y,
       margin: { left: M, right: M },
-      tableWidth: CONT_W,
+      tableWidth: CW,
       head: [['Equivalent Impact', 'Estimate', 'Basis']],
       body: equivRows,
-      headStyles: { fillColor: C.green, textColor: 255, fontSize: 8, cellPadding: 2.5 },
-      bodyStyles: { fontSize: 8.5, textColor: C.darkGray },
-      alternateRowStyles: { fillColor: C.lightBg },
+      headStyles:         { fillColor: C.green, textColor: C.white, fontSize: 8, cellPadding: 3 },
+      bodyStyles:         { fontSize: 8.5, textColor: C.darkGray, cellPadding: { top: 3.5, bottom: 3.5, left: 3, right: 3 } },
+      alternateRowStyles: { fillColor: C.bgGray },
       columnStyles: {
-        1: { halign: 'right', fontStyle: 'bold', cellWidth: 32 },
-        2: { textColor: C.midGray, cellWidth: 65 },
+        1: { halign: 'right', fontStyle: 'bold', cellWidth: 34 },
+        2: { textColor: C.midGray },
       },
       styles: { lineColor: C.border, lineWidth: 0.2 },
       theme: 'grid',
     });
-    y = doc.lastAutoTable.finalY + 9;
+    y = doc.lastAutoTable.finalY + 10;
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
   // SECTION 11 — ROI PROJECTION
-  // ═══════════════════════════════════════════════════════════════════════════
-  if (pendingSavingsMonthly > 0 || totalRealized != null) {
-    checkPageBreak(50);
+  // ════════════════════════════════════════════════════════════════════════════
+  if (pendingSavingsMonthly > 0 || totalRealized) {
+    checkBreak(55);
     sectionHeader('Return on Investment Projection', 'If all pending ideas are applied');
 
     autoTable(doc, {
       startY: y,
       margin: { left: M, right: M },
-      tableWidth: CONT_W,
+      tableWidth: CW,
       head: [['Metric', 'Value', 'Notes']],
       body: [
-        [
-          'Monthly saving (pending ideas)',
-          fmtGBP(pendingSavingsMonthly),
-          `${pending.length} pending recommendation${pending.length !== 1 ? 's' : ''}`,
-        ],
-        [
-          'Projected annual saving',
-          fmtGBP(annualROI),
-          'Monthly \u00d7 12',
-        ],
-        [
-          '3-year cumulative saving',
-          fmtGBP(threeYearROI),
-          'Annual \u00d7 3 (no inflation adj.)',
-        ],
-        ...(totalRealized != null ? [[
-          'Already realised (to date)',
-          fmtGBP(totalRealized),
-          'From applied recommendations',
-        ]] : []),
-        ...(totalRealized != null && annualROI > 0 ? [[
-          'Total lifetime value (realised + 3yr)',
-          fmtGBP((totalRealized ?? 0) + threeYearROI),
-          'Combined potential',
-        ]] : []),
+        ['Monthly saving (all pending ideas)', fmtGBP(pendingSavingsMonthly), `${pending.length} recommendation${pending.length !== 1 ? 's' : ''} pending`],
+        ['Projected annual saving', fmtGBP(annualROI), 'Monthly × 12'],
+        ['3-year cumulative saving', fmtGBP(threeYearROI), 'Annual × 3 (no inflation adjustment)'],
+        ...(totalRealized ? [['Already realised to date', fmtGBP(totalRealized), 'From applied recommendations']] : []),
+        ...(totalRealized && annualROI > 0 ? [['Total lifetime value (realised + 3yr)', fmtGBP(totalRealized + threeYearROI), 'Combined potential']] : []),
       ],
-      headStyles: { fillColor: C.green, textColor: 255, fontSize: 8, cellPadding: 2.5 },
-      bodyStyles: { fontSize: 8.5, textColor: C.darkGray },
-      alternateRowStyles: { fillColor: C.lightBg },
+      headStyles:         { fillColor: C.green, textColor: C.white, fontSize: 8, cellPadding: 3 },
+      bodyStyles:         { fontSize: 8.5, textColor: C.darkGray, cellPadding: { top: 3.5, bottom: 3.5, left: 3, right: 3 } },
+      alternateRowStyles: { fillColor: C.bgGray },
       columnStyles: {
         1: { halign: 'right', fontStyle: 'bold', cellWidth: 38 },
         2: { textColor: C.midGray },
       },
       styles: { lineColor: C.border, lineWidth: 0.2 },
       theme: 'grid',
-      didParseCell: (data) => {
-        // Highlight the total lifetime value row
-        const lastIdx = (totalRealized != null && annualROI > 0) ? 4 : -1;
-        if (data.row.index === lastIdx) {
-          data.cell.styles.fillColor = [240, 253, 244];
+      didParseCell: data => {
+        const lastRow = (totalRealized && annualROI > 0) ? 4 : -1;
+        if (data.row.index === lastRow) {
+          data.cell.styles.fillColor = C.greenLight;
           data.cell.styles.fontStyle = 'bold';
         }
       },
     });
     y = doc.lastAutoTable.finalY + 6;
-
     smallNote(
-      `Projection assumes consistent application of all pending recommendations. ` +
-      `Figures are estimates only; actual savings may vary by usage patterns and tariff changes. ` +
-      `UK electricity rate: \u00a3${RATE_GBP}/kWh. Carbon intensity: ${CARBON_KG} kg CO\u2082/kWh (DEFRA 2024).`
+      `Projection assumes consistent application of all pending recommendations. Actual savings may vary by usage patterns and tariff changes. ` +
+      `UK electricity rate: £${RATE_GBP}/kWh. Carbon intensity: ${CARBON_KG} kg CO₂/kWh (DEFRA 2024).`
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // PAGE FOOTERS
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
+  // PAGE FOOTERS (skip cover page = page 1)
+  // ════════════════════════════════════════════════════════════════════════════
   const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
+  for (let i = 2; i <= totalPages; i++) {
     doc.setPage(i);
-    doc.setFillColor(...C.lightBg);
-    doc.rect(0, 286, PAGE_W, 11, 'F');
-    doc.setDrawColor(...C.border);
-    doc.setLineWidth(0.2);
-    doc.line(0, 286, PAGE_W, 286);
-    doc.setTextColor(...C.midGray);
+    doc.setFillColor(...C.darkGray);
+    doc.rect(0, 283, PAGE_W, 14, 'F');
+    doc.setFillColor(...C.green);
+    doc.rect(0, 283, 4, 14, 'F');
+    doc.setTextColor(...C.lightGray);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
     doc.text(
-      `GreenPulse Analytics \u00b7 ${companyName} \u00b7 greenpulseanalytics.com`,
-      M, 292
+      `GreenPulse Analytics  ·  ${companyName}  ·  greenpulseanalytics.com`,
+      M + 4, 291.5
     );
-    doc.text(`Page ${i} of ${totalPages}`, PAGE_W - M, 292, { align: 'right' });
+    doc.setTextColor(...C.white);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${i - 1}  /  ${totalPages - 1}`, PAGE_W - M, 291.5, { align: 'right' });
   }
 
-  const safeCompany = companyName.replace(/[^a-z0-9]/gi, '-').replace(/-+/g, '-').toLowerCase();
-  const filename = `GreenPulse-Report-${safeCompany}-${new Date().toISOString().slice(0, 10)}.pdf`;
-  doc.save(filename);
+  const safeName = companyName.replace(/[^a-z0-9]/gi, '-').replace(/-+/g, '-').toLowerCase();
+  doc.save(`GreenPulse-Report-${safeName}-${new Date().toISOString().slice(0, 10)}.pdf`);
 }
