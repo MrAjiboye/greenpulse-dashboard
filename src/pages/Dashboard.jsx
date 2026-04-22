@@ -143,7 +143,7 @@ const Dashboard = () => {
 
     // non-critical secondary fetches
     try {
-      const insightsData = await insightsAPI.getList('pending');
+      const insightsData = await insightsAPI.getList('PENDING');
       const list = Array.isArray(insightsData) ? insightsData : (insightsData?.items ?? insightsData?.data ?? []);
       setInsights(list.slice(0, 3));
     } catch { /* non-critical */ }
