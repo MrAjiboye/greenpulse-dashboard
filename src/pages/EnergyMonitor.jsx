@@ -75,6 +75,48 @@ const EnergyMonitor = () => {
 
   const renderChart = () => {
     try {
+      // ── Compare mode: use daily buckets from both periods ──────────────────
+      if (compareMode && compareData?.current?.daily?.length > 0) {
+        const curDaily  = compareData.current.daily;
+        const prevDaily = compareData.previous?.daily ?? [];
+        const labels = curDaily.map(d => {
+          const dt = new Date(d.date);
+          return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+        });
+        const curY  = curDaily.map(d => d.kwh);
+        const prevY = prevDaily.map(d => d.kwh);
+
+        const traces = [
+          {
+            x: labels, y: curY, type: 'bar', name: compareData.current.label ?? 'This Month',
+            marker: { color: 'rgba(52,152,219,0.8)' },
+            hovertemplate: '<b>%{x}</b><br>This month: %{y} kWh<extra></extra>',
+          },
+        ];
+        if (prevY.length > 0) {
+          traces.push({
+            x: labels.slice(0, prevY.length), y: prevY, type: 'bar',
+            name: compareData.previous.label ?? 'Last Month',
+            marker: { color: 'rgba(245,158,11,0.7)' },
+            hovertemplate: '<b>%{x}</b><br>Last month: %{y} kWh<extra></extra>',
+          });
+        }
+
+        window.Plotly.newPlot('energyTrendChart', traces, {
+          barmode: 'group',
+          font: { family: 'Inter, sans-serif' },
+          margin: { t: 40, r: 20, b: 60, l: 60 },
+          showlegend: true,
+          legend: { orientation: 'h', y: 1.12, x: 0 },
+          plot_bgcolor: 'rgba(0,0,0,0)', paper_bgcolor: 'rgba(0,0,0,0)',
+          hovermode: 'x unified',
+          xaxis: { showgrid: false, color: '#6b7280', tickfont: { size: 11 }, tickangle: -35 },
+          yaxis: { title: 'kWh / day', showgrid: true, gridcolor: '#f3f4f6', color: '#6b7280', zeroline: false },
+        }, { responsive: true, displayModeBar: false });
+        return;
+      }
+
+      // ── Default: hourly 24-hour view ───────────────────────────────────────
       const labels = trends.map(t => {
         const d = new Date(t.timestamp || t.time || t.recorded_at);
         return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -109,17 +151,6 @@ const EnergyMonitor = () => {
         });
       }
 
-      if (compareMode && compareData?.previous) {
-        const prevAvgHourly = (compareData.previous.avg_daily_kwh ?? 0) / 24;
-        traces.push({
-          x: labels, y: Array(labels.length).fill(parseFloat(prevAvgHourly.toFixed(1))),
-          type: 'scatter', mode: 'lines',
-          name: compareData.previous.label ?? 'Previous',
-          line: { color: '#f59e0b', width: 2, dash: 'dash' },
-          hovertemplate: `<b>%{x}</b><br>${compareData.previous.label ?? 'Prev'} avg: %{y} kWh<extra></extra>`
-        });
-      }
-
       const annotations = peakIndex >= 0 ? [{
         x: labels[peakIndex], y: maxUsage, xref: 'x', yref: 'y',
         text: `Peak: ${maxUsage} kWh`, showarrow: true, arrowhead: 2,
@@ -130,9 +161,8 @@ const EnergyMonitor = () => {
 
       window.Plotly.newPlot('energyTrendChart', traces, {
         font: { family: 'Inter, sans-serif' },
-        margin: { t: compareMode ? 40 : 20, r: 20, b: 40, l: 50 },
-        showlegend: compareMode,
-        legend: { orientation: 'h', y: 1.1, x: 0 },
+        margin: { t: 20, r: 20, b: 40, l: 50 },
+        showlegend: false,
         plot_bgcolor: 'rgba(0,0,0,0)', paper_bgcolor: 'rgba(0,0,0,0)',
         hovermode: 'x unified',
         xaxis: { showgrid: false, color: '#6b7280', tickfont: { size: 12 } },
@@ -310,8 +340,8 @@ const EnergyMonitor = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    Your Usage: Last 24 Hours
-                    <i className="fa-regular fa-circle-question text-gray-400 text-sm" title="Shows hourly consumption vs baseline"></i>
+                    {compareMode ? 'This Month vs Last Month' : 'Your Usage: Last 24 Hours'}
+                    <i className="fa-regular fa-circle-question text-gray-400 text-sm" title={compareMode ? 'Daily kWh comparison between periods' : 'Shows hourly consumption vs baseline'}></i>
                   </h3>
                   <div className="flex items-center gap-4 mt-1">
                     <div className="flex items-center gap-2 text-xs text-gray-500">
