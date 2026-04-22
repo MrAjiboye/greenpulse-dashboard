@@ -80,8 +80,8 @@ const EnergyMonitor = () => {
         const curDaily  = compareData.current.daily;
         const prevDaily = compareData.previous?.daily ?? [];
         const labels = curDaily.map(d => {
-          const dt = new Date(d.date);
-          return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+          const [, mo, day] = d.date.split('-');
+          return `${parseInt(day)} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(mo)-1]}`;
         });
         const curY  = curDaily.map(d => d.kwh);
         const prevY = prevDaily.map(d => d.kwh);
